@@ -17,13 +17,13 @@ public class DBSettings extends FieldEditorPreferencePage implements
 	}
 
 	public void createFieldEditors() {
-		addField(new StringFieldEditor("host", "Host:",
+		addField(new StringFieldEditor("HOST", "Host:",
 				getFieldEditorParent()));
-		addField(new StringFieldEditor("database", "Database Name:",
+		addField(new StringFieldEditor("DATABASE", "Database Name:",
 				getFieldEditorParent()));
-		addField(new StringFieldEditor("username", "Username:",
+		addField(new StringFieldEditor("USERNAME", "Username:",
 				getFieldEditorParent()));
-		addField(new StringFieldEditor("password", "Password",
+		addField(new StringFieldEditor("PASSWORD", "Password",
 				getFieldEditorParent()));
 	}
 

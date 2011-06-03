@@ -24,17 +24,17 @@
       <view
             name="Database"
             class="org.vagabond.rcp.views.DBView"
-            id="VagabondRCP.dbview">
+            id="org.vagabond.rcp.views.dbview">
       </view>
       <view
             class="org.vagabond.rcp.views.ExplView"
-            id="VagabondRCP.explview"
+            id="org.vagabond.rcp.views.explview"
             name="Explanations"
             restorable="true">
       </view>
       <view
             class="org.vagabond.rcp.views.MapView"
-            id="VagabondRCP.mapview"
+            id="org.vagabond.rcp.views.mapview"
             name="Mappings"
             restorable="true">
       </view>
@@ -44,7 +44,7 @@
       <perspectiveExtension
             targetID="*">
          <view
-               id="VagabondRCP.dbview"
+               id="org.vagabond.rcp.views.dbview"
                minimized="false"
                moveable="true"
                ratio="0.65f"
@@ -53,19 +53,19 @@
                standalone="true">
          </view>
          <view
-               id="VagabondRCP.explview"
+               id="org.vagabond.rcp.views.explview"
                minimized="false"
                moveable="true"
                relationship="bottom"
-               relative="VagabondRCP.view"
+               relative="org.vagabond.rcp.views.dbview"
                standalone="false">
          </view>
          <view
-               id="VagabondRCP.mapview"
+               id="org.vagabond.rcp.views.mapview"
                minimized="false"
                moveable="true"
                relationship="stack"
-               relative="VagabondRCP.explview"
+               relative="org.vagabond.rcp.views.explview"
                standalone="false">
          </view>
       </perspectiveExtension>
@@ -81,6 +81,20 @@
                   label="Exit">
             </command>
          </menu>
+         <menu
+               id="connectionMenu"
+               label="Configuration">
+            <command
+                  commandId="org.eclipse.ui.window.preferences"
+                  label="Preferences"
+                  style="push">
+            </command>
+            <command
+                  commandId="org.vagabond.rcp.util.showPrefValues"
+                  label="Show Preference Values"
+                  style="push">
+            </command>
+         </menu>
       </menuContribution>
    </extension>
    <extension
@@ -94,6 +108,27 @@
                value="icons/alt_window_16.gif,icons/alt_window_32.gif">
          </property>
       </product>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            class="org.vagabond.rcp.preferences.SchemaSettings"
+            id="org.rcp.preferences.schemasettings"
+            name="Schema Settings">
+      </page>
+      <page
+            class="org.vagabond.rcp.preferences.DBSettings"
+            id="org.rcp.preferences.dbsettings"
+            name="Connection Settings">
+      </page>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="org.vagabond.rcp.util.ShowPreferenceValues"
+            id="org.vagabond.rcp.util.showPrefValues"
+            name="Show Preference Values">
+      </command>
    </extension>
 
 </plugin>

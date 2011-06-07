@@ -47,8 +47,7 @@
                id="org.vagabond.rcp.views.dbview"
                minimized="false"
                moveable="true"
-               ratio="0.65f"
-               relationship="top"
+               relationship="right"
                relative="org.eclipse.ui.editorss"
                standalone="true">
          </view>
@@ -56,6 +55,7 @@
                id="org.vagabond.rcp.views.explview"
                minimized="false"
                moveable="true"
+               ratio="0.75f"
                relationship="bottom"
                relative="org.vagabond.rcp.views.dbview"
                standalone="false">
@@ -64,8 +64,8 @@
                id="org.vagabond.rcp.views.mapview"
                minimized="false"
                moveable="true"
-               relationship="stack"
-               relative="org.vagabond.rcp.views.explview"
+               relationship="left"
+               relative="org.vagabond.rcp.views.dbview"
                standalone="false">
          </view>
       </perspectiveExtension>
@@ -90,8 +90,8 @@
                   style="push">
             </command>
             <command
-                  commandId="org.vagabond.rcp.util.showPrefValues"
-                  label="Show Preference Values"
+                  commandId="org.vagabond.rcp.util.start"
+                  label="Start"
                   style="push">
             </command>
          </menu>
@@ -125,9 +125,9 @@
    <extension
          point="org.eclipse.ui.commands">
       <command
-            defaultHandler="org.vagabond.rcp.util.ShowPreferenceValues"
-            id="org.vagabond.rcp.util.showPrefValues"
-            name="Show Preference Values">
+            defaultHandler="org.vagabond.rcp.util.StartHandler"
+            id="org.vagabond.rcp.util.start"
+            name="Start">
       </command>
    </extension>
 

@@ -13,7 +13,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 
 public class ExplView extends ViewPart {
-	public static final String ID = "VagabondRCP.explview";
+	public static final String ID = "org.vagabond.rcp.views.explview";
 
 	private TableViewer viewer;
 

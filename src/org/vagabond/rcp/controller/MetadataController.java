@@ -39,12 +39,12 @@ public class MetadataController {
 		int max = 0;
 		
 		for (int i = 0; i < numSource; i++) {
-			attributeSize = holder.getScenario().getSchemas().getTargetSchema().getRelationArray()[i].getAttrArray().length;
+			attributeSize = holder.getScenario().getSchemas().getSourceSchema().getRelationArray()[i].getAttrArray().length;
 			if (attributeSize > max)
 				max = attributeSize;
 		}
 		
-		String[][] data = new String[numSource][max];
+		String[][] data = new String[numSource][max+1];
 		for(int i = 0 ; i < numSource; i++)
         {
 			data[i][0] = holder.getScenario().getSchemas().getSourceSchema().getRelationArray()[i].getName();
@@ -68,7 +68,7 @@ public class MetadataController {
 				max = attributeSize;
 		}
 		
-		String[][] data = new String[numSource][max];
+		String[][] data = new String[numSource][max+1];
 		for(int i = 0 ; i < numSource; i++)
         {
 			data[i][0] = holder.getScenario().getSchemas().getTargetSchema().getRelationArray()[i].getName();

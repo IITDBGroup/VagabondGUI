@@ -1,11 +1,11 @@
-package org.vagabond.rcp.views;
+package org.vagabond.rcp.gui.views;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.*;
 import org.eclipse.ui.part.ViewPart;
 
 public class MapView extends ViewPart {
-	public static final String ID = "org.vagabond.rcp.views.mapview";
+	public static final String ID = "org.vagabond.rcp.gui.views.mapview";
 	private Text text;
 	
 	@Override
@@ -18,12 +18,21 @@ public class MapView extends ViewPart {
 	public void setFocus() {
 	}
 	
-	public void load(String[][] data) {
+	public void load(String[][] data, String[][] data2) {
 		text.setText("Source Schemas:\n");
 		for (int i=0; i<data.length; i++) {
-			for (int j=0; j<data.length; j++) {
-				if (data[i][j] != null)
+			for (int j=0; j<data[i].length; j++) {
+				if (data[i][j] != null) {
 					text.append(data[i][j] + "\n");
+				}
+			}
+		}
+		text.append("\nTarget Schemas:\n");
+		for (int i=0; i<data2.length; i++) {
+			for (int j=0; j<data2[i].length; j++) {
+				if (data2[i][j] != null) {
+					text.append(data2[i][j] + "\n");
+				}
 			}
 		}
 	}

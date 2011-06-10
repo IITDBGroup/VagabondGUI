@@ -1,4 +1,4 @@
-package org.vagabond.rcp.util;
+package org.vagabond.rcp.controller;
 
 
 import java.io.File;
@@ -20,7 +20,7 @@ import org.vagabond.mapping.model.ModelLoader;
 import org.vagabond.mapping.model.ValidationException;
 import org.vagabond.mapping.scenarioToDB.DatabaseScenarioLoader;
 import org.vagabond.rcp.Activator;
-import org.vagabond.rcp.views.*;
+import org.vagabond.rcp.gui.views.*;
 import org.vagabond.util.ConnectionManager;
 
 public class StartHandler extends AbstractHandler {
@@ -40,26 +40,7 @@ public class StartHandler extends AbstractHandler {
 		}
 		MessageDialog.openInformation(shell, "Notice", "Successfully loaded schema");
 		
-		IWorkbenchWindow window = HandlerUtil.getActiveWorkbenchWindow(event);
-		IWorkbenchPage page = window.getActivePage();
-		MapView mapview = (MapView) page.findView(MapView.ID);
-		
-		MapScenarioHolder holder = MapScenarioHolder.getInstance();
-		
-		int numSource = holder.getScenario().getSchemas().getSourceSchema().getRelationArray().length;
-		int attributeSize = 0;
-		String[][] data = new String[numSource][10];
-		for(int i = 0 ; i < numSource; i++)
-        {
-			data[i][0] = holder.getScenario().getSchemas().getSourceSchema().getRelationArray()[i].getName();
-			attributeSize = holder.getScenario().getSchemas().getSourceSchema().getRelationArray()[i].getAttrArray().length;
-			for(int j = 1 ; j<attributeSize+1 ; j++) {
-				data[i][j] = "\t- " + holder.getScenario().getSchemas().getSourceSchema().getRelationArray()[i].getAttrArray(j-1).getName();
-			}
-        }
-		
-		mapview.load(data);
-
+		MetadataController.getInstance().updateView();
 		
 		return null;
 	}

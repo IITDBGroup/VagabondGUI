@@ -1,4 +1,4 @@
-package org.vagabond.rcp.views;
+package org.vagabond.rcp.gui.views;
 
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
@@ -7,15 +7,17 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.layout.*;
+import org.eclipse.swt.widgets.*;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 
-public class ExplView extends ViewPart {
-	public static final String ID = "org.vagabond.rcp.views.explview";
+public class DBView extends ViewPart {
+	public static final String ID = "org.vagabond.rcp.gui.views.dbview";
 
-	private TableViewer viewer;
+	private TableViewer sourceViewer;
+	private TableViewer targetViewer;
 
 	/**
 	 * The content provider class is responsible for providing objects to the
@@ -60,18 +62,47 @@ public class ExplView extends ViewPart {
 	 * it.
 	 */
 	public void createPartControl(Composite parent) {
-		viewer = new TableViewer(parent, SWT.MULTI | SWT.H_SCROLL
+		Group source = new Group(parent, SWT.SHADOW_NONE);
+		source.setText("Source Schema");
+		source.setLayout(new GridLayout(1, false));
+		Group target = new Group(parent, SWT.SHADOW_NONE);
+		target.setText("Target Schema");
+		target.setLayout(new GridLayout(1, false));
+		
+		GridData gridData = new GridData();
+		gridData.horizontalAlignment = SWT.FILL;
+		gridData.grabExcessHorizontalSpace = true;
+		Combo sourceCombo = new Combo(source, SWT.DROP_DOWN | SWT.READ_ONLY);
+		sourceCombo.setLayoutData(gridData);
+		Combo targetCombo = new Combo(target, SWT.DROP_DOWN | SWT.READ_ONLY);
+		targetCombo.setLayoutData(gridData);
+		
+		gridData = new GridData();
+		gridData.verticalAlignment = GridData.FILL;
+		gridData.grabExcessHorizontalSpace = true;
+		gridData.grabExcessVerticalSpace = true;
+		gridData.horizontalAlignment = GridData.FILL;
+		sourceViewer = new TableViewer(source, SWT.MULTI | SWT.H_SCROLL
 				| SWT.V_SCROLL);
-		viewer.setContentProvider(new ViewContentProvider());
-		viewer.setLabelProvider(new ViewLabelProvider());
-		// Provide the input to the ContentProvider
-		viewer.setInput(new String[] {"Source Copy Error", "Correspondence Error", "Superfluous Mapping Error"});
+		sourceViewer.setContentProvider(new ViewContentProvider());
+		sourceViewer.setLabelProvider(new ViewLabelProvider());
+		sourceViewer.getControl().setLayoutData(gridData);
+		
+		targetViewer = new TableViewer(target, SWT.MULTI | SWT.H_SCROLL
+				| SWT.V_SCROLL);
+		targetViewer.setContentProvider(new ViewContentProvider());
+		targetViewer.setLabelProvider(new ViewLabelProvider());
+		targetViewer.getControl().setLayoutData(gridData);
 	}
 
 	/**
 	 * Passing the focus request to the viewer's control.
 	 */
 	public void setFocus() {
-		viewer.getControl().setFocus();
+		sourceViewer.getControl().setFocus();
+	}
+	
+	public TableViewer getSourceViewer() {
+		return sourceViewer;
 	}
 }

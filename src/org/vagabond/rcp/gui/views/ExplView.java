@@ -1,4 +1,4 @@
-package org.vagabond.rcp.views;
+package org.vagabond.rcp.gui.views;
 
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
@@ -12,8 +12,8 @@ import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 
-public class DBView extends ViewPart {
-	public static final String ID = "org.vagabond.rcp.views.dbview";
+public class ExplView extends ViewPart {
+	public static final String ID = "org.vagabond.rcp.gui.views.explview";
 
 	private TableViewer viewer;
 
@@ -65,7 +65,7 @@ public class DBView extends ViewPart {
 		viewer.setContentProvider(new ViewContentProvider());
 		viewer.setLabelProvider(new ViewLabelProvider());
 		// Provide the input to the ContentProvider
-		viewer.setInput(new String[] {"One", "Two", "Three"});
+		viewer.setInput(new String[] {"Source Copy Error", "Correspondence Error", "Superfluous Mapping Error"});
 	}
 
 	/**

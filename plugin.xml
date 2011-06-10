@@ -23,18 +23,18 @@
          point="org.eclipse.ui.views">
       <view
             name="Database"
-            class="org.vagabond.rcp.views.DBView"
-            id="org.vagabond.rcp.views.dbview">
+            class="org.vagabond.rcp.gui.views.DBView"
+            id="org.vagabond.rcp.gui.views.dbview">
       </view>
       <view
-            class="org.vagabond.rcp.views.ExplView"
-            id="org.vagabond.rcp.views.explview"
+            class="org.vagabond.rcp.gui.views.ExplView"
+            id="org.vagabond.rcp.gui.views.explview"
             name="Explanations"
             restorable="true">
       </view>
       <view
-            class="org.vagabond.rcp.views.MapView"
-            id="org.vagabond.rcp.views.mapview"
+            class="org.vagabond.rcp.gui.views.MapView"
+            id="org.vagabond.rcp.gui.views.mapview"
             name="Mappings"
             restorable="true">
       </view>
@@ -44,7 +44,7 @@
       <perspectiveExtension
             targetID="*">
          <view
-               id="org.vagabond.rcp.views.dbview"
+               id="org.vagabond.rcp.gui.views.dbview"
                minimized="false"
                moveable="true"
                relationship="right"
@@ -52,20 +52,20 @@
                standalone="true">
          </view>
          <view
-               id="org.vagabond.rcp.views.explview"
+               id="org.vagabond.rcp.gui.views.explview"
                minimized="false"
                moveable="true"
                ratio="0.75f"
                relationship="bottom"
-               relative="org.vagabond.rcp.views.dbview"
+               relative="org.vagabond.rcp.gui.views.dbview"
                standalone="false">
          </view>
          <view
-               id="org.vagabond.rcp.views.mapview"
+               id="org.vagabond.rcp.gui.views.mapview"
                minimized="false"
                moveable="true"
                relationship="left"
-               relative="org.vagabond.rcp.views.dbview"
+               relative="org.vagabond.rcp.gui.views.dbview"
                standalone="false">
          </view>
       </perspectiveExtension>
@@ -125,7 +125,7 @@
    <extension
          point="org.eclipse.ui.commands">
       <command
-            defaultHandler="org.vagabond.rcp.util.StartHandler"
+            defaultHandler="org.vagabond.rcp.controller.StartHandler"
             id="org.vagabond.rcp.util.start"
             name="Start">
       </command>

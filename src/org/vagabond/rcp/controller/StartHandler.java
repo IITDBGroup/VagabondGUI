@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.List;
 
 import org.apache.xmlbeans.XmlException;
 import org.eclipse.core.commands.AbstractHandler;
@@ -23,6 +24,14 @@ import org.vagabond.rcp.Activator;
 import org.vagabond.rcp.gui.views.*;
 import org.vagabond.util.ConnectionManager;
 
+import com.quantum.actions.BaseExecuteAction;
+import com.quantum.model.Bookmark;
+import com.quantum.model.JDBCDriver;
+import com.quantum.sql.MultiSQLServer;
+import com.quantum.sql.SQLResultSetCollection;
+import com.quantum.sql.SQLResultSetResults;
+import com.quantum.sql.SQLResults;
+
 public class StartHandler extends AbstractHandler {
 
 	@Override
@@ -40,6 +49,11 @@ public class StartHandler extends AbstractHandler {
 		}
 		MessageDialog.openInformation(shell, "Notice", "Successfully loaded schema");
 		
+		
+		
+		
+		
+		
 		MetadataController.getInstance().updateView();
 		
 		return null;
@@ -51,9 +65,10 @@ public class StartHandler extends AbstractHandler {
 		String databaseString = Activator.getDefault().getPreferenceStore().getString("DATABASE");
 		String usernameString = Activator.getDefault().getPreferenceStore().getString("USERNAME");
 		String passwordString = Activator.getDefault().getPreferenceStore().getString("PASSWORD");
-		
+		Connection connection = null;
+
 		try {
-			ConnectionManager.getInstance().getConnection(hostString, databaseString, usernameString, passwordString);
+			connection = ConnectionManager.getInstance().getConnection(hostString, databaseString, usernameString, passwordString);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -95,6 +110,45 @@ public class StartHandler extends AbstractHandler {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return false;
+		}
+		
+		Bookmark bookmark = new Bookmark();
+		
+		// Connect to QuantumDB's connection manager
+		// Create a bookmark
+		bookmark.setName("Tramptest");
+		bookmark.setConnection(c);
+		
+		
+		int numSource = h.getScenario().getSchemas().getSourceSchema().getRelationArray().length;
+		String query;
+		for(int i = 0 ; i < numSource; i++)
+        {
+			query = "select * from source." + h.getScenario().getSchemas().getSourceSchema().getRelationArray()[i].getName();
+			bookmark.addQuery(query);
+        }
+		int numTarget = h.getScenario().getSchemas().getTargetSchema().getRelationArray().length;
+		for(int i = 0 ; i < numTarget; i++)
+        {
+			query = "select * from target." + h.getScenario().getSchemas().getTargetSchema().getRelationArray()[i].getName();
+			bookmark.addQuery(query);
+        }
+		
+		List<String> queries = bookmark.getQueries();
+		
+		MultiSQLServer server = MultiSQLServer.getInstance();
+		SQLResults results = null;
+		for (int i=0; i<queries.size(); i++) {
+			try {
+				results = server.execute(bookmark, c, queries.get(i));
+				if (results.isResultSet()) {
+					SQLResultSetCollection.getInstance()
+					.addSQLResultSet(
+							(SQLResultSetResults) results);
+				}
+			} catch (SQLException e) {
+				return false;
+			}
 		}
 		
 		return true;

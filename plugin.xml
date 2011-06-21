@@ -22,9 +22,9 @@
    <extension
          point="org.eclipse.ui.views">
       <view
-            name="Database"
-            class="org.vagabond.rcp.gui.views.DBView"
-            id="org.vagabond.rcp.gui.views.dbview">
+            class="org.vagabond.rcp.gui.views.SourceDBView"
+            id="org.vagabond.rcp.gui.views.sdbview"
+            name="Source Database">
       </view>
       <view
             class="org.vagabond.rcp.gui.views.ExplView"
@@ -38,35 +38,46 @@
             name="Mappings"
             restorable="true">
       </view>
+      <view
+            class="org.vagabond.rcp.gui.views.TargetDBView"
+            id="org.vagabond.rcp.gui.views.tdbview"
+            name="Target Database"
+            restorable="true">
+      </view>
    </extension>
    <extension
          point="org.eclipse.ui.perspectiveExtensions">
       <perspectiveExtension
             targetID="*">
          <view
-               id="org.vagabond.rcp.gui.views.dbview"
+               id="org.vagabond.rcp.gui.views.mapview"
+               minimized="false"
+               moveable="true"
+               relationship="left"
+               relative="org.eclipse.ui.editorss"
+               standalone="false">
+         </view>
+         <view
+               id="org.vagabond.rcp.gui.views.sdbview"
                minimized="false"
                moveable="true"
                relationship="right"
-               relative="org.eclipse.ui.editorss"
+               relative="org.vagabond.rcp.gui.views.mapview"
                standalone="true">
          </view>
          <view
                id="org.vagabond.rcp.gui.views.explview"
                minimized="false"
                moveable="true"
-               ratio="0.75f"
                relationship="bottom"
-               relative="org.vagabond.rcp.gui.views.dbview"
+               relative="org.vagabond.rcp.gui.views.mapview"
                standalone="false">
          </view>
          <view
-               id="org.vagabond.rcp.gui.views.mapview"
+               id="org.vagabond.rcp.gui.views.tdbview"
                minimized="false"
-               moveable="true"
-               relationship="left"
-               relative="org.vagabond.rcp.gui.views.dbview"
-               standalone="false">
+               relationship="stack"
+               relative="org.vagabond.rcp.gui.views.sdbview">
          </view>
       </perspectiveExtension>
    </extension>

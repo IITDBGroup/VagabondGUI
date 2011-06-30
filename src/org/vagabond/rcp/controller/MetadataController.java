@@ -1,9 +1,6 @@
 package org.vagabond.rcp.controller;
 
 
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.PlatformUI;
 import org.vagabond.mapping.model.MapScenarioHolder;
 import org.vagabond.rcp.gui.views.MapView;
 
@@ -22,9 +19,7 @@ public class MetadataController {
 	}
 	
 	public void updateView() {
-		IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-		IWorkbenchPage page = window.getActivePage();
-		MapView mapview = (MapView) page.findView(MapView.ID);
+		MapView mapview = MapView.getInstance();
 		
 		MapScenarioHolder holder = MapScenarioHolder.getInstance();
 		String[][] s = getSourceMetadata(holder);

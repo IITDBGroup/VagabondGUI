@@ -69,6 +69,7 @@
                id="org.vagabond.rcp.gui.views.explview"
                minimized="false"
                moveable="true"
+               ratio="0.75f"
                relationship="bottom"
                relative="org.vagabond.rcp.gui.views.mapview"
                standalone="false">
@@ -76,7 +77,8 @@
          <view
                id="org.vagabond.rcp.gui.views.tdbview"
                minimized="false"
-               relationship="stack"
+               moveable="true"
+               relationship="bottom"
                relative="org.vagabond.rcp.gui.views.sdbview">
          </view>
       </perspectiveExtension>
@@ -140,6 +142,12 @@
             id="org.vagabond.rcp.util.start"
             name="Start">
       </command>
+   </extension>
+   <extension
+         point="com.quantum.Quantum.tableviewmanager">
+      <manager
+            class="org.vagabond.rcp.model.TableViewManager">
+      </manager>
    </extension>
 
 </plugin>

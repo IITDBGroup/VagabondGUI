@@ -26,3 +26,5 @@ Bundle-ClassPath: .,
  lib/xbean.jar,
  lib/xmlbeans-qname.jar,
  lib/xmlpublic.jar
+Import-Package: org.eclipse.ui.actions
+Export-Package: org.vagabond.rcp.gui.views

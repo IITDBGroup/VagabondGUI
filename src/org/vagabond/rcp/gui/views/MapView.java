@@ -2,11 +2,16 @@ package org.vagabond.rcp.gui.views;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.*;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 
 public class MapView extends ViewPart {
 	public static final String ID = "org.vagabond.rcp.gui.views.mapview";
 	private Text text;
+	
+	public static MapView getInstance() {
+		return (MapView) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(ID);
+	}
 	
 	@Override
 	public void createPartControl(Composite parent) {

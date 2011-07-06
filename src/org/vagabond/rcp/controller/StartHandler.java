@@ -88,9 +88,10 @@ public class StartHandler extends AbstractHandler {
 		// Connect to QuantumDB's connection manager
 		// Create a bookmark
 		Bookmark bookmark = new Bookmark();
-		//bookmark.setName("Tramptest");
+		bookmark.setName("Tramptest");
 		bookmark.setConnection(c);
 		BookmarkSelectionUtil.getInstance().setLastUsedBookmark(bookmark);
+		
 		
 		// Generate queries
 		int numSource = h.getScenario().getSchemas().getSourceSchema().getRelationArray().length;

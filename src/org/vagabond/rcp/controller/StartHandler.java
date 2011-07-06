@@ -22,7 +22,10 @@ import org.vagabond.rcp.model.TableViewManager;
 import org.vagabond.util.ConnectionManager;
 
 import com.quantum.actions.BookmarkSelectionUtil;
+import com.quantum.adapters.AdapterFactory;
 import com.quantum.model.Bookmark;
+import com.quantum.model.BookmarkCollection;
+import com.quantum.model.JDBCDriver;
 import com.quantum.sql.MultiSQLServer;
 import com.quantum.sql.SQLResultSetCollection;
 import com.quantum.sql.SQLResultSetResults;
@@ -66,7 +69,17 @@ public class StartHandler extends AbstractHandler {
 		String usernameString = Activator.getDefault().getPreferenceStore().getString("USERNAME");
 		String passwordString = Activator.getDefault().getPreferenceStore().getString("PASSWORD");
 
-		ConnectionManager.getInstance().getConnection(hostString, databaseString, usernameString, passwordString);
+		Connection c = ConnectionManager.getInstance().getConnection(hostString, databaseString, usernameString, passwordString);
+		
+		Bookmark bookmark = new Bookmark();
+		bookmark.setName("Tramptest");
+		bookmark.setUsername(usernameString);
+		bookmark.setPassword(passwordString);
+		bookmark.setConnect("jdbc:postgresql://" + hostString + ":5432/" + databaseString);
+		bookmark.setJDBCDriver(new JDBCDriver("org.postgresql.Driver", new String[0], AdapterFactory.POSTGRES));
+		bookmark.setConnection(c);
+		BookmarkSelectionUtil.getInstance().setLastUsedBookmark(bookmark);
+		BookmarkCollection.getInstance().addBookmark(bookmark);
 	}
 	
 	// Load the file specified in the preference pane and load the scenario to the database
@@ -83,15 +96,12 @@ public class StartHandler extends AbstractHandler {
 
 		// Load scenario into db
 		DatabaseScenarioLoader.getInstance().loadScenario(c);
-
-	
+		
 		// Connect to QuantumDB's connection manager
 		// Create a bookmark
-		Bookmark bookmark = new Bookmark();
-		bookmark.setName("Tramptest");
-		bookmark.setConnection(c);
-		BookmarkSelectionUtil.getInstance().setLastUsedBookmark(bookmark);
+		Bookmark bookmark = BookmarkCollection.getInstance().find("Tramptest");
 		
+		System.out.println(bookmark.toString());
 		
 		// Generate queries
 		int numSource = h.getScenario().getSchemas().getSourceSchema().getRelationArray().length;

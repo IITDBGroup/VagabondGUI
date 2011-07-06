@@ -71,6 +71,8 @@ public class StartHandler extends AbstractHandler {
 
 		Connection c = ConnectionManager.getInstance().getConnection(hostString, databaseString, usernameString, passwordString);
 		
+		// Connect to QuantumDB's connection manager
+		// Create a bookmark
 		Bookmark bookmark = new Bookmark();
 		bookmark.setName("Tramptest");
 		bookmark.setUsername(usernameString);
@@ -97,11 +99,8 @@ public class StartHandler extends AbstractHandler {
 		// Load scenario into db
 		DatabaseScenarioLoader.getInstance().loadScenario(c);
 		
-		// Connect to QuantumDB's connection manager
-		// Create a bookmark
+
 		Bookmark bookmark = BookmarkCollection.getInstance().find("Tramptest");
-		
-		System.out.println(bookmark.toString());
 		
 		// Generate queries
 		int numSource = h.getScenario().getSchemas().getSourceSchema().getRelationArray().length;

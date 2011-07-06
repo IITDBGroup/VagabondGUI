@@ -114,14 +114,13 @@ public class StartHandler extends AbstractHandler {
 		
 		SQLResults results = null;
 		List<String> queries = bookmark.getQueries();
-		for (int i=0; i<queries.size(); i++) {
+		for (int i=0; i<numSource; i++) {
 			results = MultiSQLServer.getInstance().execute(bookmark, c, queries.get(i));
 			if (results.isResultSet()) {
 				SQLResultSetCollection.getInstance()
 				.addSQLResultSet(TableViewManager.getInstance().getManagerId(), "Source", (SQLResultSetResults) results);
 			}
 		}
-		int n = queries.size();
 		
 		int numTarget = h.getScenario().getSchemas().getTargetSchema().getRelationArray().length;
 		for(int i = 0 ; i < numTarget; i++)
@@ -131,7 +130,7 @@ public class StartHandler extends AbstractHandler {
         }
 		
 		queries = bookmark.getQueries();
-		for (int i=n; i<queries.size(); i++) {
+		for (int i=numSource; i<numSource+numTarget; i++) {
 			results = MultiSQLServer.getInstance().execute(bookmark, c, queries.get(i));
 			if (results.isResultSet()) {
 				SQLResultSetCollection.getInstance()

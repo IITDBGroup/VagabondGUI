@@ -21,6 +21,7 @@ import org.vagabond.rcp.Activator;
 import org.vagabond.rcp.model.TableViewManager;
 import org.vagabond.util.ConnectionManager;
 
+import com.quantum.actions.BookmarkSelectionUtil;
 import com.quantum.model.Bookmark;
 import com.quantum.sql.MultiSQLServer;
 import com.quantum.sql.SQLResultSetCollection;
@@ -88,7 +89,8 @@ public class StartHandler extends AbstractHandler {
 		// Create a bookmark
 		Bookmark bookmark = new Bookmark();
 		//bookmark.setName("Tramptest");
-		//bookmark.setConnection(c);
+		bookmark.setConnection(c);
+		BookmarkSelectionUtil.getInstance().setLastUsedBookmark(bookmark);
 		
 		// Generate queries
 		int numSource = h.getScenario().getSchemas().getSourceSchema().getRelationArray().length;

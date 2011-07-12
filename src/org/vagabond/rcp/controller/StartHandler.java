@@ -18,6 +18,8 @@ import org.vagabond.mapping.scenarioToDB.DatabaseScenarioLoader;
 import org.vagabond.rcp.Activator;
 import org.vagabond.rcp.model.TableViewManager;
 import org.vagabond.util.ConnectionManager;
+import org.vagabond.xmlmodel.RelationType;
+import org.vagabond.xmlmodel.SchemaType;
 
 import com.quantum.actions.BookmarkSelectionUtil;
 import com.quantum.adapters.AdapterFactory;
@@ -51,9 +53,6 @@ public class StartHandler extends AbstractHandler {
 			return null;
 		}
 		MessageDialog.openInformation(shell, "Notice", "Successfully loaded schema");
-		
-		
-		
 		
 		MetadataController.getInstance().updateView();
 		
@@ -96,45 +95,34 @@ public class StartHandler extends AbstractHandler {
 
 		// Load scenario into db
 		DatabaseScenarioLoader.getInstance().loadScenario(c);
-		
 
 		Bookmark bookmark = BookmarkCollection.getInstance().find("Tramptest");
 		
 		// Generate queries
-		int numSource = h.getScenario().getSchemas().getSourceSchema().getRelationArray().length;
+		SchemaType source = h.getScenario().getSchemas().getSourceSchema();
+		SchemaType target = h.getScenario().getSchemas().getTargetSchema();
 		String query;
-		
-		for(int i = 0 ; i < numSource; i++)
-        {
-			query = "select * from source." + h.getScenario().getSchemas().getSourceSchema().getRelationArray()[i].getName();
-			bookmark.addQuery(query);
-        }
-		
 		SQLResults results = null;
-		List<String> queries = bookmark.getQueries();
-		for (int i=0; i<numSource; i++) {
-			results = MultiSQLServer.getInstance().execute(bookmark, c, queries.get(i));
+		
+		for (RelationType rel : source.getRelationArray()) {
+			query = "select * from source." + rel.getName();
+			bookmark.addQuery(query);
+			results = MultiSQLServer.getInstance().execute(bookmark, c, query);
 			if (results.isResultSet()) {
 				SQLResultSetCollection.getInstance()
 				.addSQLResultSet(TableViewManager.getInstance().getManagerId(), "Source", (SQLResultSetResults) results);
 			}
-		}
-		
-		int numTarget = h.getScenario().getSchemas().getTargetSchema().getRelationArray().length;
-		for(int i = 0 ; i < numTarget; i++)
-        {
-			query = "select * from target." + h.getScenario().getSchemas().getTargetSchema().getRelationArray()[i].getName();
-			bookmark.addQuery(query);
         }
 		
-		queries = bookmark.getQueries();
-		for (int i=numSource; i<numSource+numTarget; i++) {
-			results = MultiSQLServer.getInstance().execute(bookmark, c, queries.get(i));
+		for (RelationType rel : target.getRelationArray()) {
+			query = "select * from target." + rel.getName();
+			bookmark.addQuery(query);
+			results = MultiSQLServer.getInstance().execute(bookmark, c, query);
 			if (results.isResultSet()) {
 				SQLResultSetCollection.getInstance()
 				.addSQLResultSet(TableViewManager.getInstance().getManagerId(), "Target", (SQLResultSetResults) results);
 			}
-		}
+        }
 	}
 	
 }

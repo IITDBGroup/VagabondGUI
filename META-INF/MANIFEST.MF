@@ -7,7 +7,8 @@ Bundle-Activator: org.vagabond.rcp.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  com.quantum.Quantum;bundle-version="3.3.10",
- com.quantum.log;bundle-version="3.3.10"
+ com.quantum.log;bundle-version="3.3.10",
+ org.eclipse.zest.core
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ClassPath: .,
@@ -26,5 +27,11 @@ Bundle-ClassPath: .,
  lib/xbean.jar,
  lib/xmlbeans-qname.jar,
  lib/xmlpublic.jar
-Import-Package: org.eclipse.ui.actions
+Import-Package: org.eclipse.draw2d,
+ org.eclipse.ui.actions,
+ org.eclipse.zest.core.viewers,
+ org.eclipse.zest.core.widgets,
+ org.eclipse.zest.layouts,
+ org.eclipse.zest.layouts.algorithms,
+ org.eclipse.zest.layouts.progress
 Export-Package: org.vagabond.rcp.gui.views

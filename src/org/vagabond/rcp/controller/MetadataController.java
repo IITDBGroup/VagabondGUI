@@ -3,6 +3,11 @@ package org.vagabond.rcp.controller;
 
 import org.vagabond.mapping.model.MapScenarioHolder;
 import org.vagabond.rcp.gui.views.MapView;
+import org.vagabond.xmlmodel.AttrDefType;
+import org.vagabond.xmlmodel.CorrespondenceType;
+import org.vagabond.xmlmodel.CorrespondencesType;
+import org.vagabond.xmlmodel.RelationType;
+import org.vagabond.xmlmodel.SchemaType;
 
 public class MetadataController {
 	private static MetadataController instance;
@@ -19,61 +24,61 @@ public class MetadataController {
 	}
 	
 	public void updateView() {
-		MapView mapview = MapView.getInstance();
-		
 		MapScenarioHolder holder = MapScenarioHolder.getInstance();
-		String[][] s = getSourceMetadata(holder);
-		String[][] t = getTargetMetadata(holder);
-		
-		mapview.load(s, t);
+		loadSourceMetadata(holder);
+		loadTargetMetadata(holder);
+		loadCorrespondences(holder);
 	}
 	
-	private String[][] getSourceMetadata(MapScenarioHolder holder) {
-		int numSource = holder.getScenario().getSchemas().getSourceSchema().getRelationArray().length;
-		int attributeSize = 0;
-		int max = 0;
+	private void loadSourceMetadata(MapScenarioHolder holder) {
+		SchemaType source = holder.getScenario().getSchemas().getSourceSchema();
+		MapView mapview = MapView.getInstance();
+		String relName, attrName;
 		
-		for (int i = 0; i < numSource; i++) {
-			attributeSize = holder.getScenario().getSchemas().getSourceSchema().getRelationArray()[i].getAttrArray().length;
-			if (attributeSize > max)
-				max = attributeSize;
-		}
-		
-		String[][] data = new String[numSource][max+1];
-		for(int i = 0 ; i < numSource; i++)
-        {
-			data[i][0] = holder.getScenario().getSchemas().getSourceSchema().getRelationArray()[i].getName();
-			attributeSize = holder.getScenario().getSchemas().getSourceSchema().getRelationArray()[i].getAttrArray().length;
-			for(int j = 1 ; j<attributeSize+1 ; j++) {
-				data[i][j] = "\t- " + holder.getScenario().getSchemas().getSourceSchema().getRelationArray()[i].getAttrArray(j-1).getName();
+		for (RelationType rel : source.getRelationArray()) {
+			relName = "source." + rel.getName();
+			mapview.addRel(relName);
+			
+			for (AttrDefType attr : rel.getAttrArray()) {
+				attrName = attr.getName();
+				mapview.addAttr(relName, attrName);
 			}
         }
-		
-		return data;
 	}
 	
-	private String[][] getTargetMetadata(MapScenarioHolder holder) {
-		int numSource = holder.getScenario().getSchemas().getTargetSchema().getRelationArray().length;
-		int attributeSize = 0;
-		int max = 0;
+	private void loadTargetMetadata(MapScenarioHolder holder) {
+		SchemaType target = holder.getScenario().getSchemas().getTargetSchema();
+		MapView mapview = MapView.getInstance();
+		String relName, attrName;
 		
-		for (int i = 0; i < numSource; i++) {
-			attributeSize = holder.getScenario().getSchemas().getTargetSchema().getRelationArray()[i].getAttrArray().length;
-			if (attributeSize > max)
-				max = attributeSize;
-		}
-		
-		String[][] data = new String[numSource][max+1];
-		for(int i = 0 ; i < numSource; i++)
-        {
-			data[i][0] = holder.getScenario().getSchemas().getTargetSchema().getRelationArray()[i].getName();
-			attributeSize = holder.getScenario().getSchemas().getTargetSchema().getRelationArray()[i].getAttrArray().length;
-			for(int j = 1 ; j<attributeSize+1 ; j++) {
-				data[i][j] = "\t- " + holder.getScenario().getSchemas().getTargetSchema().getRelationArray()[i].getAttrArray(j-1).getName();
+		for (RelationType rel : target.getRelationArray()) {
+			relName = "target." + rel.getName();
+			mapview.addRel(relName);
+
+			for (AttrDefType attr : rel.getAttrArray()) {
+				attrName = attr.getName();
+				mapview.addAttr(relName, attrName);
 			}
         }
-		
-		return data;
 	}
 	
+	private void loadCorrespondences(MapScenarioHolder holder) {
+		int corrSize = holder.getScenario().getCorrespondences().sizeOfCorrespondenceArray();
+		MapView mapview = MapView.getInstance();
+		CorrespondencesType corrs = holder.getScenario().getCorrespondences();
+		CorrespondenceType corr;
+		String corrName, sourceRel, sourceAttr, targetRel, targetAttr;
+		
+		for (int i=0; i<corrSize; i++) {
+			corr = corrs.getCorrespondenceArray(i);
+			corrName = corr.getId();
+			
+			sourceRel = "source." + corr.getFrom().getTableref();
+			sourceAttr = corr.getFrom().getAttrArray(0);
+			targetRel = "target." + corr.getTo().getTableref();
+			targetAttr = corr.getTo().getAttrArray(0);
+			
+			mapview.addCorrespondence(corrName, sourceRel, sourceAttr, targetRel, targetAttr);
+		}
+	}
 }

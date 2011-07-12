@@ -3,8 +3,6 @@ package org.vagabond.rcp.controller;
 
 import java.io.File;
 import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
 
 import org.eclipse.core.commands.AbstractHandler;

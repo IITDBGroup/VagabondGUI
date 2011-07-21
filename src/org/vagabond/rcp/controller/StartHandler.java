@@ -16,6 +16,8 @@ import org.vagabond.mapping.model.MapScenarioHolder;
 import org.vagabond.mapping.model.ModelLoader;
 import org.vagabond.mapping.scenarioToDB.DatabaseScenarioLoader;
 import org.vagabond.rcp.Activator;
+import org.vagabond.rcp.mapview.model.ContentProvider;
+import org.vagabond.rcp.mapview.view.View;
 import org.vagabond.rcp.model.TableViewManager;
 import org.vagabond.util.ConnectionManager;
 import org.vagabond.xmlmodel.RelationType;
@@ -54,7 +56,7 @@ public class StartHandler extends AbstractHandler {
 		}
 		MessageDialog.openInformation(shell, "Notice", "Successfully loaded schema");
 		
-		MetadataController.getInstance().updateView();
+		View.getInstance().getViewer().setContents(ContentProvider.getInstance().generateGraph());
 		
 		return null;
 	}

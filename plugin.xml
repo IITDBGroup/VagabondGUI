@@ -44,13 +44,19 @@
             name="Target Database"
             restorable="true">
       </view>
+      <view
+            class="org.vagabond.rcp.mapview.view.View"
+            id="org.vagabond.rcp.mapview.view.view"
+            name="Overview"
+            restorable="true">
+      </view>
    </extension>
    <extension
          point="org.eclipse.ui.perspectiveExtensions">
       <perspectiveExtension
             targetID="*">
          <view
-               id="org.vagabond.rcp.gui.views.mapview"
+               id="org.vagabond.rcp.mapview.view.view"
                minimized="false"
                moveable="true"
                relationship="left"
@@ -62,7 +68,7 @@
                minimized="false"
                moveable="true"
                relationship="right"
-               relative="org.vagabond.rcp.gui.views.mapview"
+               relative="org.vagabond.rcp.mapview.view.view"
                standalone="true">
          </view>
          <view
@@ -71,7 +77,7 @@
                moveable="true"
                ratio="0.75f"
                relationship="bottom"
-               relative="org.vagabond.rcp.gui.views.mapview"
+               relative="org.vagabond.rcp.mapview.view.view"
                standalone="false">
          </view>
          <view

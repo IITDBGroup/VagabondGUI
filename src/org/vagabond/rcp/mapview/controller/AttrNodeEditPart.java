@@ -10,24 +10,26 @@ import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.PositionConstants;
 import org.eclipse.draw2d.RectangleFigure;
+import org.eclipse.gef.EditPart;
+import org.eclipse.gef.editparts.AbstractEditPart;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.draw2d.geometry.Rectangle;
 
-import org.vagabond.rcp.mapview.view.NodeFigure;
+import org.vagabond.rcp.mapview.view.AttributeFigure;
 
 public class AttrNodeEditPart extends AbstractGraphicalEditPart {
-	private Font widgetFont;
-	
+
 	public AttrNodeEditPart(Node node) { 
 		setModel(node);
 	}
 	
 	@Override
 	protected IFigure createFigure() {
-		return new NodeFigure();
+		IFigure node = new AttributeFigure();		
+		return node;
 	}
 
 	@Override
@@ -37,18 +39,20 @@ public class AttrNodeEditPart extends AbstractGraphicalEditPart {
 
 	@Override
 	public void deactivate() {
-		//Do cleanup of resources
-		if (widgetFont != null) widgetFont.dispose();
-			super.deactivate();
 	}
 
 	protected void refreshVisuals() {
-		NodeFigure figure = (NodeFigure)getFigure();
+		AttributeFigure figure = (AttributeFigure)getFigure();
 		AttributeGraphNode node = (AttributeGraphNode) getModel();
-		RelationNodeEditPart parent = (RelationNodeEditPart) getParent();
+		AbstractEditPart parent = (AbstractEditPart) getParent();
 		figure.getLabel().setText(node.getName());
-		Rectangle r = new Rectangle(node.getConstraint());
-		parent.setLayoutConstraint(this, figure, r);
+		Rectangle r = new Rectangle(figure.getBounds());
+		
+		if (parent instanceof RelationNodeEditPart) 
+			((RelationNodeEditPart)parent).setLayoutConstraint(this, figure, r);
+		else
+			((MappingNodeEditPart)parent).setLayoutConstraint(this, figure, r);
+		
 	}
 
 	protected List getModelSourceConnections() {

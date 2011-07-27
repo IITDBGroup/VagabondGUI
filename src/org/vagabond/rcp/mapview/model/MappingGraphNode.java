@@ -1,7 +1,6 @@
 package org.vagabond.rcp.mapview.model;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -9,13 +8,13 @@ import java.util.TreeMap;
 import org.eclipse.draw2d.geometry.Rectangle;
 
 
-public class RelationGraphNode implements Node { 
+public class MappingGraphNode implements Node { 
 	private Map<String, Node> attributes; 
 	private String name; 
 
 	private Rectangle constraint;
 	
-	public RelationGraphNode(String name) {
+	public MappingGraphNode(String name) {
 		this.attributes =  new TreeMap<String, Node>();
 		this.name = name; 
 	}
@@ -58,37 +57,6 @@ public class RelationGraphNode implements Node {
 		}
 	}
 	
-	private List sourceConnections, targetConnections;
-	
-	public List getSourceConnections() {
-		if (sourceConnections == null)
-			sourceConnections = new ArrayList();
-		return sourceConnections;
-	}
-	
-	public List getTargetConnections() {
-		if (targetConnections == null)
-			targetConnections = new ArrayList();
-		return targetConnections;
-	}
-	
-	
-	public void addSourceConnection(Connection connection) { 
-		getSourceConnections().add(connection);
-	}
-	
-	public void addTargetConnection(Connection connection) {
-		getTargetConnections().add(connection);
-	}
-	
-	public void removeSourceConnection(Connection connection) {
-		getSourceConnections().remove(connection);
-	}
-
-	public void removeTargetConnection(Connection connection) {
-		getTargetConnections().remove(connection);
-	}
-	
 	public void setConstraint(Rectangle r) {
 		this.constraint = r;
 	}
@@ -96,5 +64,4 @@ public class RelationGraphNode implements Node {
 	public Rectangle getConstraint() {
 		return this.constraint;
 	}
-	
 }

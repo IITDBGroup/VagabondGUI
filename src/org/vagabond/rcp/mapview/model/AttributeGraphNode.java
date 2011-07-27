@@ -3,11 +3,12 @@ package org.vagabond.rcp.mapview.model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AttributeGraphNode extends RelationGraphNode implements Node {
+public class AttributeGraphNode implements Node {
 	private List sourceConnections, targetConnections;
+	private String name;
 	
 	public AttributeGraphNode(String name){ 
-		super(name);
+		this.name = name;
 	}
 	
 	public List getSourceConnections() {
@@ -36,5 +37,13 @@ public class AttributeGraphNode extends RelationGraphNode implements Node {
 
 	public void removeTargetConnection(Connection connection) {
 		getTargetConnections().remove(connection);
+	}
+
+	public String getName() {
+		return name; 
+	}
+	
+	public void setName(String name) {
+		this.name = name;
 	}
 }	

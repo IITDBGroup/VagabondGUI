@@ -12,7 +12,6 @@ Require-Bundle: org.eclipse.ui,
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ClassPath: .,
- lib/loadermac.jar,
  lib/log4j-1.2.16.jar,
  lib/postgresql-8.1-405.jdbc3.jar,
  lib/ant-contrib.jar,
@@ -26,7 +25,8 @@ Bundle-ClassPath: .,
  lib/xbean_xpath.jar,
  lib/xbean.jar,
  lib/xmlbeans-qname.jar,
- lib/xmlpublic.jar
+ lib/xmlpublic.jar,
+ lib/loadermac.jar
 Import-Package: org.eclipse.draw2d,
  org.eclipse.gef,
  org.eclipse.gef.commands,

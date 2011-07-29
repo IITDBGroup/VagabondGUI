@@ -12,11 +12,14 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.TabFolder;
+import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.PlatformUI;
+import org.vagabond.rcp.controller.TargetDBViewActionGroup;
 import org.vagabond.rcp.model.TableViewManager;
 
 import com.quantum.sql.SQLResultSetResults;
 import com.quantum.view.tableview.ResultSetViewer;
+import com.quantum.view.tableview.TableViewActionGroup;
 
 
 public class TargetDBView extends GenericTableView {
@@ -45,6 +48,14 @@ public class TargetDBView extends GenericTableView {
 		for (int i = 0, length = resultSets == null ? 0 : resultSets.length; i < length; i++) {
 			this.resultSetViewers.add(new ResultSetViewer(this, resultSets[i]));
 		}
+	}
+	
+	public void initActions() {
+
+        this.actionGroup = new TargetDBViewActionGroup(this);
+
+        IActionBars actionBars = getViewSite().getActionBars();
+        this.actionGroup.fillActionBars(actionBars);
 	}
 	
 	public void propertyChange(PropertyChangeEvent event) {

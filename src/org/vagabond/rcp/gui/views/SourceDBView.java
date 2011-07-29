@@ -7,12 +7,17 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.TabFolder;
+import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.ui.PlatformUI;
+import org.vagabond.explanation.generation.prov.SourceProvParser;
+import org.vagabond.explanation.marker.TupleMarker;
 import org.vagabond.rcp.model.TableViewManager;
 
 import com.quantum.sql.SQLResultSetResults;
@@ -101,5 +106,37 @@ public class SourceDBView extends GenericTableView {
 			list.add(viewer.getResultSet());
 		}
 		return list;
+	}
+	
+	public void highlightProvenance(SourceProvParser parser) {
+		Iterator iterator = parser.getAllProv().getTuplesInProv().iterator();
+	    while (iterator.hasNext()) {
+	    	TupleMarker tuple = (TupleMarker)iterator.next();
+	    	String tableName = tuple.getRel();
+	    	
+	    	for (Iterator<ResultSetViewer> i = this.resultSetViewers.iterator(); i.hasNext();) {
+				ResultSetViewer viewer = i.next();
+				if (tableName.equals(viewer.getTabItem().getText())) {
+					int tid = Integer.parseInt(tuple.getTid());
+					
+					for (Iterator<SQLResultSetResults.Row> j = viewer.getResultSet().iterator();
+							j.hasNext();) {
+						SQLResultSetResults.Row r = j.next();
+						if (tid == ((Number)r.get(1)).intValue()) {
+							viewer.setSelection(new StructuredSelection(r));
+						}
+						
+					}					
+				}
+			}
+	    	
+	    }
+	}
+	
+	public void resetSelections() {
+    	for (Iterator<ResultSetViewer> i = this.resultSetViewers.iterator(); i.hasNext();) {
+			ResultSetViewer viewer = i.next();
+			viewer.resetSelection();
+		}
 	}
 }

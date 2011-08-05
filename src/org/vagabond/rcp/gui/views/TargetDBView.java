@@ -55,7 +55,7 @@ public class TargetDBView extends GenericTableView {
         this.actionGroup = new TargetDBViewActionGroup(this);
 
         IActionBars actionBars = getViewSite().getActionBars();
-        this.actionGroup.fillActionBars(actionBars);
+//        this.actionGroup.fillActionBars(actionBars);
 	}
 	
 	public void propertyChange(PropertyChangeEvent event) {

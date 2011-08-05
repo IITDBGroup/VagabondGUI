@@ -1,5 +1,6 @@
 package org.vagabond.rcp.controller;
 
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.util.Iterator;
 
@@ -8,23 +9,21 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.wizard.WizardDialog;
-import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.events.MouseListener;
 import org.vagabond.explanation.generation.prov.SourceProvParser;
-import org.vagabond.explanation.marker.TupleMarker;
+import org.vagabond.rcp.Activator;
+import org.vagabond.rcp.gui.views.ProvenanceView;
 import org.vagabond.rcp.gui.views.SourceDBView;
 import org.vagabond.util.ConnectionManager;
 
 import com.quantum.Messages;
+import com.quantum.model.Bookmark;
+import com.quantum.model.BookmarkCollection;
+import com.quantum.sql.MultiSQLServer;
 import com.quantum.sql.SQLResultSetResults;
-import com.quantum.view.tableview.ResultSetViewer;
+import com.quantum.sql.SQLResults;
 import com.quantum.view.tableview.TableView;
-import com.quantum.view.tableview.TableViewActionGroup;
-import com.quantum.wizards.DeleteRowPage;
-import com.quantum.wizards.SQLRowWizard;
 
-public class TargetDBViewActionGroup extends TableViewActionGroup {
+public class TargetDBViewActionGroup extends DBViewActionGroup {
 	private final TableView tableView;
 	
 	class ShowProvenanceAction extends Action {
@@ -35,6 +34,8 @@ public class TargetDBViewActionGroup extends TableViewActionGroup {
 		public void run() {
 			SQLResultSetResults resultSet = getSelectedSQLResults();
 			IStructuredSelection selection = getTableRowSelection();
+			String relations = "";
+			String tids = "";
 			
 			if (resultSet == null || resultSet.isMetaData() || selection.size() < 1) {
 				MessageDialog.openInformation(
@@ -46,14 +47,26 @@ public class TargetDBViewActionGroup extends TableViewActionGroup {
 			
 			for (Iterator<SQLResultSetResults.Row> i = selection.iterator(); i.hasNext();) {
 				SQLResultSetResults.Row r = i.next();
-				
-				try {
-					SourceProvParser parser = selectProvenance(resultSet.getName(), (String)r.get(1));
-					SourceDBView.getInstance().highlightProvenance(parser);
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+				if (relations != "" && tids != "") {
+					if (!relations.contains(resultSet.getName()))
+						relations = relations + ", target." + resultSet.getName();
+					tids = tids + ", '" + (String)r.get(1) + "'"; 
+				} else {
+					relations = "target." + resultSet.getName();
+					tids = "'" + (String)r.get(1) + "'";
 				}
+			}
+			
+			try {
+				String query = provQuery(relations, tids);
+				SourceProvParser parser = selectProvenance(query);
+				SourceDBView.getInstance().highlightProvenance(parser);
+
+				SQLResultSetResults results = provResultSet(query);
+				ProvenanceView.getInstance().showProvenance(results);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
 	};
@@ -65,7 +78,7 @@ public class TargetDBViewActionGroup extends TableViewActionGroup {
 		this.tableView = tableView;
 		this.showProvenanceAction = new ShowProvenanceAction();
 	}
-
+	
 	private SQLResultSetResults getSelectedSQLResults() {
 		return this.tableView.getSelectedResultSet();
 	}
@@ -81,16 +94,31 @@ public class TargetDBViewActionGroup extends TableViewActionGroup {
 	public void fillContextMenu(IMenuManager menuManager) {
 		menuManager.add(this.showProvenanceAction);
 		menuManager.add(new Separator());
-		super.fillContextMenu(menuManager);
+		//super.fillContextMenu(menuManager);
 	}
 
-	public SourceProvParser selectProvenance(String tableName, String tid) throws Exception {
-		String query = "SELECT PROVENANCE * FROM target."+
-		tableName+" WHERE tid='"+ tid +"'";
-		System.out.println(query);
+	private String provQuery(String tableNames, String tids) {
+		String query = "SELECT PROVENANCE * FROM "+
+		tableNames +" WHERE tid IN ("+ tids +")";
+		
+		return query;
+	}
+	
+	private SourceProvParser selectProvenance(String query) throws Exception {
 		ResultSet rs = ConnectionManager.getInstance().execQuery(query);
 		SourceProvParser parser = new SourceProvParser(rs);
-
+		
 		return parser;
+	}
+	
+	private SQLResultSetResults provResultSet(String query) throws Exception {
+		String databaseString = Activator.getDefault().getPreferenceStore().getString("DATABASE");
+		Bookmark bookmark = BookmarkCollection.getInstance().find(databaseString);
+		Connection c = ConnectionManager.getInstance().getConnection();
+		
+		SQLResults results = MultiSQLServer.getInstance().execute(bookmark, c, query);
+		((SQLResultSetResults)results).setName("Provenance");
+		
+		return (SQLResultSetResults)results;
 	}
 }

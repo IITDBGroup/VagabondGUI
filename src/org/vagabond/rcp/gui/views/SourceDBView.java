@@ -15,9 +15,12 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
+import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.PlatformUI;
 import org.vagabond.explanation.generation.prov.SourceProvParser;
 import org.vagabond.explanation.marker.TupleMarker;
+import org.vagabond.rcp.controller.DBViewActionGroup;
+import org.vagabond.rcp.controller.TargetDBViewActionGroup;
 import org.vagabond.rcp.model.TableViewManager;
 
 import com.quantum.sql.SQLResultSetResults;
@@ -50,6 +53,14 @@ public class SourceDBView extends GenericTableView {
 		for (int i = 0, length = resultSets == null ? 0 : resultSets.length; i < length; i++) {
 			this.resultSetViewers.add(new ResultSetViewer(this, resultSets[i]));
 		}
+	}
+	
+	public void initActions() {
+
+        this.actionGroup = new DBViewActionGroup(this);
+
+        IActionBars actionBars = getViewSite().getActionBars();
+//        this.actionGroup.fillActionBars(actionBars);
 	}
 	
 	public void propertyChange(PropertyChangeEvent event) {
@@ -110,12 +121,18 @@ public class SourceDBView extends GenericTableView {
 	
 	public void highlightProvenance(SourceProvParser parser) {
 		Iterator iterator = parser.getAllProv().getTuplesInProv().iterator();
-	    while (iterator.hasNext()) {
-	    	TupleMarker tuple = (TupleMarker)iterator.next();
-	    	String tableName = tuple.getRel();
-	    	
-	    	for (Iterator<ResultSetViewer> i = this.resultSetViewers.iterator(); i.hasNext();) {
-				ResultSetViewer viewer = i.next();
+		List<SQLResultSetResults.Row> rows;
+		ResultSetViewer viewer;
+		
+		for (Iterator<ResultSetViewer> i = this.resultSetViewers.iterator(); i.hasNext();) {
+    		rows = new ArrayList();
+			viewer = i.next();
+			iterator = parser.getAllProv().getTuplesInProv().iterator();
+			
+		    while (iterator.hasNext()) {
+		    	TupleMarker tuple = (TupleMarker)iterator.next();
+		    	String tableName = tuple.getRel();
+			
 				if (tableName.equals(viewer.getTabItem().getText())) {
 					int tid = Integer.parseInt(tuple.getTid());
 					
@@ -123,14 +140,15 @@ public class SourceDBView extends GenericTableView {
 							j.hasNext();) {
 						SQLResultSetResults.Row r = j.next();
 						if (tid == ((Number)r.get(1)).intValue()) {
-							viewer.setSelection(new StructuredSelection(r));
+							rows.add(r);
 						}
-						
 					}					
 				}
-			}
-	    	
-	    }
+		    }
+		    
+			if (rows.size() > 0)
+				viewer.setSelection(new StructuredSelection(rows));
+		}
 	}
 	
 	public void resetSelections() {

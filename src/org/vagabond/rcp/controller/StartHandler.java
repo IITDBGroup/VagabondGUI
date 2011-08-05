@@ -82,7 +82,7 @@ public class StartHandler extends AbstractHandler {
 		// Connect to QuantumDB's connection manager
 		// Create a bookmark
 		Bookmark bookmark = new Bookmark();
-		bookmark.setName("Tramptest");
+		bookmark.setName(databaseString);
 		bookmark.setUsername(usernameString);
 		bookmark.setPassword(passwordString);
 		bookmark.setConnect("jdbc:postgresql://" + hostString + ":5432/" + databaseString);
@@ -95,6 +95,7 @@ public class StartHandler extends AbstractHandler {
 	// Load the file specified in the preference pane and load the scenario to the database
 	private void loadSchemaFile() throws Exception {
 		String filePath = Activator.getDefault().getPreferenceStore().getString("PATH");
+		String databaseString = Activator.getDefault().getPreferenceStore().getString("DATABASE");
 		
 		MapScenarioHolder h = ModelLoader.getInstance().load(new File(filePath));
 		MapScenarioHolder.getInstance().setDocument(h.getDocument());
@@ -107,7 +108,7 @@ public class StartHandler extends AbstractHandler {
 		// Load scenario into db
 		DatabaseScenarioLoader.getInstance().loadScenario(c);
 
-		Bookmark bookmark = BookmarkCollection.getInstance().find("Tramptest");
+		Bookmark bookmark = BookmarkCollection.getInstance().find(databaseString);
 		
 		// Generate queries
 		SchemaType source = h.getScenario().getSchemas().getSourceSchema();

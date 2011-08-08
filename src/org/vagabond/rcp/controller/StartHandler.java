@@ -16,6 +16,9 @@ import org.vagabond.mapping.model.MapScenarioHolder;
 import org.vagabond.mapping.model.ModelLoader;
 import org.vagabond.mapping.scenarioToDB.DatabaseScenarioLoader;
 import org.vagabond.rcp.Activator;
+import org.vagabond.rcp.gui.views.CorrView;
+import org.vagabond.rcp.gui.views.MappingsView;
+import org.vagabond.rcp.gui.views.TransView;
 import org.vagabond.rcp.mapview.controller.GraphEditPart;
 import org.vagabond.rcp.mapview.model.ContentProvider;
 import org.vagabond.rcp.mapview.view.View;
@@ -61,6 +64,10 @@ public class StartHandler extends AbstractHandler {
 			View.getInstance().getViewer().setContents(ContentProvider.getInstance().generateGraph());
 //	    	GraphEditPart graph = (GraphEditPart) View.getInstance().getViewer().getRootEditPart().getChildren().get(0);
 //	    	graph.setLayoutConstraints();
+			
+			TransView.getInstance().setTransformations();
+			CorrView.getInstance().setCorrespondences();
+			MappingsView.getInstance().setMappings();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 

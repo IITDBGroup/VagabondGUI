@@ -22,14 +22,20 @@
    <extension
          point="org.eclipse.ui.views">
       <view
+            class="org.vagabond.rcp.mapview.view.View"
+            id="org.vagabond.rcp.mapview.view.view"
+            name="Overview"
+            restorable="true">
+      </view>
+      <view
             class="org.vagabond.rcp.gui.views.SourceDBView"
             id="org.vagabond.rcp.gui.views.sdbview"
             name="Source Database">
       </view>
       <view
-            class="org.vagabond.rcp.gui.views.ExplView"
-            id="org.vagabond.rcp.gui.views.explview"
-            name="Explanations"
+            class="org.vagabond.rcp.gui.views.TargetDBView"
+            id="org.vagabond.rcp.gui.views.tdbview"
+            name="Target Database"
             restorable="true">
       </view>
       <view
@@ -39,15 +45,27 @@
             restorable="true">
       </view>
       <view
-            class="org.vagabond.rcp.gui.views.TargetDBView"
-            id="org.vagabond.rcp.gui.views.tdbview"
-            name="Target Database"
+            class="org.vagabond.rcp.gui.views.ExplView"
+            id="org.vagabond.rcp.gui.views.explview"
+            name="Explanations"
             restorable="true">
       </view>
       <view
-            class="org.vagabond.rcp.mapview.view.View"
-            id="org.vagabond.rcp.mapview.view.view"
-            name="Overview"
+            class="org.vagabond.rcp.gui.views.TransView"
+            id="org.vagabond.rcp.gui.views.transview"
+            name="Transformations"
+            restorable="true">
+      </view>
+      <view
+            class="org.vagabond.rcp.gui.views.MappingsView"
+            id="org.vagabond.rcp.gui.views.mappingsview"
+            name="Mappings"
+            restorable="true">
+      </view>
+      <view
+            class="org.vagabond.rcp.gui.views.CorrView"
+            id="org.vagabond.rcp.gui.views.corrview"
+            name="Correspondences"
             restorable="true">
       </view>
    </extension>
@@ -72,15 +90,6 @@
                standalone="true">
          </view>
          <view
-               id="org.vagabond.rcp.gui.views.explview"
-               minimized="false"
-               moveable="true"
-               ratio="0.75f"
-               relationship="bottom"
-               relative="org.vagabond.rcp.mapview.view.view"
-               standalone="false">
-         </view>
-         <view
                id="org.vagabond.rcp.gui.views.tdbview"
                minimized="false"
                moveable="true"
@@ -93,6 +102,36 @@
                moveable="true"
                relationship="stack"
                relative="org.vagabond.rcp.mapview.view.view">
+         </view>
+         <view
+               id="org.vagabond.rcp.gui.views.explview"
+               minimized="false"
+               moveable="true"
+               ratio="0.75f"
+               relationship="bottom"
+               relative="org.vagabond.rcp.mapview.view.view"
+               standalone="false">
+         </view>
+         <view
+               id="org.vagabond.rcp.gui.views.transview"
+               minimized="false"
+               moveable="true"
+               relationship="stack"
+               relative="org.vagabond.rcp.gui.views.explview">
+         </view>
+         <view
+               id="org.vagabond.rcp.gui.views.mappingsview"
+               minimized="false"
+               moveable="true"
+               relationship="stack"
+               relative="org.vagabond.rcp.gui.views.explview">
+         </view>
+         <view
+               id="org.vagabond.rcp.gui.views.corrview"
+               minimized="false"
+               moveable="true"
+               relationship="stack"
+               relative="org.vagabond.rcp.gui.views.explview">
          </view>
       </perspectiveExtension>
    </extension>

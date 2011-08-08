@@ -1,11 +1,8 @@
 package org.vagabond.rcp.mapview.model;
 
-import java.util.List;
-
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
-import org.eclipse.osgi.internal.module.MappedList;
 import org.vagabond.mapping.model.MapScenarioHolder;
 import org.vagabond.mapping.model.MappingGraph;
 import org.vagabond.rcp.mapview.view.View;
@@ -157,9 +154,7 @@ public class ContentProvider {
 		MappingsType maps = holder.getScenario().getMappings();
 		SchemaType source = holder.getScenario().getSchemas().getSourceSchema();
 		SchemaType target = holder.getScenario().getSchemas().getTargetSchema();
-		String mapName, varName;
-		RelationGraphNode node;
-		AttributeGraphNode attrNode;
+		String mapName;
 		int i=0,j=0;
 		
 		AttributeGraphNode sourceN, targetN;

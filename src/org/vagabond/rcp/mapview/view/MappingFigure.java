@@ -7,7 +7,7 @@ import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.LineBorder;
 import org.eclipse.draw2d.ToolbarLayout;
-import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.gmf.runtime.draw2d.ui.figures.ConstrainedToolbarLayout;
 import org.eclipse.swt.graphics.Color;
 
 public class MappingFigure extends Figure {
@@ -17,9 +17,11 @@ public class MappingFigure extends Figure {
 		private int MIN_HEIGHT = 10;
 	  
 	  public MappingFigure(Label name) {
-	    ToolbarLayout layout = new ToolbarLayout();
-	    layout.setMinorAlignment(layout.ALIGN_TOPLEFT);
+	    ConstrainedToolbarLayout layout = new ConstrainedToolbarLayout();
+	    layout.setMinorAlignment(ToolbarLayout.ALIGN_TOPLEFT);
 	    layout.setStretchMinorAxis(true);
+	    layout.setStretchMajorAxis(true);
+	    layout.setReversed(true);
 	    setLayoutManager(layout);	
 	    setBorder(new LineBorder(ColorConstants.black,1));
 	    setBackgroundColor(classColor);

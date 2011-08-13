@@ -12,24 +12,13 @@ import org.eclipse.swt.custom.ExtendedModifyEvent;
 import org.eclipse.swt.custom.ExtendedModifyListener;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.custom.StyledText;
-import org.eclipse.swt.dnd.DND;
-import org.eclipse.swt.dnd.DropTarget;
-import org.eclipse.swt.dnd.TextTransfer;
-import org.eclipse.swt.dnd.Transfer;
-import org.eclipse.swt.events.MouseAdapter;
-import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.part.ViewPart;
 import org.vagabond.mapping.model.MapScenarioHolder;
-import org.vagabond.rcp.controller.DBViewActionGroup;
 import org.vagabond.xmlmodel.TransformationType;
 import org.vagabond.xmlmodel.TransformationsType;
 
@@ -41,7 +30,6 @@ import com.quantum.model.Bookmark;
 import com.quantum.sql.parser.SQLParserUtil;
 import com.quantum.sql.parser.Token;
 import com.quantum.util.sql.SQLGrammar;
-import com.quantum.view.Range;
 import com.quantum.view.SQLQueryView;
 
 public class TransView extends SQLQueryView {
@@ -65,23 +53,31 @@ public class TransView extends SQLQueryView {
 		}
 	}
 
-	public void createPartControl(org.eclipse.swt.widgets.Composite parent) {
-		this.widget = new StyledText(parent, SWT.V_SCROLL);
+	public void createPartControl(Composite parent) {
+		setLayout(parent);
+		createEditor(parent);
+	}
+	
+	private void setLayout(Composite parent) {
+		GridLayout layout  = new GridLayout(1, false);
+		parent.setLayout(layout);
+	}
+	
+	private void createEditor(Composite parent) {
+		this.widget = new StyledText(parent, SWT.V_SCROLL | SWT.BORDER);
 
 		widget.setWordWrap(true);
 		widget.setEditable(false);
 		widget.addExtendedModifyListener(this.modifyListener);
 
-		widget.setLayoutData(new GridData(GridData.FILL_BOTH));
+		GridData gridData = new GridData();
+		gridData.verticalAlignment = GridData.FILL;
+		gridData.grabExcessHorizontalSpace = true;
+		gridData.grabExcessVerticalSpace = true;
+		gridData.horizontalAlignment = GridData.FILL;
+		widget.setLayoutData(gridData);
 
 		initializeColours(parent);
-		GridLayout layout = new GridLayout(1, false);
-		layout.horizontalSpacing = 0;
-		layout.verticalSpacing = 0;
-		layout.marginHeight = 0;
-		layout.marginWidth = 0;
-		parent.setLayout(layout);
-		parent.setLayoutData(new GridData(GridData.FILL_BOTH));
 
 		this.widget.setDoubleClickEnabled(false);
 	}

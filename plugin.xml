@@ -101,7 +101,7 @@
                minimized="false"
                moveable="true"
                relationship="stack"
-               relative="org.vagabond.rcp.mapview.view.view">
+               relative="org.vagabond.rcp.gui.views.sdbview">
          </view>
          <view
                id="org.vagabond.rcp.gui.views.explview"

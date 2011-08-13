@@ -9,10 +9,13 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.wizard.WizardDialog;
 import org.vagabond.explanation.generation.prov.SourceProvParser;
 import org.vagabond.rcp.Activator;
 import org.vagabond.rcp.gui.views.ProvenanceView;
 import org.vagabond.rcp.gui.views.SourceDBView;
+import org.vagabond.rcp.wizards.ExplGenPage;
+import org.vagabond.rcp.wizards.ExplGenWizard;
 import org.vagabond.util.ConnectionManager;
 
 import com.quantum.Messages;
@@ -22,6 +25,8 @@ import com.quantum.sql.MultiSQLServer;
 import com.quantum.sql.SQLResultSetResults;
 import com.quantum.sql.SQLResults;
 import com.quantum.view.tableview.TableView;
+import com.quantum.wizards.SQLRowWizard;
+import com.quantum.wizards.UpdateRowPage;
 
 public class TargetDBViewActionGroup extends DBViewActionGroup {
 	private final TableView tableView;
@@ -71,12 +76,47 @@ public class TargetDBViewActionGroup extends DBViewActionGroup {
 		}
 	};
 	
+	class ExplGenAction extends Action {
+		public ExplGenAction() {
+			setText(Messages.getString("tableview.expl"));
+		}
+
+		public void run() {
+			SQLResultSetResults resultSet = getSelectedSQLResults();
+			IStructuredSelection selection = getTableRowSelection();
+			String relations = "";
+			String tids = "";
+			
+			if (resultSet == null || resultSet.isMetaData() || selection.size() < 1) {
+				MessageDialog.openInformation(
+						tableView.getSite().getShell(),"Operation not allowed","Please select at least 1 row to view explanations.");
+				return;
+			}
+			
+			ExplGenPage page = new ExplGenPage(""); //$NON-NLS-1$
+			ExplGenWizard wizard = new ExplGenWizard();
+			wizard.init(Messages.getString("TableView.ExplGen"),
+					page, resultSet, selection); //$NON-NLS-1$
+			WizardDialog dialog =
+				new WizardDialog(
+					tableView.getSite().getShell(),
+					wizard);
+			dialog.open();
+
+			if (dialog.getReturnCode() == 0) {
+				
+			}
+		}
+	};
+	
 	private ShowProvenanceAction showProvenanceAction;
+	private ExplGenAction explGenAction;
 
 	public TargetDBViewActionGroup(TableView tableView) {
 		super(tableView);
 		this.tableView = tableView;
 		this.showProvenanceAction = new ShowProvenanceAction();
+		this.explGenAction = new ExplGenAction();
 	}
 	
 	private SQLResultSetResults getSelectedSQLResults() {
@@ -93,8 +133,9 @@ public class TargetDBViewActionGroup extends DBViewActionGroup {
 	
 	public void fillContextMenu(IMenuManager menuManager) {
 		menuManager.add(this.showProvenanceAction);
+		menuManager.add(this.explGenAction);
 		menuManager.add(new Separator());
-		//super.fillContextMenu(menuManager);
+		super.fillContextMenu(menuManager);
 	}
 
 	private String provQuery(String tableNames, String tids) {

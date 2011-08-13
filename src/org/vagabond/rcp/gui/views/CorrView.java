@@ -6,6 +6,8 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
@@ -37,15 +39,33 @@ public class CorrView extends ViewPart {
 	}
 	
 	@Override
-	public void createPartControl(Composite parent) {		
+	public void createPartControl(Composite parent) {
+		setLayout(parent);
+		createViewer(parent);
+	}
+	
+	private void setLayout(Composite parent) {
+		GridLayout layout  = new GridLayout(1, false);
+		
+		parent.setLayout(layout);
+	}
+	
+	private void createViewer(Composite parent) {
 		viewer = new TableViewer(parent, SWT.MULTI | SWT.H_SCROLL
-				| SWT.V_SCROLL);
+				| SWT.V_SCROLL | SWT.FULL_SELECTION | SWT.BORDER);
 		viewer.setContentProvider(new ArrayContentProvider());
 		viewer.setLabelProvider(new ViewLabelProvider());
+		
+		GridData gridData = new GridData();
+		gridData.verticalAlignment = GridData.FILL;
+		gridData.grabExcessHorizontalSpace = true;
+		gridData.grabExcessVerticalSpace = true;
+		gridData.horizontalAlignment = GridData.FILL;
+		viewer.getControl().setLayoutData(gridData);
 	}
 	
 	public void setCorrespondences() {
-		viewer.getTable().clearAll();
+		viewer.getTable().removeAll();
 		
 		CorrespondencesType corrs = MapScenarioHolder.getInstance().getScenario().getCorrespondences();
 		String corrName, sourceRel, sourceAttr, targetRel, targetAttr;

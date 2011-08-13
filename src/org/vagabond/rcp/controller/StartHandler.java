@@ -11,6 +11,7 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.handlers.HandlerUtil;
+import org.vagabond.explanation.generation.QueryHolder;
 import org.vagabond.explanation.marker.SchemaResolver;
 import org.vagabond.mapping.model.MapScenarioHolder;
 import org.vagabond.mapping.model.ModelLoader;
@@ -104,8 +105,8 @@ public class StartHandler extends AbstractHandler {
 		String filePath = Activator.getDefault().getPreferenceStore().getString("PATH");
 		String databaseString = Activator.getDefault().getPreferenceStore().getString("DATABASE");
 		
-		MapScenarioHolder h = ModelLoader.getInstance().load(new File(filePath));
-		MapScenarioHolder.getInstance().setDocument(h.getDocument());
+		ModelLoader.getInstance().loadToInst(filePath);
+		MapScenarioHolder h = MapScenarioHolder.getInstance();
 		SchemaResolver.getInstance().setSchemas(
 				h.getScenario().getSchemas().getSourceSchema(),
 				h.getScenario().getSchemas().getTargetSchema());
@@ -114,7 +115,9 @@ public class StartHandler extends AbstractHandler {
 
 		// Load scenario into db
 		DatabaseScenarioLoader.getInstance().loadScenario(c);
-
+		
+		// won't recognize resource/queries ?
+		QueryHolder.getInstance().loadFromDir(new File ("/Users/viviensuen/Documents/workspace/VagabondRCP/resource/queries"));
 		Bookmark bookmark = BookmarkCollection.getInstance().find(databaseString);
 		
 		// Generate queries

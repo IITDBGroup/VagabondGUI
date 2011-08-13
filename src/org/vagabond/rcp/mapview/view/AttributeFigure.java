@@ -5,10 +5,9 @@ import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Label;
-import org.eclipse.draw2d.LineBorder;
 import org.eclipse.draw2d.ToolbarLayout;
 import org.eclipse.draw2d.geometry.Insets;
-import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.gmf.runtime.draw2d.ui.figures.ConstrainedToolbarLayout;
 
 public class AttributeFigure extends Figure {
 	private Label label;
@@ -16,7 +15,7 @@ public class AttributeFigure extends Figure {
 	private int MIN_HEIGHT = 10;
 	
 	  public AttributeFigure() {
-	    ToolbarLayout layout = new ToolbarLayout();
+	    ConstrainedToolbarLayout layout = new ConstrainedToolbarLayout();
 	    layout.setMinorAlignment(ToolbarLayout.ALIGN_TOPLEFT);
 	    layout.setStretchMinorAxis(false);
 	    layout.setSpacing(2);
@@ -33,8 +32,8 @@ public class AttributeFigure extends Figure {
 	      return new Insets(0,0,1,0);
 	    }
 	    public void paint(IFigure figure, Graphics graphics, Insets insets) {
-	      graphics.drawLine(getPaintRectangle(figure, insets).getBottomLeft().getTranslated(-1, -1),
-	    		  tempRect.getBottomRight().getTranslated(-1,-1));
+	      graphics.drawLine(getPaintRectangle(figure, insets).getTopLeft(),
+	    		  tempRect.getTopRight());
 	    }
 	  }
 

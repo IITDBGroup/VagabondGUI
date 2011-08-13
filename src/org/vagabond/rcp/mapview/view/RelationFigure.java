@@ -2,19 +2,13 @@ package org.vagabond.rcp.mapview.view;
 
 
 
-import org.eclipse.draw2d.Border;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Figure;
-import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.LineBorder;
-import org.eclipse.draw2d.RectangleFigure;
 import org.eclipse.draw2d.ToolbarLayout;
-import org.eclipse.draw2d.XYLayout;
-import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.gmf.runtime.draw2d.ui.figures.ConstrainedToolbarLayout;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.FontData;
 
 public class RelationFigure extends Figure {
 	public static Color classColor = new Color(null,255,205,215);
@@ -23,9 +17,11 @@ public class RelationFigure extends Figure {
 	private int MIN_HEIGHT = 10;
 	  
 	public RelationFigure(Label name) {
-	    ToolbarLayout layout = new ToolbarLayout();
-	    layout.setMinorAlignment(layout.ALIGN_TOPLEFT);
+	    ConstrainedToolbarLayout layout = new ConstrainedToolbarLayout();
+	    layout.setMinorAlignment(ToolbarLayout.ALIGN_TOPLEFT);
 	    layout.setStretchMinorAxis(true);
+	    layout.setStretchMajorAxis(true);
+	    layout.setReversed(true);
 	    setLayoutManager(layout);	
 	    setBorder(new LineBorder(ColorConstants.black,1));
 	    setBackgroundColor(classColor);

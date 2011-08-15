@@ -13,7 +13,6 @@ Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ClassPath: .,
  lib/log4j-1.2.16.jar,
- lib/postgresql-8.1-405.jdbc3.jar,
  lib/ant-contrib.jar,
  lib/args4j-2.0.6.jar,
  lib/dbunit.jar,
@@ -26,7 +25,8 @@ Bundle-ClassPath: .,
  lib/xbean.jar,
  lib/xmlbeans-qname.jar,
  lib/xmlpublic.jar,
- lib/loadermac.jar
+ lib/loadermac.jar,
+ lib/postgresql-8.1-405.jdbc3.jar
 Import-Package: org.eclipse.draw2d,
  org.eclipse.gef,
  org.eclipse.gef.commands,

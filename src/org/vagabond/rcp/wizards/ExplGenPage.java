@@ -41,7 +41,7 @@ public class ExplGenPage extends WizardPage {
 		setDescription(Messages.getString("TableView.ExplGenDesc"));
 	}
 	
-	public class MyContentProvider implements ITreeContentProvider {
+	public class ViewContentProvider implements ITreeContentProvider {
 
 		@Override
 		public void dispose() {
@@ -62,7 +62,7 @@ public class ExplGenPage extends WizardPage {
 		public Object[] getChildren(Object parentElement) {
 			if (parentElement instanceof SQLResultSetResults.Row) {
 				SQLResultSetResults.Row r = (SQLResultSetResults.Row) parentElement;
-				return r.getAsStringArray();
+				return r.getAsStringArrayWithoutID();
 			}
 			return null;
 		}
@@ -82,7 +82,7 @@ public class ExplGenPage extends WizardPage {
 
 	}
 	
-	public class MyLabelProvider extends LabelProvider {
+	public class ViewLabelProvider extends LabelProvider {
 		@Override
 		public String getText(Object element) {
 			if (element instanceof SQLResultSetResults.Row) {
@@ -113,8 +113,8 @@ public class ExplGenPage extends WizardPage {
 	public void createControl(Composite parent) {
 		viewer = new TreeViewer(parent, SWT.MULTI | SWT.H_SCROLL
 				| SWT.V_SCROLL | SWT.BORDER);
-		viewer.setContentProvider(new MyContentProvider());
-		viewer.setLabelProvider(new MyLabelProvider());
+		viewer.setContentProvider(new ViewContentProvider());
+		viewer.setLabelProvider(new ViewLabelProvider());
 
 		List<SQLResultSetResults.Row> l = new ArrayList<Row>();
 		

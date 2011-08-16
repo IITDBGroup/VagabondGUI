@@ -3,8 +3,10 @@ package org.vagabond.rcp.controller;
 
 import java.io.File;
 import java.sql.Connection;
+import java.util.Enumeration;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -24,7 +26,10 @@ import org.vagabond.rcp.mapview.controller.GraphEditPart;
 import org.vagabond.rcp.mapview.model.ContentProvider;
 import org.vagabond.rcp.mapview.view.View;
 import org.vagabond.rcp.model.TableViewManager;
+import org.vagabond.rcp.util.PluginLogProvider;
+import org.vagabond.rcp.util.ResourceManager;
 import org.vagabond.util.ConnectionManager;
+import org.vagabond.util.LoggerUtil;
 import org.vagabond.xmlmodel.RelationType;
 import org.vagabond.xmlmodel.SchemaType;
 
@@ -40,14 +45,17 @@ import com.quantum.sql.SQLResults;
 
 public class StartHandler extends AbstractHandler {
 
+	static Logger log = PluginLogProvider.getInstance().getLogger(StartHandler.class);
+	
+	public static final String QUERY_TEMPLATE_DIR = "resource/queries";
+	
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		Shell shell = HandlerUtil.getActiveWorkbenchWindowChecked(event).getShell();
 		try {
 			connectToDB();
 		} catch (Exception e) {
-			e.printStackTrace();
-			MessageDialog.openInformation(shell, "Error", e.getMessage());
+			showErrorDialog(e, shell, "Error could not connect to DB:\n");
 			return null;
 		}
 		MessageDialog.openInformation(shell, "Notice", "Successfully connected to database");
@@ -55,8 +63,7 @@ public class StartHandler extends AbstractHandler {
 		try {
 			loadSchemaFile();
 		} catch (Exception e) {
-			e.printStackTrace();
-			MessageDialog.openInformation(shell, "Error", e.getMessage());
+			showErrorDialog(e, shell, "Unable to load scenario file:\n");
 			return null;
 		}
 		MessageDialog.openInformation(shell, "Notice", "Successfully loaded schema");
@@ -85,7 +92,8 @@ public class StartHandler extends AbstractHandler {
 		String usernameString = Activator.getDefault().getPreferenceStore().getString("USERNAME");
 		String passwordString = Activator.getDefault().getPreferenceStore().getString("PASSWORD");
 
-		Connection c = ConnectionManager.getInstance().getConnection(hostString, databaseString, usernameString, passwordString);
+		Connection c = ConnectionManager.getInstance().getConnection(hostString, 
+				databaseString, usernameString, passwordString);
 		
 		// Connect to QuantumDB's connection manager
 		// Create a bookmark
@@ -117,7 +125,25 @@ public class StartHandler extends AbstractHandler {
 		DatabaseScenarioLoader.getInstance().loadScenario(c);
 		
 		// won't recognize resource/queries ?
-		QueryHolder.getInstance().loadFromDir(new File ("/Users/viviensuen/Documents/workspace/VagabondRCP/resource/queries"));
+		try {
+			QueryHolder.getInstance().loadFromURLs(ResourceManager.getInstance()
+					.getResourcesAsStreams("resource/queries", ".xml"));
+//			Enumeration<String> files;
+//			
+//			files = ResourceManager.getInstance().getResources();
+//			while(files.hasMoreElements())
+//				log.debug(files.nextElement());
+//			templateDir = new File ("/Users/viviensuen/Documents/workspace/" +
+//						"VagabondRCP/resource/queries");
+			
+//			QueryHolder.getInstance().loadFromDir(templateDir);
+			
+		} 
+		catch (Exception e) {
+			throw new Exception ("Could not load query templates from " 
+					+ QUERY_TEMPLATE_DIR, e);
+		}
+		
 		Bookmark bookmark = BookmarkCollection.getInstance().find(databaseString);
 		
 		// Generate queries
@@ -150,5 +176,16 @@ public class StartHandler extends AbstractHandler {
 			}
         }
 	}
+	
+	private void showErrorDialog (Exception e, Shell shell) {
+		LoggerUtil.logException(e, log);
+		MessageDialog.openInformation(shell, "Error", e.getMessage());
+	}
+
+	private void showErrorDialog (Exception e, Shell shell, String message) {
+		LoggerUtil.logException(e, log);
+		MessageDialog.openInformation(shell, message, e.toString());
+	}
+
 	
 }

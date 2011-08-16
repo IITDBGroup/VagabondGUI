@@ -12,7 +12,6 @@ Require-Bundle: org.eclipse.ui,
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ClassPath: .,
- lib/log4j-1.2.16.jar,
  lib/ant-contrib.jar,
  lib/args4j-2.0.6.jar,
  lib/dbunit.jar,

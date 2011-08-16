@@ -68,6 +68,12 @@
             name="Correspondences"
             restorable="true">
       </view>
+      <view
+            class="org.vagabond.rcp.gui.views.ExplRankView"
+            id="org.vagabond.rcp.gui.views.explrankview"
+            name="Explanations Ranked"
+            restorable="true">
+      </view>
    </extension>
    <extension
          point="org.eclipse.ui.perspectiveExtensions">
@@ -111,6 +117,12 @@
                relationship="bottom"
                relative="org.vagabond.rcp.mapview.view.view"
                standalone="false">
+         </view>
+         <view
+               id="org.vagabond.rcp.gui.views.explrankview"
+               minimized="false"
+               relationship="stack"
+               relative="org.vagabond.rcp.gui.views.explview">
          </view>
          <view
                id="org.vagabond.rcp.gui.views.transview"

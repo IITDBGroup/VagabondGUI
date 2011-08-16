@@ -174,12 +174,4 @@ public class ExplGenLabelProvider extends LabelProvider {
 		return PlatformUI.getWorkbench().getSharedImages()
 		.getImage(ISharedImages.IMG_OBJ_FILE);
 	}
-	
-	private int countIndexOf(String text, String search) {
-	    int count = 0;
-	    for (int fromIndex = 0; fromIndex > -1; count++)
-	        fromIndex = text.indexOf(search, fromIndex + ((count > 0) ? 1 : 0));
-	    return count - 1;
-	}
-
 }

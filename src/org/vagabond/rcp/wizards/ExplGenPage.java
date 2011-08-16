@@ -20,6 +20,7 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
+import org.vagabond.rcp.gui.views.ExplRankView;
 import org.vagabond.rcp.gui.views.ExplView;
 
 import com.quantum.Messages;
@@ -134,6 +135,7 @@ public class ExplGenPage extends WizardPage {
     	
     	if (selection != null) {
     		ExplView.getInstance().generateErrorExpl(selection);
+    		ExplRankView.getInstance().generateErrorExpl(selection);
     		return true;
     	}
     	

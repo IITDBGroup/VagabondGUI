@@ -146,8 +146,12 @@ public class SourceDBView extends GenericTableView {
 				}
 		    }
 		    
-			if (rows.size() > 0)
+			if (rows.size() > 0) {
 				viewer.setSelection(new StructuredSelection(rows));
+				viewer.getTabItem().setText("*"+viewer.getResultSet().getName());
+				// when target schema gets unselected, the name should change back
+				//  do with global selection controller?
+			}
 		}
 	}
 	
@@ -155,6 +159,7 @@ public class SourceDBView extends GenericTableView {
     	for (Iterator<ResultSetViewer> i = this.resultSetViewers.iterator(); i.hasNext();) {
 			ResultSetViewer viewer = i.next();
 			viewer.resetSelection();
+			viewer.getTabItem().setText(viewer.getResultSet().getName());
 		}
 	}
 }

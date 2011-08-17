@@ -18,18 +18,29 @@ public class VagaSelectionEvent {
 	}
 	
 	// single element used to indicate reset all selections
-	public static VagaSelectionEvent DESELECT = new VagaSelectionEvent(ModelType.None);
+	public static VagaSelectionEvent DESELECT = new VagaSelectionEvent(
+			ModelType.None, false);
 	
 	private ModelType elementType;
 	private Collection<String> elementIds;
 	private String toString = null;
+	private boolean limitScope;
 	
-	public VagaSelectionEvent (ModelType elementType, String ... elementIds) {
+	public VagaSelectionEvent (ModelType elementType, boolean limitScope,
+			String ... elementIds) {
 		this.elementIds = new HashSet<String> ();
 		this.elementType = elementType;
+		this.limitScope = limitScope;
 		
 		for(String id: elementIds)
 			this.elementIds.add(id);
+	}
+	
+	public VagaSelectionEvent (ModelType elementType, String element) {
+		this.elementIds = new HashSet<String> ();
+		elementIds.add(element);
+		this.elementType = elementType;
+		this.limitScope = false;
 	}
 	
 	public VagaSelectionEvent (VagaSelectionEvent e) {
@@ -55,6 +66,10 @@ public class VagaSelectionEvent {
 	
 	public boolean isEmpty () {
 		return elementType.equals(ModelType.None) || elementIds.isEmpty();
+	}
+	
+	public boolean isLimitScope () {
+		return limitScope;
 	}
 
 	public void setElementIds(Collection<String> elementIds) {

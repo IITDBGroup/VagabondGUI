@@ -36,6 +36,7 @@ import org.vagabond.rcp.gui.views.modelWidgets.MappingViewIDList;
 import org.vagabond.rcp.gui.views.modelWidgets.RelationViewIDList;
 import org.vagabond.rcp.gui.views.modelWidgets.SourceRelationViewIDList;
 import org.vagabond.rcp.gui.views.modelWidgets.TargetRelationViewIDList;
+import org.vagabond.rcp.selection.EventUtil;
 import org.vagabond.rcp.selection.GlobalSelectionController;
 import org.vagabond.rcp.selection.VagaSelectionEvent;
 import org.vagabond.rcp.selection.VagaSelectionEvent.ModelType;
@@ -44,6 +45,7 @@ import org.vagabond.rcp.util.PluginLogProvider;
 import org.vagabond.rcp.util.SWTResourceManager;
 import org.vagabond.util.LoggerUtil;
 import org.vagabond.xmlmodel.MappingType;
+import org.vagabond.xmlmodel.RelationType;
 import org.vagabond.xmlmodel.TransformationType;
 import org.vagabond.xmlmodel.TransformationsType;
 
@@ -91,15 +93,13 @@ public class TransView extends SQLQueryView implements VagaSelectionListener {
 				.getActivePage().findView(ID);
 	}
 	
-	public void setTransformations() {
+	public void setTransformations(TransformationType[] transes) throws Exception {
 		GlobalSelectionController.addSelectionListener(this);
 		
-		widget.setText("");
-		TransformationsType trans = MapScenarioHolder.getInstance()
-				.getDocument().getMappingScenario().getTransformations();
-		
+		widget.setText("");		
 		transSelDropDown.removeAll();
-		for (TransformationType t : trans.getTransformationArray()) {
+		
+		for (TransformationType t : transes) {
 			transSelDropDown.add(t.getId());	
 		}
 		
@@ -107,17 +107,20 @@ public class TransView extends SQLQueryView implements VagaSelectionListener {
 		selectTransformation(0);
 	}
 	
-	public void selectTransformation(int selection) {
+	public void selectTransformation(int selection) throws Exception {
 		TransformationType trans = MapScenarioHolder.getInstance().getDocument()
 			.getMappingScenario().getTransformations().getTransformationArray(selection);
 		log.debug("Selected transformation: " + trans.toString());
 		
+		transSelDropDown.select(selection);
 		transLabel.setText(trans.getId());
-		widget.setText(trans.getCode());
+		widget.setText(trans.getCode().trim());
 		maps.adaptLabels(trans.getImplements().getMappingArray());
-		sources.adaptLabels("test");
-		targets.adaptLabels("fsddfs");
-//		adaptMappingLabels(trans.getImplements().getMappingArray());
+		
+		sources.adaptLabels(MapScenarioHolder.getInstance()
+				.getRelsAccessedByTrans(trans));
+		targets.adaptLabels(new RelationType[] {MapScenarioHolder.getInstance().
+				getRelCreateByTrans(trans)});
 	}
 	
 	public void selectTransformation(String trans) throws Exception {
@@ -471,13 +474,23 @@ public class TransView extends SQLQueryView implements VagaSelectionListener {
 
 	@Override
 	public void event(VagaSelectionEvent e) {
-		if (!e.isEmpty()) {
+		if (e.isEmpty())
+			return;
+		
+		if (!e.isLimitScope()) {
 			try {
 				selectTransformation(e.getElementIds().iterator().next());
 			} catch (Exception e1) {
 				LoggerUtil.logException(e1, log);
 			}
-		}
+		} 
+		else {
+			try {
+				setTransformations(EventUtil.getInstance().getTransformationsForEvent(e));
+			} catch (Exception e1) {
+				LoggerUtil.logException(e1, log);
+			}
+		}	
 	}
 
 	@Override

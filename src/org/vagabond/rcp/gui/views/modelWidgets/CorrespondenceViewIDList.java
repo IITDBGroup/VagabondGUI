@@ -27,7 +27,7 @@ public class CorrespondenceViewIDList extends ModelIdList {
 		String[] ids = new String[corrs.length];
 		
 		for(int i = 0; i < ids.length; i++)
-			ids[i] = corrs[i].getId();
+			ids[i] = corrs[i].getId().toUpperCase();
 		
 		adaptLabels(ids);
 	}

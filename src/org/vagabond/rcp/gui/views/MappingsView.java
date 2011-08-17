@@ -1,5 +1,8 @@
 package org.vagabond.rcp.gui.views;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.apache.log4j.Logger;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.DoubleClickEvent;
@@ -16,38 +19,40 @@ import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 import org.vagabond.mapping.model.MapScenarioHolder;
+import org.vagabond.rcp.gui.views.detailWidgets.DetailViewFactory;
+import org.vagabond.rcp.gui.views.detailWidgets.DetailViewList;
+import org.vagabond.rcp.gui.views.detailWidgets.MappingDetailView;
+import org.vagabond.rcp.gui.views.detailWidgets.ModelElementDetailView;
+import org.vagabond.rcp.selection.EventUtil;
+import org.vagabond.rcp.selection.GlobalSelectionController;
+import org.vagabond.rcp.selection.VagaSelectionEvent;
+import org.vagabond.rcp.selection.VagaSelectionEvent.ModelType;
+import org.vagabond.rcp.selection.VagaSelectionListener;
 import org.vagabond.rcp.util.PluginLogProvider;
+import org.vagabond.util.LoggerUtil;
 import org.vagabond.xmlmodel.MappingType;
 import org.vagabond.xmlmodel.MappingsType;
 import org.vagabond.xmlmodel.RelAtomType;
 
-public class MappingsView extends ViewPart {
+public class MappingsView extends ViewPart implements DetailViewFactory, VagaSelectionListener {
 	
 	static Logger log = PluginLogProvider.getInstance().getLogger(MappingsView.class);
-	
+
+	public static final Set<ModelType> interest;
 	public static final String ID = "org.vagabond.rcp.gui.views.mappingsview";
 	
-	private TableViewer viewer;
+	static {
+		interest = new HashSet<ModelType> ();
+		interest.add(ModelType.Mapping);
+	}
+	
+	private DetailViewList<MappingType> mapViewer;
 	
 	public static MappingsView getInstance() {
-		return (MappingsView) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(ID);
+		return (MappingsView) PlatformUI.getWorkbench()
+				.getActiveWorkbenchWindow().getActivePage().findView(ID);
 	}
-	
-	class ViewLabelProvider extends LabelProvider implements ITableLabelProvider {
-		public String getColumnText(Object obj, int index) {
-			return getText(obj);
-		}
 		
-		public Image getColumnImage(Object obj, int index) {
-			return getImage(obj);
-		}
-		
-		public Image getImage(Object obj) {
-			return PlatformUI.getWorkbench().getSharedImages().getImage(
-					ISharedImages.IMG_OBJ_ELEMENT);
-		}
-	}
-	
 	@Override
 	public void createPartControl(Composite parent) {		
 		setLayout(parent);
@@ -61,77 +66,59 @@ public class MappingsView extends ViewPart {
 	}
 	
 	private void createViewer(Composite parent) {
-		viewer = new TableViewer(parent, SWT.MULTI | SWT.H_SCROLL
-				| SWT.V_SCROLL | SWT.FULL_SELECTION | SWT.BORDER);
-		viewer.setContentProvider(new ArrayContentProvider());
-		viewer.setLabelProvider(new ViewLabelProvider());
-		viewer.addDoubleClickListener(new IDoubleClickListener()
-		{
-		            @Override
-		            public void doubleClick(DoubleClickEvent event) {
-		            	log.debug(viewer.getSelection().toString());
-		            }
-
-		});
-
+		mapViewer = new DetailViewList<MappingType>(parent, this);
+		
 		GridData gridData = new GridData();
 		gridData.verticalAlignment = GridData.FILL;
 		gridData.grabExcessHorizontalSpace = true;
 		gridData.grabExcessVerticalSpace = true;
 		gridData.horizontalAlignment = GridData.FILL;
-		viewer.getControl().setLayoutData(gridData);
+		mapViewer.setLayoutData(gridData);
 	}
 	
-	public void setMappings() {
-		viewer.getTable().removeAll();
+	public void setMappings(MappingType[] maps) {
+		GlobalSelectionController.addSelectionListener(this);
+		mapViewer.updateModel(maps);
+	}
+	
+	public void selectMapping(String id) {
+		mapViewer.selectElement(id);
+	}
+	
+	@Override
+	public void setFocus() {
+		mapViewer.setFocus();
+	}
+
+	@Override
+	public ModelElementDetailView createView(Composite parent) {
+		MappingDetailView map = new MappingDetailView(parent, SWT.NONE);
+		return map;
+	}
+
+	@Override
+	public void event(VagaSelectionEvent e) {
+		if (e.isEmpty())
+			return;
 		
-		MappingsType maps = MapScenarioHolder.getInstance().getScenario().getMappings();
-		String mapName, tableName, varNames;
-		String foreach, exists;
-		
-		for (MappingType map: maps.getMappingArray()) {
-			foreach = "";
-			exists = "";
-			
-			mapName = map.getId();
-			
-			for (RelAtomType m : map.getForeach().getAtomArray()) {
-				tableName = m.getTableref();
-				varNames = implode(m.getVarArray(), ",");
-				
-				if (foreach == "")
-					foreach = foreach + tableName + "(" + varNames + ")";
-				else
-					foreach = foreach + " \u2227 " + tableName + "(" + varNames + ")";
+		if (e.isLimitScope()) {
+			try  {
+				setMappings(EventUtil.getInstance().getMappingsForEvent(e));
+			} catch (Exception e1) {
+				LoggerUtil.logException(e1, log);
 			}
-			
-			for (RelAtomType m : map.getExists().getAtomArray()) {
-				tableName = m.getTableref();
-				varNames = implode(m.getVarArray(), ",");
-				
-				if (exists == "")
-					exists = exists + tableName + "(" + varNames + ")";
-				else
-					exists = exists + " \u2227 " + tableName + "(" + varNames + ")";
+		}
+		else {
+			try  {
+				selectMapping(e.getElementIds().iterator().next());
+			} catch (Exception e1) {
+				LoggerUtil.logException(e1, log);
 			}
-			
-			viewer.add(mapName.toUpperCase() + ": \u2200 " + foreach + " \u27F9 \u2203 " + exists);
 		}
 	}
 
 	@Override
-	public void setFocus() {
-		viewer.getControl().setFocus();
+	public Set<ModelType> interestedIn() {
+		return interest;
 	}
-	
-	
-	private static String implode(String[] ary, String delim) {
-	    String out = "";
-	    for(int i=0; i<ary.length; i++) {
-	        if(i!=0) { out += delim; }
-	        out += ary[i];
-	    }
-	    return out;
-	}
-
 }

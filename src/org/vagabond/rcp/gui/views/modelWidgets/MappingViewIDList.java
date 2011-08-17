@@ -1,5 +1,7 @@
 package org.vagabond.rcp.gui.views.modelWidgets;
 
+import java.util.Collection;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Composite;
@@ -24,6 +26,10 @@ public class MappingViewIDList extends ModelIdList {
 		return "Mappings:";
 	}
 
+	public void adaptLabels(Collection<MappingType> elements) {
+		adaptLabels(elements.toArray(new MappingType[] {}));
+	}
+	
 	public void adaptLabels(MappingType[] elements) {
 		String[] ids = new String[elements.length];
 		

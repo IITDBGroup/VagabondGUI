@@ -1,5 +1,9 @@
 package org.vagabond.rcp.gui.views;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import org.apache.log4j.Logger;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
@@ -11,31 +15,38 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
-import org.vagabond.mapping.model.MapScenarioHolder;
+import org.vagabond.rcp.gui.views.detailWidgets.CorrespondenceDetailView;
+import org.vagabond.rcp.gui.views.detailWidgets.DetailViewFactory;
+import org.vagabond.rcp.gui.views.detailWidgets.DetailViewList;
+import org.vagabond.rcp.gui.views.detailWidgets.ModelElementDetailView;
+import org.vagabond.rcp.selection.EventUtil;
+import org.vagabond.rcp.selection.GlobalSelectionController;
+import org.vagabond.rcp.selection.VagaSelectionEvent;
+import org.vagabond.rcp.selection.VagaSelectionEvent.ModelType;
+import org.vagabond.rcp.selection.VagaSelectionListener;
+import org.vagabond.rcp.util.PluginLogProvider;
+import org.vagabond.util.LoggerUtil;
 import org.vagabond.xmlmodel.CorrespondenceType;
-import org.vagabond.xmlmodel.CorrespondencesType;
 
-public class CorrView extends ViewPart {
-	public static final String ID = "org.vagabond.rcp.gui.views.corrview";
-	private TableViewer viewer;
+public class CorrView extends ViewPart implements VagaSelectionListener, DetailViewFactory {
+
+	static Logger log = PluginLogProvider.getInstance().getLogger(
+			CorrView.class);
 	
-	public static CorrView getInstance() {
-		return (CorrView) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(ID);
+	public static final Set<ModelType> interest;
+	
+	public static final String ID = "org.vagabond.rcp.gui.views.corrview";
+	
+	static {
+		interest = new HashSet<ModelType> ();
+		interest.add(ModelType.Correspondence);
 	}
 	
-	class ViewLabelProvider extends LabelProvider implements ITableLabelProvider {
-		public String getColumnText(Object obj, int index) {
-			return getText(obj);
-		}
-		
-		public Image getColumnImage(Object obj, int index) {
-			return getImage(obj);
-		}
-		
-//		public Image getImage(Object obj) {
-//			return PlatformUI.getWorkbench().getSharedImages().getImage(
-//					ISharedImages.IMG_DEF_VIEW);
-//		}
+	private DetailViewList<CorrespondenceType> viewer;
+	
+	public static CorrView getInstance() {
+		return (CorrView) PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+				.getActivePage().findView(ID);
 	}
 	
 	@Override
@@ -51,40 +62,61 @@ public class CorrView extends ViewPart {
 	}
 	
 	private void createViewer(Composite parent) {
-		viewer = new TableViewer(parent, SWT.MULTI | SWT.H_SCROLL
-				| SWT.V_SCROLL | SWT.FULL_SELECTION | SWT.BORDER);
-		viewer.setContentProvider(new ArrayContentProvider());
-		viewer.setLabelProvider(new ViewLabelProvider());
+		viewer = new DetailViewList<CorrespondenceType>(parent, this);
 		
 		GridData gridData = new GridData();
 		gridData.verticalAlignment = GridData.FILL;
 		gridData.grabExcessHorizontalSpace = true;
 		gridData.grabExcessVerticalSpace = true;
 		gridData.horizontalAlignment = GridData.FILL;
-		viewer.getControl().setLayoutData(gridData);
+		viewer.setLayoutData(gridData);
 	}
 	
-	public void setCorrespondences() {
-		viewer.getTable().removeAll();
-		
-		CorrespondencesType corrs = MapScenarioHolder.getInstance().getScenario().getCorrespondences();
-		String corrName, sourceRel, sourceAttr, targetRel, targetAttr;
+	public void setCorrespondences(CorrespondenceType[] corrs) {
+		GlobalSelectionController.addSelectionListener(this);
+		viewer.updateModel(corrs);
+		viewer.layout();
+	}
 
-		for (CorrespondenceType corr : corrs.getCorrespondenceArray()) {
-			corrName = corr.getId();
-			
-			sourceRel = "source." + corr.getFrom().getTableref();
-			sourceAttr = corr.getFrom().getAttrArray(0);
-			targetRel = "target." + corr.getTo().getTableref();
-			targetAttr = corr.getTo().getAttrArray(0);
-			viewer.add(corrName.toUpperCase() +": From "+ sourceRel + ", " 
-					+ sourceAttr + " to " + targetRel + ", " + targetAttr);
+	public void selectCorrespondence (String id) {
+		viewer.selectElement(id);
+	}
+	
+	@Override
+	public void setFocus() {
+		viewer.setFocus();
+	}
+
+	@Override
+	public void event(VagaSelectionEvent e) {
+		if(e.isEmpty())
+			return;
+		
+		if (e.isLimitScope()) {
+			try {
+				setCorrespondences(EventUtil.getInstance()
+						.getCorrespondencesForIds(e.getElementIds()));
+			} catch (Exception e1) {
+				LoggerUtil.logException(e1, log);
+			}
+		}
+		else {
+			try {
+				selectCorrespondence(e.getElementIds().iterator().next());
+			} catch (Exception e1) {
+				LoggerUtil.logException(e1, log);
+			}			
 		}
 	}
 
 	@Override
-	public void setFocus() {
-		viewer.getControl().setFocus();
+	public Set<ModelType> interestedIn() {
+		return interest;
+	}
+
+	@Override
+	public ModelElementDetailView createView(Composite parent) {
+		return new CorrespondenceDetailView(parent, SWT.NONE);
 	}
 
 }

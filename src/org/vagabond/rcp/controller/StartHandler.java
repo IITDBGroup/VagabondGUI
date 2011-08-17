@@ -73,9 +73,15 @@ public class StartHandler extends AbstractHandler {
 //	    	GraphEditPart graph = (GraphEditPart) View.getInstance().getViewer().getRootEditPart().getChildren().get(0);
 //	    	graph.setLayoutConstraints();
 			
-			TransView.getInstance().setTransformations();
-			CorrView.getInstance().setCorrespondences();
-			MappingsView.getInstance().setMappings();
+			TransView.getInstance().setTransformations(MapScenarioHolder
+					.getInstance().getDocument().getMappingScenario()
+					.getTransformations().getTransformationArray());
+			CorrView.getInstance().setCorrespondences(MapScenarioHolder
+					.getInstance().getDocument().getMappingScenario()
+					.getCorrespondences().getCorrespondenceArray());
+			MappingsView.getInstance().setMappings(MapScenarioHolder
+					.getInstance().getDocument().getMappingScenario()
+					.getMappings().getMappingArray());
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 

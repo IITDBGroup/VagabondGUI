@@ -1,10 +1,14 @@
 package org.vagabond.rcp.gui.views;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Set;
+import java.util.Vector;
 
+import org.apache.log4j.Logger;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceConverter;
 import org.eclipse.swt.SWT;
@@ -12,13 +16,34 @@ import org.eclipse.swt.custom.ExtendedModifyEvent;
 import org.eclipse.swt.custom.ExtendedModifyListener;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.custom.StyledText;
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.RowLayout;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.PlatformUI;
 import org.vagabond.mapping.model.MapScenarioHolder;
+import org.vagabond.rcp.gui.views.modelWidgets.MappingViewIDList;
+import org.vagabond.rcp.gui.views.modelWidgets.RelationViewIDList;
+import org.vagabond.rcp.gui.views.modelWidgets.SourceRelationViewIDList;
+import org.vagabond.rcp.gui.views.modelWidgets.TargetRelationViewIDList;
+import org.vagabond.rcp.selection.GlobalSelectionController;
+import org.vagabond.rcp.selection.VagaSelectionEvent;
+import org.vagabond.rcp.selection.VagaSelectionEvent.ModelType;
+import org.vagabond.rcp.selection.VagaSelectionListener;
+import org.vagabond.rcp.util.PluginLogProvider;
+import org.vagabond.rcp.util.SWTResourceManager;
+import org.vagabond.util.LoggerUtil;
+import org.vagabond.xmlmodel.MappingType;
 import org.vagabond.xmlmodel.TransformationType;
 import org.vagabond.xmlmodel.TransformationsType;
 
@@ -32,25 +57,75 @@ import com.quantum.sql.parser.Token;
 import com.quantum.util.sql.SQLGrammar;
 import com.quantum.view.SQLQueryView;
 
-public class TransView extends SQLQueryView {
+public class TransView extends SQLQueryView implements VagaSelectionListener {
+	
+	static Logger log = PluginLogProvider.getInstance().getLogger(TransView.class);
+	
 	public static final String ID = "org.vagabond.rcp.gui.views.transview";
+	public static final Set<ModelType> interest;
+	
+	private Label transLabel;
+	private Combo transSelDropDown;
+	
+	private MappingViewIDList maps;
+	private SourceRelationViewIDList sources;
+	private TargetRelationViewIDList targets;
+	
 	private StyledText widget;
 	
 	private ColorManager colorManager = new ColorManager();
 	private SyntaxHighlighter textUpdater = new SyntaxHighlighter(
 			this.colorManager);
 	
+	static {
+		 interest = new HashSet<ModelType> ();
+		 interest.add(ModelType.Transformation);
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
 	public static TransView getInstance() {
-		return (TransView) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(ID);
+		return (TransView) PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+				.getActivePage().findView(ID);
 	}
 	
 	public void setTransformations() {
-		widget.setText("");
-		TransformationsType trans = MapScenarioHolder.getInstance().getDocument().getMappingScenario().getTransformations();
+		GlobalSelectionController.addSelectionListener(this);
 		
+		widget.setText("");
+		TransformationsType trans = MapScenarioHolder.getInstance()
+				.getDocument().getMappingScenario().getTransformations();
+		
+		transSelDropDown.removeAll();
 		for (TransformationType t : trans.getTransformationArray()) {
-			widget.setText(widget.getText() + t.getId() + t.getCode() + "\n");
+			transSelDropDown.add(t.getId());	
 		}
+		
+		transSelDropDown.select(0);
+		selectTransformation(0);
+	}
+	
+	public void selectTransformation(int selection) {
+		TransformationType trans = MapScenarioHolder.getInstance().getDocument()
+			.getMappingScenario().getTransformations().getTransformationArray(selection);
+		log.debug("Selected transformation: " + trans.toString());
+		
+		transLabel.setText(trans.getId());
+		widget.setText(trans.getCode());
+		maps.adaptLabels(trans.getImplements().getMappingArray());
+		sources.adaptLabels("test");
+		targets.adaptLabels("fsddfs");
+//		adaptMappingLabels(trans.getImplements().getMappingArray());
+	}
+	
+	public void selectTransformation(String trans) throws Exception {
+		int index = transSelDropDown.indexOf(trans);
+		if (index == -1)
+			throw new Exception("try to select transformation " + trans 
+					+ " which does not exist");
+		selectTransformation(index);
 	}
 
 	public void createPartControl(Composite parent) {
@@ -59,29 +134,93 @@ public class TransView extends SQLQueryView {
 	}
 	
 	private void setLayout(Composite parent) {
-		GridLayout layout  = new GridLayout(1, false);
+		GridLayout layout  = new GridLayout(2, false);
 		parent.setLayout(layout);
 	}
 	
 	private void createEditor(Composite parent) {
-		this.widget = new StyledText(parent, SWT.V_SCROLL | SWT.BORDER);
+		GridData gridData; 
+		
+		// label for transformation id and dropdown to select transformation
+		transLabel = new Label(parent, SWT.NONE);
+		transLabel.setFont(SWTResourceManager.getFont("BoldArial", "Arial", 12, true));
+		transLabel.setText("");
+
+		gridData = new GridData();
+		gridData.horizontalAlignment = GridData.BEGINNING;
+		gridData.verticalAlignment = GridData.BEGINNING;
+		
+		transSelDropDown = new Combo(parent, SWT.READ_ONLY | SWT.DROP_DOWN);
+
+		gridData = new GridData();
+		gridData.grabExcessHorizontalSpace = true;
+		gridData.horizontalAlignment = GridData.FILL;
+		transSelDropDown.setLayoutData(gridData);
+		transSelDropDown.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected (SelectionEvent e) {
+				int sel = transSelDropDown.getSelectionIndex();
+				
+				log.debug("selected item is " + sel);
+				// inform global selection controller
+				GlobalSelectionController.fireModelSelection(new VagaSelectionEvent(
+						ModelType.Transformation, transSelDropDown.getItem(sel)));
+			}
+		});
+		
+		// create list of mappings, source, and target rels
+		createMapsGroup(parent);
+		
+		// syntax highlighted text field
+		widget = new StyledText(parent, SWT.V_SCROLL | SWT.BORDER);
 
 		widget.setWordWrap(true);
 		widget.setEditable(false);
 		widget.addExtendedModifyListener(this.modifyListener);
 
-		GridData gridData = new GridData();
+		gridData = new GridData();
+		gridData.horizontalSpan = 2;
 		gridData.verticalAlignment = GridData.FILL;
 		gridData.grabExcessHorizontalSpace = true;
 		gridData.grabExcessVerticalSpace = true;
 		gridData.horizontalAlignment = GridData.FILL;
 		widget.setLayoutData(gridData);
-
+		
 		initializeColours(parent);
 
 		this.widget.setDoubleClickEnabled(false);
 	}
 	
+	private void createMapsGroup (Composite parent) {
+		GridData gridData;
+		
+		maps = new MappingViewIDList(parent, SWT.NONE);
+		
+		gridData = new GridData();
+		gridData.horizontalSpan = 2;
+		gridData.grabExcessHorizontalSpace = true;
+		gridData.horizontalAlignment = GridData.FILL;
+		maps.setLayoutData(gridData);
+		
+		sources = new SourceRelationViewIDList(parent, SWT.NONE);
+		
+		gridData = new GridData();
+		gridData.horizontalSpan = 2;
+		gridData.grabExcessHorizontalSpace = true;
+		gridData.horizontalAlignment = GridData.FILL;
+		maps.setLayoutData(gridData);
+		sources.setLayoutData(gridData);
+		
+		targets = new TargetRelationViewIDList(parent, SWT.NONE);
+		
+		gridData = new GridData();
+		gridData.horizontalSpan = 2;
+		gridData.grabExcessHorizontalSpace = true;
+		gridData.horizontalAlignment = GridData.FILL;
+		maps.setLayoutData(gridData);
+		targets.setLayoutData(gridData);
+	}
+		
 	private void initializeColours(Composite parent) {
 		IPreferenceStore store = QuantumPlugin.getDefault()
 				.getPreferenceStore();
@@ -118,8 +257,7 @@ public class TransView extends SQLQueryView {
 						widget.setStyleRange(styles[i]);
 					}
 				} catch (Throwable t) {
-					System.out
-							.println("Error with styles: " + t.getClass().toString()); //$NON-NLS-1$
+				    log.error("Error with styles: " + t.getClass().toString()); //$NON-NLS-1$
 					// ignore any errors
 				}
 			}
@@ -329,6 +467,22 @@ public class TransView extends SQLQueryView {
 				}
 			}
 		}
+	}
+
+	@Override
+	public void event(VagaSelectionEvent e) {
+		if (!e.isEmpty()) {
+			try {
+				selectTransformation(e.getElementIds().iterator().next());
+			} catch (Exception e1) {
+				LoggerUtil.logException(e1, log);
+			}
+		}
+	}
+
+	@Override
+	public Set<ModelType> interestedIn() {
+		return interest;
 	}
 
 }

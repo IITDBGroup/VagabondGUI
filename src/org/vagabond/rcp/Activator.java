@@ -87,7 +87,6 @@ public class Activator extends AbstractUIPlugin {
     private void configureLogging(Bundle bundle) {
         try {
             URL url = bundle.getEntry("/resource/"+  LOG_PROPERTIES_FILE);
-            System.out.println(url);
             InputStream propertiesInputStream = url.openStream();
             if (propertiesInputStream != null) {
                 Properties props = new Properties();

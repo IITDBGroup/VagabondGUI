@@ -55,10 +55,10 @@ public class TargetDBViewActionGroup extends DBViewActionGroup {
 				if (relations != "" && tids != "") {
 					if (!relations.contains(resultSet.getName()))
 						relations = relations + ", target." + resultSet.getName();
-					tids = tids + ", '" + (String)r.get(1) + "'"; 
+					tids = tids + ", '" + r.get(1).toString() + "'"; 
 				} else {
 					relations = "target." + resultSet.getName();
-					tids = "'" + (String)r.get(1) + "'";
+					tids = "'" + r.get(1).toString() + "'";
 				}
 			}
 			

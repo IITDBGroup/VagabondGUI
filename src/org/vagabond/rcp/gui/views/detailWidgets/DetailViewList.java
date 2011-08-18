@@ -49,6 +49,7 @@ public class DetailViewList<T> {
 			view.showElem(elements[i]);
 			view.addSelectionListener();
 		}
+		sc.setMinSize(child.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 		layout();
 	}
 	

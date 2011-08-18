@@ -44,6 +44,17 @@ public class SWTResourceManager {
 		return getColor(instance.namedColors.get(name));
 	}
 	
+	public static Font getBoldSystemFont (int size) {
+		if (!instance.fonts.containsKey("BOLD_SYSTEM_FONT_" + size)) {
+			Font sysFont = Display.getCurrent().getSystemFont();
+			Font font = new Font(Display.getCurrent(), 
+					sysFont.getFontData()[0].getName(), size, SWT.BOLD);
+			instance.fonts.put("BOLD_SYSTEM_FONT_" + size, font);
+		}
+		
+		return instance.fonts.get("BOLD_SYSTEM_FONT_" + size);
+	}
+	
 	public static Font getFont(String name, String font, int size, boolean bold) {
 		if (!instance.fonts.containsKey(name)) {
 			instance.fonts.put(name, new Font(Display.getCurrent(), 

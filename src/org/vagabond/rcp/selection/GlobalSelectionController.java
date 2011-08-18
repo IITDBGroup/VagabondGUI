@@ -73,12 +73,10 @@ public class GlobalSelectionController {
 			case SourceRelation:
 				PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
 						.showView(SourceDBView.ID);
-				SourceDBView.getInstance().setSelection(e.getElementIds().iterator().next());
 				break;
 			case TargetRelation:
 				PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
 						.showView(TargetDBView.ID);
-				TargetDBView.getInstance().setSelection(e.getElementIds().iterator().next());
 				break;
 			case Correspondence:
 				PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()

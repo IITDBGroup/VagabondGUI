@@ -4,8 +4,10 @@ import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.StructuredSelection;
@@ -22,14 +24,28 @@ import org.vagabond.explanation.marker.TupleMarker;
 import org.vagabond.rcp.controller.DBViewActionGroup;
 import org.vagabond.rcp.controller.TargetDBViewActionGroup;
 import org.vagabond.rcp.model.TableViewManager;
+import org.vagabond.rcp.selection.GlobalSelectionController;
+import org.vagabond.rcp.selection.VagaSelectionEvent;
+import org.vagabond.rcp.selection.VagaSelectionEvent.ModelType;
+import org.vagabond.rcp.selection.VagaSelectionListener;
 
 import com.quantum.sql.SQLResultSetResults;
 import com.quantum.view.tableview.ResultSetViewer;
 
 
-public class SourceDBView extends GenericTableView {
+public class SourceDBView extends GenericTableView implements VagaSelectionListener {
+
 	public static final String ID = "org.vagabond.rcp.gui.views.sdbview";
 	public static final String VIEW_ID = "Source";
+
+	public static final Set<ModelType> interest;
+	
+	static {
+		interest = new HashSet<ModelType> ();
+		interest.add(ModelType.SourceRelation);
+		interest.add(ModelType.Mapping);
+		interest.add(ModelType.Correspondence);
+	}
 	
 	public SourceDBView() {
 		TableViewManager.getInstance().setSourceView(this);
@@ -56,7 +72,7 @@ public class SourceDBView extends GenericTableView {
 	}
 	
 	public void initActions() {
-
+		GlobalSelectionController.addSelectionListener(this);
         this.actionGroup = new DBViewActionGroup(this);
 
         IActionBars actionBars = getViewSite().getActionBars();
@@ -161,5 +177,30 @@ public class SourceDBView extends GenericTableView {
 			viewer.resetSelection();
 			viewer.getTabItem().setText(viewer.getResultSet().getName());
 		}
+	}
+
+	@Override
+	public void event(VagaSelectionEvent e) {
+		if (e.isEmpty())
+			return;
+		
+		if (e.isLimitScope()) {
+			if (e.getElementType().equals(ModelType.Correspondence)) {
+				//TODO
+			}
+			if (e.getElementType().equals(ModelType.Mapping)) {
+				//TODO
+			}
+		}
+		// normal navigation, just listen on SourceRelationEvents
+		else {
+			if (e.getElementType().equals(ModelType.SourceRelation))
+				setSelection(e.getElementIds().iterator().next());
+		}
+	}
+
+	@Override
+	public Set<ModelType> interestedIn() {
+		return interest;
 	}
 }

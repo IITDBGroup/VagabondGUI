@@ -9,7 +9,8 @@ import org.vagabond.util.LoggerUtil;
 public class VagaSelectionEvent {
 
 	public enum ModelType {
-		Relation,
+		SourceRelation,
+		TargetRelation,
 		Correspondence,
 		Mapping,
 		Transformation,

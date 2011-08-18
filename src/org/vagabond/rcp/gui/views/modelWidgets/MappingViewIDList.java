@@ -2,7 +2,6 @@ package org.vagabond.rcp.gui.views.modelWidgets;
 
 import java.util.Collection;
 
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;

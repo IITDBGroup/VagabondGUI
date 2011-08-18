@@ -35,7 +35,10 @@ public class RelationViewIDList extends ModelIdList {
 
 	@Override
 	public ModelType getType() {
-		return ModelType.Relation;
+		return null;
 	}
+
+
+	
 
 }

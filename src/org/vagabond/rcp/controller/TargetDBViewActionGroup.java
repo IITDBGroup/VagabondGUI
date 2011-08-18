@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.util.Iterator;
 
+import org.apache.log4j.Logger;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.Separator;
@@ -14,9 +15,11 @@ import org.vagabond.explanation.generation.prov.SourceProvParser;
 import org.vagabond.rcp.Activator;
 import org.vagabond.rcp.gui.views.ProvenanceView;
 import org.vagabond.rcp.gui.views.SourceDBView;
+import org.vagabond.rcp.util.PluginLogProvider;
 import org.vagabond.rcp.wizards.ExplGenPage;
 import org.vagabond.rcp.wizards.ExplGenWizard;
 import org.vagabond.util.ConnectionManager;
+import org.vagabond.util.LoggerUtil;
 
 import com.quantum.Messages;
 import com.quantum.model.Bookmark;
@@ -29,9 +32,15 @@ import com.quantum.wizards.SQLRowWizard;
 import com.quantum.wizards.UpdateRowPage;
 
 public class TargetDBViewActionGroup extends DBViewActionGroup {
+	
+	static Logger log = PluginLogProvider.getInstance().getLogger(
+			TargetDBViewActionGroup.class);
 	private final TableView tableView;
 	
 	class ShowProvenanceAction extends Action {
+		final Logger pLog = PluginLogProvider.getInstance().getLogger(
+				ShowProvenanceAction.class);
+		
 		public ShowProvenanceAction() {
 			setText(Messages.getString("tableview.provenance"));
 		}
@@ -70,8 +79,7 @@ public class TargetDBViewActionGroup extends DBViewActionGroup {
 				SQLResultSetResults results = provResultSet(query);
 				ProvenanceView.getInstance().showProvenance(results);
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				LoggerUtil.logException(e, pLog);
 			}
 		}
 	};

@@ -40,7 +40,8 @@ public class ProvenanceView extends GenericTableView {
 		this.provViewer = new ResultSetViewer(this, results);
 		
 		try {
-			PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(ProvenanceView.ID);
+			PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+					.showView(ProvenanceView.ID);
 		} catch (PartInitException e) {
 			e.printStackTrace();
 		}

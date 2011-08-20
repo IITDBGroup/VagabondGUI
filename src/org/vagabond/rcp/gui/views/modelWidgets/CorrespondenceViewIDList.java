@@ -1,5 +1,7 @@
 package org.vagabond.rcp.gui.views.modelWidgets;
 
+import java.util.Collection;
+
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
@@ -23,6 +25,10 @@ public class CorrespondenceViewIDList extends ModelIdList {
 		return getColoredLable(id, SWTResourceManager.getColor(new RGB(100,100,100)));
 	}
 
+	public void adaptLabels(Collection<CorrespondenceType> corrs) {
+		adaptLabels(corrs.toArray(new CorrespondenceType[] {}));
+	}
+	
 	public void adaptLabels(CorrespondenceType[] corrs) {
 		String[] ids = new String[corrs.length];
 		

@@ -1,15 +1,19 @@
 package org.vagabond.rcp.gui.views.detailWidgets;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
+import org.vagabond.rcp.util.SWTResourceManager;
 
-public abstract class ModelElementDetailView {
+public abstract class ModelElementDetailView implements 
+		IModelElementDetailView {
 
 	protected Composite comp;
 	protected Group group;
 	private String id;
+	private boolean selected = false;
 	
 	public ModelElementDetailView (Composite parent, int style) {
 		comp = new Composite(parent, style);
@@ -33,6 +37,15 @@ public abstract class ModelElementDetailView {
 	
 	public void dispose () {
 		comp.dispose();
+	}
+	
+	public void setSelection (boolean selected) {
+		if (this.selected != selected) {
+			this.selected = selected;
+			group.setBackground(selected ? 
+					SWTResourceManager.getColor(new RGB(200, 200, 255)) : 
+					SWTResourceManager.getColor("Background"));
+		}
 	}
 
 	public String getId() {

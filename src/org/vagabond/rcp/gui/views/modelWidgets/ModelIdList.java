@@ -22,7 +22,7 @@ public abstract class ModelIdList {
 	private Vector<String> ids;
 	
 	public ModelIdList(Composite parent, int style) {
-		comp = new Composite(parent, style);
+		comp = new Composite(parent, SWT.NONE);
 		
 		labels = new Vector<Label> ();
 		ids = new Vector<String> ();
@@ -30,7 +30,10 @@ public abstract class ModelIdList {
 	}
 	
 	private void createGui (Composite parent) {
-		comp.setLayout(new RowLayout());
+		RowLayout layout = new RowLayout();
+		layout.pack = true;
+		layout.marginWidth = 0;
+		comp.setLayout(layout);
 		
 		typeLabel = new Label(comp, SWT.NONE);
 		//typeLabel.setFont(SWTResourceManager.getFont("BoldArial", "Arial", 12, true));
@@ -85,6 +88,10 @@ public abstract class ModelIdList {
 		result.setBackground(col);
 		
 		return result;
+	}
+	
+	public void dispose () {
+		comp.dispose();
 	}
 	
 }

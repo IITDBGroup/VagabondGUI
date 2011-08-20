@@ -43,5 +43,6 @@ public class Application implements IApplication {
 					workbench.close();
 			}
 		});
+		SWTResourceManager.dispose();
 	}
 }

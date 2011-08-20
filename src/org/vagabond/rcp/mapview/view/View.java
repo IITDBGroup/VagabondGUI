@@ -1,6 +1,7 @@
 package org.vagabond.rcp.mapview.view;
 
 import org.vagabond.rcp.mapview.model.ContentProvider;
+import org.apache.log4j.Logger;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Composite;
@@ -22,8 +23,13 @@ import org.eclipse.gef.ui.parts.ScrollingGraphicalViewer;
 
 import org.vagabond.rcp.mapview.controller.GraphEditPart;
 import org.vagabond.rcp.mapview.controller.VagabondEditPartFactory;
+import org.vagabond.rcp.util.PluginLogProvider;
+import org.vagabond.util.LoggerUtil;
 
 public class View extends ViewPart {
+	
+	static Logger log = PluginLogProvider.getInstance().getLogger(View.class);
+	
 	public static final String ID = "org.vagabond.rcp.mapview.view.view";
 
 	// Use a standard Viewer for the Draw2d canvas
@@ -56,15 +62,13 @@ public class View extends ViewPart {
 		viewer.setContents(ContentProvider.getInstance().getGraph());
 		// Set the view's background to white
 		viewer.getControl().setBackground(new Color(null, 255, 255, 255));
-		
-		
+				
 		viewer.getControl().addListener (SWT.Resize,  new Listener () {
 		    public void handleEvent (Event e) {
 		    	try {
 					viewer.setContents(ContentProvider.getInstance().generateGraph());
 				} catch (Exception e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
+					LoggerUtil.logException(e1, log);
 				}
 //		    	// resize map
 //		    	GraphEditPart graph = (GraphEditPart) viewer.getRootEditPart().getChildren().get(0);

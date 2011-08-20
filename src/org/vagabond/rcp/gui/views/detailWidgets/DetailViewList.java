@@ -1,11 +1,11 @@
 package org.vagabond.rcp.gui.views.detailWidgets;
 
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
-import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -13,7 +13,7 @@ import org.vagabond.rcp.util.SWTResourceManager;
 
 public class DetailViewList<T> {
 
-	private List<ModelElementDetailView> views;
+	private List<IModelElementDetailView> views;
 	private DetailViewFactory fac;
 	private ScrolledComposite sc;
 	private Composite child;
@@ -21,7 +21,7 @@ public class DetailViewList<T> {
 	
 	public DetailViewList (Composite parent, DetailViewFactory fac) {
 		this.fac = fac;
-		views = new LinkedList<ModelElementDetailView> ();
+		views = new LinkedList<IModelElementDetailView> ();
 		createGui(parent);
 	}
 	
@@ -41,11 +41,24 @@ public class DetailViewList<T> {
 	    sc.setExpandVertical(true);
 	}
 	
+	public void updateModel (Collection<T> elements) {
+		int i = 0;
+		adaptListLength(elements.size());
+		
+		for(T element: elements) {
+			IModelElementDetailView view = views.get(i++);
+			view.showElem(element);
+			view.addSelectionListener();
+		}
+		sc.setMinSize(child.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+		layout();
+	}
+	
 	public void updateModel (T[] elements) {
 		adaptListLength(elements.length);
 		
 		for(int i = 0; i < elements.length; i++) {
-			ModelElementDetailView view = views.get(i);
+			IModelElementDetailView view = views.get(i);
 			view.showElem(elements[i]);
 			view.addSelectionListener();
 		}
@@ -55,7 +68,7 @@ public class DetailViewList<T> {
 	
 	private void adaptListLength (int size) {
 		while (size > views.size()) {
-			ModelElementDetailView newView = fac.createView(child);
+			IModelElementDetailView newView = fac.createView(child);
 			newView.setLayoutData(getGridData());
 			views.add(newView);
 		}
@@ -76,12 +89,10 @@ public class DetailViewList<T> {
 	
 	public void selectElement (int pos) {
 		if (curSelection != -1) {
-			views.get(curSelection).group.setBackground(SWTResourceManager
-					.getColor("Background"));
+			views.get(curSelection).setSelection(false);
 		}
 		curSelection = pos;
-		views.get(pos).group.setBackground(SWTResourceManager
-				.getColor(new RGB(200, 200, 255)));
+		views.get(pos).setSelection(true);
 	}
 	
 	public void selectElement (String id) {

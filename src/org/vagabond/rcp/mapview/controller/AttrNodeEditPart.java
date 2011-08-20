@@ -42,16 +42,16 @@ public class AttrNodeEditPart extends AbstractGraphicalEditPart {
 	}
 
 	protected void refreshVisuals() {
-		AttributeFigure figure = (AttributeFigure)getFigure();
+		AttributeFigure figure = (AttributeFigure) getFigure();
 		AttributeGraphNode node = (AttributeGraphNode) getModel();
-		AbstractEditPart parent = (AbstractEditPart) getParent();
-		figure.getLabel().setText(node.getName());
-		Rectangle r = new Rectangle(figure.getBounds());
-		
-		if (parent instanceof RelationNodeEditPart) 
-			((RelationNodeEditPart)parent).setLayoutConstraint(this, figure, r);
-		else
-			((MappingNodeEditPart)parent).setLayoutConstraint(this, figure, r);
+//		AbstractEditPart parent = (AbstractEditPart) getParent();
+		figure.setAttrName(node.getName());
+//		Rectangle r = new Rectangle(figure.getBounds());
+//		figure.revalidate();
+//		if (parent instanceof RelationNodeEditPart) 
+//			((RelationNodeEditPart)parent).setLayoutConstraint(this, figure, r);
+//		else
+//			((MappingNodeEditPart)parent).setLayoutConstraint(this, figure, r);
 		
 	}
 

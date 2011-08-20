@@ -1,5 +1,6 @@
 package org.vagabond.rcp.gui.views;
 
+import org.apache.log4j.Logger;
 import org.eclipse.jface.viewers.ITreeSelection;
 import org.eclipse.jface.viewers.TreePath;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -17,17 +18,25 @@ import org.vagabond.explanation.marker.IAttributeValueMarker;
 import org.vagabond.explanation.marker.IMarkerSet;
 import org.vagabond.explanation.marker.MarkerFactory;
 import org.vagabond.explanation.model.ExplanationCollection;
+import org.vagabond.explanation.model.basic.IBasicExplanation;
 import org.vagabond.rcp.controller.ExplGenContentProvider;
 import org.vagabond.rcp.controller.ExplGenLabelProvider;
+import org.vagabond.rcp.gui.views.detailWidgets.DetailViewList;
+import org.vagabond.rcp.gui.views.detailWidgets.ExplainDetailViewFactory;
+import org.vagabond.rcp.util.PluginLogProvider;
+import org.vagabond.util.LoggerUtil;
 
 import com.quantum.sql.SQLResultSetResults;
 
 public class ExplView extends ViewPart {
 	public static final String ID = "org.vagabond.rcp.gui.views.explview";
 
+	static Logger log = PluginLogProvider.getInstance().getLogger(ExplView.class);
+	
 	private Combo combo;
-	private TreeViewer viewer;
-	private ExplanationSetGenerator gen = new ExplanationSetGenerator();
+//	private TreeViewer viewer;
+	private DetailViewList<IBasicExplanation> viewer;
+ 	private ExplanationSetGenerator gen = new ExplanationSetGenerator();
 	private ExplanationCollection col;
 
 	public static ExplView getInstance() {
@@ -47,10 +56,11 @@ public class ExplView extends ViewPart {
 	private void createViewer(Composite parent) {
 		combo = new Combo(parent, SWT.READ_ONLY | SWT.DROP_DOWN);
 
-		viewer = new TreeViewer(parent, SWT.MULTI | SWT.H_SCROLL
-				| SWT.V_SCROLL | SWT.FULL_SELECTION | SWT.BORDER);
-		viewer.setContentProvider(new ExplGenContentProvider());
-		viewer.setLabelProvider(new ExplGenLabelProvider());
+		viewer = new DetailViewList<IBasicExplanation> (parent, ExplainDetailViewFactory.withoutExplains);
+//		viewer = new TreeViewer(parent, SWT.MULTI | SWT.H_SCROLL
+//				| SWT.V_SCROLL | SWT.FULL_SELECTION | SWT.BORDER);
+//		viewer.setContentProvider(new ExplGenContentProvider());
+//		viewer.setLabelProvider(new ExplGenLabelProvider());
 		// Provide the input to the ContentProvider
 		//viewer.setInput(new String[] {"Source Copy Error", "Correspondence Error", "Superfluous Mapping Error"});
 	
@@ -59,7 +69,8 @@ public class ExplView extends ViewPart {
 		gridData.grabExcessHorizontalSpace = true;
 		gridData.grabExcessVerticalSpace = true;
 		gridData.horizontalAlignment = GridData.FILL;
-		viewer.getControl().setLayoutData(gridData);
+		viewer.setLayoutData(gridData);
+//		viewer.getControl().setLayoutData(gridData);
 		
 		gridData = new GridData();
 		gridData.horizontalAlignment = GridData.FILL;
@@ -68,14 +79,18 @@ public class ExplView extends ViewPart {
 		combo.addSelectionListener(new SelectionAdapter() {
 		      public void widgetSelected(SelectionEvent e) {
 		    	  int selection = combo.getSelectionIndex();
-		    	  IAttributeValueMarker marker = (IAttributeValueMarker)col.getErrorIdMap().get(selection);
-		          viewer.setInput(col.getErrorExplMap().get(marker));
-		          
+		    	  viewer.updateModel(col.getErrorExplMap().get(
+		    			  getMarkerForSelection(selection)));
+//		          viewer.setInput(col.getErrorExplMap().get(marker));		          
 		        }
 			});
 		
 	}
 
+	protected IAttributeValueMarker getMarkerForSelection (int pos) {
+		return (IAttributeValueMarker)col.getErrorIdMap().get(pos);
+	}
+	
 	private void updateView() {
 		IAttributeValueMarker marker;
 		
@@ -92,14 +107,15 @@ public class ExplView extends ViewPart {
 
 		combo.select(0);
 		marker = (IAttributeValueMarker)col.getErrorIdMap().get(0);
-     	viewer.setInput(col.getErrorExplMap().get(marker));
+		viewer.updateModel(col.getErrorExplMap().get(marker));
+//     	viewer.setInput(col.getErrorExplMap().get(marker));
 	}
 	
 	/**
 	 * Passing the focus request to the viewer's control.
 	 */
 	public void setFocus() {
-		viewer.getControl().setFocus();
+		viewer.setFocus();
 	}
 	
 	public void generateErrorExpl(ITreeSelection selection) {
@@ -110,8 +126,7 @@ public class ExplView extends ViewPart {
 			col = gen.findExplanations(m);
 			updateView();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LoggerUtil.logException(e, log);
 		}
 	}
 	

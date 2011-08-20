@@ -22,10 +22,14 @@ public class VagaSelectionEvent {
 	public static VagaSelectionEvent DESELECT = new VagaSelectionEvent(
 			ModelType.None, false);
 	
-	private ModelType elementType;
-	private Collection<String> elementIds;
-	private String toString = null;
-	private boolean limitScope;
+	protected ModelType elementType;
+	protected Collection<String> elementIds;
+	protected String toString = null;
+	protected boolean limitScope;
+	
+	public VagaSelectionEvent (boolean limitedScope) {
+		this.limitScope = limitedScope;
+	}
 	
 	public VagaSelectionEvent (ModelType elementType, boolean limitScope,
 			String ... elementIds) {

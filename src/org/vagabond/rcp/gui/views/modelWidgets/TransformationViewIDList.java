@@ -1,5 +1,7 @@
 package org.vagabond.rcp.gui.views.modelWidgets;
 
+import java.util.Collection;
+
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
@@ -29,6 +31,10 @@ public class TransformationViewIDList extends ModelIdList {
 		return getColoredLable(id, SWTResourceManager.getColor(new RGB(0,0,255)));
 	}
 
+	public void adaptLabels(Collection<TransformationType> trans) {
+		adaptLabels(trans.toArray(new TransformationType[] {}));
+	}
+	
 	public void adaptLabels(TransformationType[] trans) {
 		String[] ids = new String[trans.length];
 		

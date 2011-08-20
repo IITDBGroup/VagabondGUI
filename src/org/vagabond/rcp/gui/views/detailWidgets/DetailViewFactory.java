@@ -4,5 +4,5 @@ import org.eclipse.swt.widgets.Composite;
 
 public interface DetailViewFactory {
 
-	public ModelElementDetailView createView (Composite parent);	
+	public IModelElementDetailView createView (Composite parent);	
 }

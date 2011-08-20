@@ -16,6 +16,7 @@ public class VagabondEditPartFactory implements EditPartFactory {
 	@Override
 	public EditPart createEditPart(EditPart context, Object model) {
 		EditPart editPart = null;
+		
 		if (model instanceof AttributeGraphNode){
 			//Standard editpart instance for standard model element
 			editPart = new AttrNodeEditPart((AttributeGraphNode) model);
@@ -31,9 +32,8 @@ public class VagabondEditPartFactory implements EditPartFactory {
 			editPart = new CorrespondenceEditPart((Correspondence)model);
 		} else if (model instanceof MapConnection) {
 			editPart = new MapConnectionEditPart((MapConnection)model);
-		} else {
-			return null;
 		}
+		
 		return editPart;
 	}
 }

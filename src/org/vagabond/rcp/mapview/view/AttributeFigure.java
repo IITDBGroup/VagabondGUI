@@ -20,17 +20,14 @@ public class AttributeFigure extends Figure {
 	static Logger log = PluginLogProvider.getInstance().getLogger(AttributeFigure.class);
 	
 	private Label label;
-//	private int MIN_WIDTH = 100;
-//	private int MIN_HEIGHT = 10;
 
 	public AttributeFigure() {
 		ConstrainedToolbarLayout layout = new ConstrainedToolbarLayout();
 		layout.setMinorAlignment(ToolbarLayout.ALIGN_TOPLEFT);
 		layout.setStretchMinorAxis(false);
 		layout.setSpacing(0);
-		setBorder(new AttributeFigureBorder());
+//		setBorder(new AttributeFigureBorder());
 		setLayoutManager(layout);
-		//	    setBorder(new AttributeFigureBorder());
 
 		try {
 			label = new Label("", SWTResourceManager.getImage("icons/attribute.gif"));
@@ -40,7 +37,6 @@ public class AttributeFigure extends Figure {
 		}
 		label.setFont(SWTResourceManager.getSystemFont(10, false));
 		
-		//	    label.setSize(MIN_WIDTH, MIN_HEIGHT);
 		add(label);
 	}
 

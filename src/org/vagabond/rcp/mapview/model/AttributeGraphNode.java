@@ -58,4 +58,14 @@ public class AttributeGraphNode implements Node {
 	public void setParent(Node node) {
 		this.parent = node;
 	}
+	
+	public String toString () {
+		StringBuilder result = new StringBuilder ();
+		
+		result.append("Attr(");
+		result.append(getName());
+		result.append(')');
+		
+		return result.toString();
+	}
 }	

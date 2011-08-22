@@ -4,6 +4,12 @@ public class Correspondence implements Connection {
 	private Node source, target;
 	private String name;
 	
+	public Correspondence () {
+		source = null; 
+		target = null;
+		name = null;
+	}
+	
 	public String getName() {
 		return name; 
 	}

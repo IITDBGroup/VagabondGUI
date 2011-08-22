@@ -1,11 +1,13 @@
 package org.vagabond.rcp.mapview.model;
 
+import org.apache.log4j.Logger;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.vagabond.mapping.model.MapScenarioHolder;
 import org.vagabond.mapping.model.MappingGraph;
 import org.vagabond.rcp.mapview.view.MapGraphView;
+import org.vagabond.rcp.util.PluginLogProvider;
 import org.vagabond.xmlmodel.AttrDefType;
 import org.vagabond.xmlmodel.CorrespondenceType;
 import org.vagabond.xmlmodel.CorrespondencesType;
@@ -16,6 +18,10 @@ import org.vagabond.xmlmodel.RelationType;
 import org.vagabond.xmlmodel.SchemaType;
 
 public class ContentProvider {
+	
+	static Logger log = PluginLogProvider.getInstance().getLogger(
+			ContentProvider.class);
+	
 	private static ContentProvider instance = new ContentProvider();
 	private Graph graph;
 
@@ -34,7 +40,10 @@ public class ContentProvider {
 	public Graph generateGraph() throws Exception {
 		MapScenarioHolder holder = MapScenarioHolder.getInstance();
 		
+		log.debug("creating Graph");
 		if (holder.getDocument() != null) {
+			graph = new Graph();
+			log.debug("MapScenarioHolder has document");
 			generateRelations(holder, graph.getSourceSchema());
 			generateRelations(holder, graph.getTargetSchema());
 //			generateTargetRelations(holder);
@@ -93,7 +102,8 @@ public class ContentProvider {
 		for (RelationType rel : mapSchema.getRelationArray()) {
 			relName = schemaPrefix + rel.getName();
 			node = newRelation(relName);
-
+			log.debug("create relation " + relName);
+			
 			for (AttrDefType attr : rel.getAttrArray()) {
 				attrName = attr.getName();
 				attrNode = newAttribute(attrName, node);
@@ -143,17 +153,22 @@ public class ContentProvider {
 		AttributeGraphNode attrNode;
 		MappingGraph mapGraph;
 		
-		xPos = MapGraphView.getInstance().getViewer().getControl().getBounds().width/2 - 55; yPos = 70; yGap = 20;
+//		xPos = MapGraphView.getInstance().getViewer().getControl().getBounds().width/2 - 55; 
+		xPos = 30;
+		yPos = 70; yGap = 20;
 		width = 100; height = 14;
 		
 		for (MappingType map: maps.getMappingArray()) {
-			mapName = map.getId();
+ 			mapName = map.getId();
 			node = newMapping(mapName);
+			
+			log.debug("generate mapping " + mapName);
 			
 			mapGraph = holder.getGraphForMapping(map);
 
-			for (String var : mapGraph.getAllVars()) {
-				varName = var;
+			for (String var : mapGraph.getVarsOrdered()) {
+				log.debug("\tadd var:" + var);
+ 				varName = var;
 				attrNode = newAttribute(varName, node);
 				node.addAttribute(varName, attrNode);
 			}
@@ -196,17 +211,22 @@ public class ContentProvider {
 		
 		for (MappingType map: maps.getMappingArray()) {
 			mapName = map.getId();
+			log.debug("create connections for mapping " + mapName);
 			for (RelAtomType atom : map.getForeach().getAtomArray()) {
 				sourceRel = "source." + atom.getTableref();
+				log.debug("handling atom " + atom.getTableref());
 				for (String var : atom.getVarArray()) {
-					sourceAttr = source.getRelationArray(i).getAttrArray(j).getName();
+					log.debug("\tcreate connections for var <" + var + ">");
+					
+					sourceAttr = this.graph.getSourceRelation(sourceRel).getAttributes().get(j).getName();
+//					sourceAttr = source.getRelationArray(i).getAttrArray(j).getName();
 					sourceN = (AttributeGraphNode) this.graph.getSourceRelation(sourceRel).getAttribute(sourceAttr);
 					
 					targetRel = mapName;
 					targetAttr = var;
 					targetN = (AttributeGraphNode) this.graph.getMapping(targetRel).getAttribute(targetAttr);
 					
-					newCorrespondence(sourceN, targetN, connName);
+					newMapConnection(sourceN, targetN);
 					
 					j++;
 				}
@@ -217,15 +237,18 @@ public class ContentProvider {
 			
 			for (RelAtomType atom : map.getExists().getAtomArray()) {
 				targetRel = "target." + atom.getTableref();
+				log.debug("handling atom " + atom.getTableref());
 				for (String var : atom.getVarArray()) {
-					targetAttr = target.getRelationArray(i).getAttrArray(j).getName();
+					log.debug("\tcreate connections for var <" + var + ">");
+					
+					targetAttr = this.graph.getTargetRelation(targetRel).getAttributes().get(j).getName();
 					targetN = (AttributeGraphNode) this.graph.getTargetRelation(targetRel).getAttribute(targetAttr);
 					
 					sourceRel = mapName;
 					sourceAttr = var;
 					sourceN = (AttributeGraphNode) this.graph.getMapping(sourceRel).getAttribute(sourceAttr);
 					
-					newCorrespondence(sourceN, targetN, connName);
+					newMapConnection(sourceN, targetN);
 					
 					j++;
 				}
@@ -252,11 +275,27 @@ public class ContentProvider {
 		return result;
 	}
 	
+	private Connection newMapConnection (Node source, Node target) {
+		Connection result = new MapConnection();
+		
+		result.setSource((AttributeGraphNode) source);
+		result.setTarget((AttributeGraphNode) target);
+		
+		log.debug("created map connection " + source.getName() 
+				+ " to " + target.getName());
+		
+		return result;
+	}
+	
 	private Connection newCorrespondence(Node source, Node target, String name) {
 		Connection result = new Correspondence();
+		
 		result.setSource((AttributeGraphNode) source);
 		result.setTarget((AttributeGraphNode) target);
 		result.setName(name);
+		log.debug("generated correspondence: " + result.getName() + " from "
+				+ source.getName() + " to " + target.getName());
+		
 		return result;
 	}
 }

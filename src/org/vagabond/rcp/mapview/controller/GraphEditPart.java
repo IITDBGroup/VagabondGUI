@@ -8,7 +8,9 @@ import org.vagabond.rcp.mapview.model.MappingGraphNode;
 import org.vagabond.rcp.mapview.model.RelationGraphNode;
 import org.vagabond.rcp.mapview.view.MyConnectionRouter;
 import org.vagabond.rcp.mapview.view.MapGraphView;
+import org.vagabond.rcp.util.PluginLogProvider;
 
+import org.apache.log4j.Logger;
 import org.eclipse.gef.LayerConstants;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.eclipse.draw2d.ConnectionLayer;
@@ -22,6 +24,8 @@ import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
 
 public class GraphEditPart extends AbstractGraphicalEditPart {
+
+	static Logger log = PluginLogProvider.getInstance().getLogger(GraphEditPart.class);
 	
 	public GraphEditPart(Graph graph) {
 		setModel(graph);
@@ -83,6 +87,7 @@ public class GraphEditPart extends AbstractGraphicalEditPart {
 		Vector<RelationNodeEditPart> sourceRelEdits;
 		Vector<RelationNodeEditPart> targetRelEdits;
 		Vector<MappingNodeEditPart> mappingEdits;
+		int curX;
 		
 		sourceRelEdits = new Vector<RelationNodeEditPart>();
 		targetRelEdits = new Vector<RelationNodeEditPart>();
@@ -101,57 +106,83 @@ public class GraphEditPart extends AbstractGraphicalEditPart {
 			}
 		}
 		
-		layoutSourceRelations (sourceRelEdits);
-		layoutTargetRelations (targetRelEdits);
-		layoutMappings(mappingEdits);
+		curX = layoutSourceRelations (sourceRelEdits);
+		curX = layoutMappings(curX, mappingEdits);
+		curX = layoutTargetRelations (curX, targetRelEdits);
+		
 		
 	}
 	
-	private void layoutSourceRelations (Vector<RelationNodeEditPart> sourceRels) {
-		int width, height, xPos, yPos, yGap;
+	private int layoutSourceRelations (Vector<RelationNodeEditPart> sourceRels) {
+		int maxWidth = 0, height, xPos, yPos, yGap;
 		
-		xPos = 10; yPos = 10; yGap = 20;
-		width = 100; height = 14;
+		xPos = 10; yPos = 10; yGap = 20; height = 14;
 		
 		for(RelationNodeEditPart relEdit: sourceRels) {
 			RelationGraphNode node = (RelationGraphNode) relEdit.getModel();
-			relEdit.getFigure().setBounds(new Rectangle(new Point(xPos, yPos), 
-					new Dimension(width, height*(node.getNumAttributes()+1))));
-			yPos = yPos + yGap + height*(node.getNumAttributes()+1);
-			relEdit.getFigure().repaint();
+			Rectangle nodeBounds = relEdit.getFigure().getBounds();
+			Rectangle newBounds = new Rectangle(xPos, yPos, -1, -1);
+			maxWidth = Math.max(maxWidth, nodeBounds.width);
+			
+			this.setLayoutConstraint(relEdit, relEdit.getFigure(), newBounds);
+			log.debug ("replace bounds " + nodeBounds.toString() + " for " 
+					+ node.getName() + " are " + newBounds.toString());
+			yPos = yPos + yGap + nodeBounds.height;
+//			relEdit.getFigure().repaint();
 		}
+		
+		return maxWidth;
 	}
 	
-	private void layoutTargetRelations (Vector<RelationNodeEditPart> targetRels) {
-		int width, height, xPos, yPos, yGap;
+	private int layoutTargetRelations (int curX, Vector<RelationNodeEditPart> targetRels) {
+		int maxWidth, height, xPos, yPos, yGap;
 		
-		xPos = MapGraphView.getInstance().getViewer().getControl().getBounds().width - 110;
+		xPos = curX + 50;
 		yPos = 10;
 		yGap = 20;
-		width = 100; height = 14;
+		maxWidth = 0; height = 14;
 		
 		for(RelationNodeEditPart relEdit: targetRels) {
 			RelationGraphNode node = (RelationGraphNode) relEdit.getModel();
-			relEdit.getFigure().setBounds(new Rectangle(new Point(xPos, yPos), 
-					new Dimension(width, height*(node.getNumAttributes()+1))));
-			yPos = yPos + yGap + height*(node.getNumAttributes()+1);
-			relEdit.getFigure().repaint();
+			Rectangle bounds = relEdit.getFigure().getBounds();
+			Rectangle newBounds = new Rectangle(xPos, yPos, -1, -1);
+			
+			this.setLayoutConstraint(relEdit, relEdit.getFigure(), 
+					newBounds);
+//			relEdit.getFigure().setBounds(new Rectangle(new Point(xPos, yPos), 
+//					new Dimension(width, height*(node.getNumAttributes()+1))));
+			yPos = yPos + yGap + bounds.height;
+			
+			log.debug ("replace bounds " + bounds.toString() + " for " 
+					+ node.getName() + " are " + newBounds.toString());
+//			relEdit.getFigure().repaint();
 		}
+		
+		return maxWidth + curX;
 	}
 	
-	private void layoutMappings (Vector<MappingNodeEditPart> mappings) {
-		int width, height, xPos, yPos, yGap;
+	private int layoutMappings (int curX, Vector<MappingNodeEditPart> mappings) {
+		int maxWidth, height, xPos, yPos, yGap;
 		
-		xPos = MapGraphView.getInstance().getViewer().getControl().getBounds().width/2 - 55; yPos = 70; yGap = 20;
-		width = 100; height = 14;
+		xPos = curX + 50 ; yPos = 70; yGap = 20;
+		maxWidth = 0; height = 14;
 		
 		for(MappingNodeEditPart mapEdit: mappings) {
 			MappingGraphNode node = (MappingGraphNode) mapEdit.getModel();
-			mapEdit.getFigure().setBounds(new Rectangle(new Point(xPos, yPos), 
-					new Dimension(width, height*(node.getNumAttributes()+1))));
-			yPos = yPos + yGap + height*(node.getNumAttributes()+1);
-			mapEdit.getFigure().repaint();
+			Rectangle bounds = mapEdit.getFigure().getBounds();
+			Rectangle newBounds = new Rectangle(xPos, yPos, -1, -1); 
+			this.setLayoutConstraint(mapEdit, mapEdit.getFigure(), newBounds);
+			
+			log.debug ("replace bounds " + bounds.toString() + " for " 
+					+ node.getName() + " are " + newBounds.toString());
+			maxWidth = Math.max(maxWidth, bounds.width);
+//			mapEdit.getFigure().setBounds(new Rectangle(new Point(xPos, yPos), 
+//					new Dimension(width, height*(node.getNumAttributes()+1))));
+			yPos = yPos + yGap + bounds.height;
+//			mapEdit.getFigure().repaint();
 		}
+		
+		return maxWidth + curX + 50;
 	}
 
 }

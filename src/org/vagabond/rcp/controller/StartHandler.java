@@ -71,7 +71,13 @@ public class StartHandler extends AbstractHandler {
 				"database and loaded schema");
 		
 		try {
-			MapGraphView.getInstance().getViewer().setContents(ContentProvider.getInstance().generateGraph());
+			MapGraphView.getInstance().getViewer().setContents(
+					ContentProvider.getInstance().generateGraph());
+			GraphEditPart part = (GraphEditPart) MapGraphView.getInstance().getViewer()
+					.getRootEditPart().getContents();
+			MapGraphView.getInstance().getViewer().flush();
+			part.setLayoutConstraints();
+			part.refresh();
 //	    	GraphEditPart graph = (GraphEditPart) View.getInstance().getViewer().getRootEditPart().getChildren().get(0);
 //	    	graph.setLayoutConstraints();
 			
@@ -85,9 +91,7 @@ public class StartHandler extends AbstractHandler {
 					.getInstance().getDocument().getMappingScenario()
 					.getMappings().getMappingArray());
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-
-			e.printStackTrace();
+			LoggerUtil.logException(e, log);
 		}
 		
 		return null;

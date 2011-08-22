@@ -8,11 +8,17 @@ import org.vagabond.rcp.mapview.model.MapConnection;
 import org.vagabond.rcp.mapview.model.MappingGraphNode;
 import org.vagabond.rcp.mapview.model.Node;
 import org.vagabond.rcp.mapview.model.RelationGraphNode;
+import org.vagabond.rcp.util.PluginLogProvider;
 
+import org.apache.log4j.Logger;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPartFactory;
 
 public class VagabondEditPartFactory implements EditPartFactory {
+	
+	static Logger log = PluginLogProvider.getInstance().getLogger(
+			VagabondEditPartFactory.class);
+	
 	@Override
 	public EditPart createEditPart(EditPart context, Object model) {
 		EditPart editPart = null;
@@ -33,6 +39,8 @@ public class VagabondEditPartFactory implements EditPartFactory {
 		} else if (model instanceof MapConnection) {
 			editPart = new MapConnectionEditPart((MapConnection)model);
 		}
+		
+		log.debug(editPart.toString());
 		
 		return editPart;
 	}

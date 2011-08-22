@@ -1,6 +1,12 @@
 package org.vagabond.rcp.mapview.model;
 
+import org.apache.log4j.Logger;
+import org.vagabond.rcp.util.PluginLogProvider;
+
 public class MapConnection implements Connection {
+	
+	static Logger log = PluginLogProvider.getInstance().getLogger(MapConnection.class);
+	
 	private Node source, target;
 	private String name;
 	
@@ -37,12 +43,28 @@ public class MapConnection implements Connection {
 	@Override
 	public boolean getSourceAttachLeft() {
 		// connection from rel to map
-		return (getSource().getParent() instanceof RelationGraphNode) ? false : true;
+		log.debug(this.toString());
+		log.debug("source parent is " + getSource().getParent().getClass());
+		return ((getSource().getParent() instanceof RelationGraphNode) ? false : false);
 	}
 
 	@Override
 	public boolean getTargetAttachLeft() {
 		// connection from rel to map?
-		return (getSource().getParent() instanceof RelationGraphNode) ? true : false;
+		log.debug(this.toString());
+		log.debug("target parent is " + getTarget().getParent().getClass());
+		return ((getTarget().getParent() instanceof RelationGraphNode) ? true : true);
+	}
+	
+	@Override
+	public String toString () {
+		StringBuilder result = new StringBuilder ();
+		
+		result.append("MapConn from ");
+		result.append(source.toString());
+		result.append(" to ");
+		result.append(target.toString());
+		
+		return result.toString();
 	}
 }

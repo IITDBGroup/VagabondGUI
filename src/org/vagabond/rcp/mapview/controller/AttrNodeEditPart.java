@@ -83,13 +83,15 @@ public class AttrNodeEditPart extends AbstractGraphicalEditPart implements NodeE
 	public ConnectionAnchor getSourceConnectionAnchor(ConnectionEditPart connection) {
 		// correspondence edit part connect source on left
 		if (connection instanceof CorrespondenceEditPart)
-			return new LeftRightParentBoxFigureAnchor(getFigure(), true);
+			return new LeftRightParentBoxFigureAnchor(getFigure(), false);
 		if (connection instanceof MapConnectionEditPart) {
 			MapConnection mapConnModel = (MapConnection) connection.getModel();
 			return new LeftRightParentBoxFigureAnchor(getFigure(), 
 					mapConnModel.getSourceAttachLeft());
 		}
-        return new LeftRightParentBoxFigureAnchor(getFigure(), false);
+		throw new RuntimeException ("unkown connection type " 
+				+ connection.getClass().getName());
+//        return new LeftRightParentBoxFigureAnchor(getFigure(), false);
     }
 	
 	@Override
@@ -101,14 +103,15 @@ public class AttrNodeEditPart extends AbstractGraphicalEditPart implements NodeE
 	public ConnectionAnchor getTargetConnectionAnchor (ConnectionEditPart connection) {
 		// correspondence edit part connect source on left
 		if (connection instanceof CorrespondenceEditPart)
-			return new LeftRightParentBoxFigureAnchor(getFigure(), false);
+			return new LeftRightParentBoxFigureAnchor(getFigure(), true);
 		if (connection instanceof MapConnectionEditPart) {
 			MapConnection mapConnModel = (MapConnection) connection.getModel();
 			return new LeftRightParentBoxFigureAnchor(getFigure(), 
 					mapConnModel.getTargetAttachLeft());
 		}
-		
-		return new LeftRightParentBoxFigureAnchor(getFigure(), true);
+		throw new RuntimeException ("unkown connection type " 
+				+ connection.getClass().getName());
+//		return new LeftRightParentBoxFigureAnchor(getFigure(), true);
 	}
 	
 	@Override
@@ -122,5 +125,7 @@ public class AttrNodeEditPart extends AbstractGraphicalEditPart implements NodeE
 		// Not editing, so keep empty...
 	}
 
+	
+	
 	
 }

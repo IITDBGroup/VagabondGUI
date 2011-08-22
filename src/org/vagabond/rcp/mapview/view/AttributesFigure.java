@@ -6,6 +6,7 @@ import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.FlowLayout;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.IFigure;
+import org.eclipse.draw2d.LineBorder;
 import org.eclipse.draw2d.geometry.Insets;
 import org.eclipse.swt.graphics.Color;
 
@@ -21,7 +22,8 @@ public class AttributesFigure extends Figure {
 		layout.setHorizontal(false);
 		setLayoutManager(layout);
 		
-		setBorder(new ColumnFigureBorder());
+//		setBorder(new ColumnFigureBorder());
+		setBorder(new LineBorder(ColorConstants.black, 1));
 		if (background != null) {
 			this.background = background;
 			setBackgroundColor(background);

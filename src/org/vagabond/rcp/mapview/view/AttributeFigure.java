@@ -27,7 +27,8 @@ public class AttributeFigure extends Figure {
 		ConstrainedToolbarLayout layout = new ConstrainedToolbarLayout();
 		layout.setMinorAlignment(ToolbarLayout.ALIGN_TOPLEFT);
 		layout.setStretchMinorAxis(false);
-		layout.setSpacing(2);
+		layout.setSpacing(0);
+		setBorder(new AttributeFigureBorder());
 		setLayoutManager(layout);
 		//	    setBorder(new AttributeFigureBorder());
 
@@ -45,11 +46,11 @@ public class AttributeFigure extends Figure {
 
 	public class AttributeFigureBorder extends AbstractBorder {
 		public Insets getInsets(IFigure figure) {
-			return new Insets(0,0,1,0);
+			return new Insets(1,1,1,1);
 		}
 		public void paint(IFigure figure, Graphics graphics, Insets insets) {
 			graphics.drawLine(getPaintRectangle(figure, insets).getTopLeft(),
-					tempRect.getTopRight());
+					tempRect.getBottomRight());
 		}
 	}
 

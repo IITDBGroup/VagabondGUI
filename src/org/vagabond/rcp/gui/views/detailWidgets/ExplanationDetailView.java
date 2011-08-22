@@ -37,6 +37,7 @@ public class ExplanationDetailView implements IModelElementDetailView {
 	protected Label overview;
 	protected boolean addExplains;
 	private boolean selected = false;
+	private String id = null;
 	
 	public ExplanationDetailView (Composite parent, int flags, boolean addExplains) {
 		comp = new Composite(parent, flags);
@@ -71,9 +72,9 @@ public class ExplanationDetailView implements IModelElementDetailView {
 			return "A superfluous mapping is one that should not have " +
 					"been created in the first place.";
 		} else if (expl instanceof SourceSkeletonMappingError) {
-			
+			return "The mapping joins source relations in an incorrect way";
 		} else if (expl instanceof TargetSkeletonMappingError) {
-			
+			return "The mapping joins target relations in an incorrect way";
 		}
 		log.error("unknown explanation type: " + expl.toString());
 		return null;
@@ -102,15 +103,48 @@ public class ExplanationDetailView implements IModelElementDetailView {
 		updateOverview (expl);
 		sides.updateModel(expl);
 		stats.updateModel(expl);
+		createId(expl);
 	}
 	
 	protected void updateOverview (IBasicExplanation expl) {
+		StringBuilder buf = new StringBuilder();
 		
+		if (expl instanceof CopySourceError) {
+			IMarkerSet sourceSE = (IMarkerSet) expl.getExplanation();
+			overview.setText(sourceSE.toString() );
+		} else if (expl instanceof InfluenceSourceError) {
+			IMarkerSet sourceSE = (IMarkerSet) expl.getExplanation();
+			overview.setText(sourceSE.toString());
+		} else if (expl instanceof CorrespondenceError) {
+			Set<CorrespondenceType> corrs = (Set<CorrespondenceType>) expl.getExplanation();
+			for(CorrespondenceType corr: corrs)
+				buf.append(corr.getId().toUpperCase() + ",");
+			buf.deleteCharAt(buf.length() - 1);
+			overview.setText(buf.toString());
+		} else if (expl instanceof SuperflousMappingError) {
+			Set<MappingType> maps = (Set<MappingType>) expl.getExplanation();
+			for(MappingType map: maps)
+				buf.append(map.getId() + ",");
+			buf.deleteCharAt(buf.length() - 1);
+			overview.setText(buf.toString());
+		} else if (expl instanceof SourceSkeletonMappingError) {
+			Set<MappingType> maps = (Set<MappingType>) expl.getExplanation();
+			for(MappingType map: maps)
+				buf.append(map.getId() + ",");
+			buf.deleteCharAt(buf.length() - 1);
+			overview.setText(buf.toString());
+		} else if (expl instanceof TargetSkeletonMappingError) {
+			Set<MappingType> maps = (Set<MappingType>) expl.getExplanation();
+			for(MappingType map: maps)
+				buf.append(map.getId() + ",");
+			buf.deleteCharAt(buf.length() - 1);
+			overview.setText(buf.toString());
+		}
 	}
 	
 	protected void updateHeader (IBasicExplanation expl) {
-		group.setText(getTypeText(expl) 
-				+ (addExplains ? expl.explains().toString() : "")
+		group.setText(getTypeText(expl)  + " "
+				+ (addExplains ? "explains " + expl.explains().toString() : "") + " "
 				+ explToText(expl));
 	}
 	
@@ -126,7 +160,7 @@ public class ExplanationDetailView implements IModelElementDetailView {
 		} else if (expl instanceof CorrespondenceError) {
 			Set<CorrespondenceType> corrs = (Set<CorrespondenceType>) expl.getExplanation();
 			for(CorrespondenceType corr: corrs)
-				buf.append(corr.getId() + ",");
+				buf.append(corr.getId().toUpperCase()	 + ",");
 			buf.deleteCharAt(buf.length() - 1);
 			return " (" + buf.toString() + ") ";
 		} else if (expl instanceof SuperflousMappingError) {
@@ -209,15 +243,24 @@ public class ExplanationDetailView implements IModelElementDetailView {
 		}
 	}
 
+	private void createId(IBasicExplanation expl) {
+		StringBuilder newId = new StringBuilder();
+		
+		newId.append(expl.explains().toString());
+		newId.append('|');
+		newId.append(expl.getType().toString());
+		newId.append('|');
+		newId.append(expl.getExplanation().hashCode());
+		this.id = newId.toString();
+	}
+	
 	@Override
 	public String getId() {
-		// TODO Auto-generated method stub
-		return null;
+		return id;
 	}
 
 	@Override
 	public void setId(String id) {
-		// TODO Auto-generated method stub
-		
+		this.id = id;
 	}
 }

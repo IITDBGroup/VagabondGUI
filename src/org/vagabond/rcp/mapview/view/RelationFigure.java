@@ -19,7 +19,7 @@ public class RelationFigure extends Figure {
 			new RGB(255,205,215));
 	
 	private Label label;
-	private AttributesFigure attrs = new AttributesFigure();
+	private AttributesFigure attrs;
 //	private int MIN_WIDTH = 100;
 //	private int MIN_HEIGHT = 10;
 	  
@@ -27,12 +27,13 @@ public class RelationFigure extends Figure {
 	    label = new Label();
 	    label.setFont(SWTResourceManager.getBoldSystemFont(12));
 	    label.setLabelAlignment(PositionConstants.CENTER);
+	    
+	    attrs = new AttributesFigure(ColorConstants.tooltipBackground);
+	    
 		ToolbarLayout layout = new ToolbarLayout();
 		layout.setHorizontal(false);
-		layout.setSpacing(2);
+		layout.setSpacing(0);
 		layout.setStretchMinorAxis(true);
-		
-		
 		setLayoutManager(layout);
 		setBorder(new LineBorder(ColorConstants.black, 1));
 		setBackgroundColor(ColorConstants.tooltipBackground);

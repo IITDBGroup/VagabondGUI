@@ -7,7 +7,7 @@ import org.vagabond.rcp.mapview.model.Graph;
 import org.vagabond.rcp.mapview.model.MappingGraphNode;
 import org.vagabond.rcp.mapview.model.RelationGraphNode;
 import org.vagabond.rcp.mapview.view.MyConnectionRouter;
-import org.vagabond.rcp.mapview.view.View;
+import org.vagabond.rcp.mapview.view.MapGraphView;
 
 import org.eclipse.gef.LayerConstants;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
@@ -16,6 +16,7 @@ import org.eclipse.draw2d.FreeformLayer;
 import org.eclipse.draw2d.FreeformLayout;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.LineBorder;
+import org.eclipse.draw2d.XYLayout;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
@@ -31,7 +32,8 @@ public class GraphEditPart extends AbstractGraphicalEditPart {
 	* Create root figure. Use standard FreeformLayer figure here.
 	*/
 	protected IFigure createFigure() {
-		FreeformLayer layer = new FreeformLayer(); 
+		FreeformLayer layer = new FreeformLayer();
+		layer.setOpaque(true);
 		layer.setLayoutManager(new FreeformLayout()); 
 		layer.setBorder(new LineBorder(1));
 		
@@ -123,7 +125,7 @@ public class GraphEditPart extends AbstractGraphicalEditPart {
 	private void layoutTargetRelations (Vector<RelationNodeEditPart> targetRels) {
 		int width, height, xPos, yPos, yGap;
 		
-		xPos = View.getInstance().getViewer().getControl().getBounds().width - 110;
+		xPos = MapGraphView.getInstance().getViewer().getControl().getBounds().width - 110;
 		yPos = 10;
 		yGap = 20;
 		width = 100; height = 14;
@@ -140,7 +142,7 @@ public class GraphEditPart extends AbstractGraphicalEditPart {
 	private void layoutMappings (Vector<MappingNodeEditPart> mappings) {
 		int width, height, xPos, yPos, yGap;
 		
-		xPos = View.getInstance().getViewer().getControl().getBounds().width/2 - 55; yPos = 70; yGap = 20;
+		xPos = MapGraphView.getInstance().getViewer().getControl().getBounds().width/2 - 55; yPos = 70; yGap = 20;
 		width = 100; height = 14;
 		
 		for(MappingNodeEditPart mapEdit: mappings) {

@@ -5,36 +5,41 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.Vector;
 
 import org.eclipse.draw2d.geometry.Rectangle;
 
 
 public class RelationGraphNode implements Node { 
-	private Map<String, Node> attributes; 
+	
+	private List<Node> attributes;
+	private Map<String, Node> attrMap; 
 	private String name; 
-
+	private Node parent = null;
 	private Rectangle constraint;
 	
 	public RelationGraphNode(String name) {
-		this.attributes =  new TreeMap<String, Node>();
+		this.attrMap =  new TreeMap<String, Node>();
+		this.attributes = new ArrayList<Node> ();
 		this.name = name; 
 	}
 	
 	
 	public void addAttribute(String name, Node attr){
-		attributes.put(name, attr); 
+		attrMap.put(name, attr); 
+		attributes.add(attr);
 	}
 	
 	public Node getAttribute(String name) {
-		return attributes.get(name);
+		return attrMap.get(name);
 	}
 	
 	public List<Node> getAttributes(){
-		return new ArrayList<Node>(attributes.values());
+		return attributes;
 	}
 	
 	public int getNumAttributes() {
-		return attributes.size();
+		return attrMap.size();
 	}
 	
 	public String getName() {
@@ -97,4 +102,13 @@ public class RelationGraphNode implements Node {
 		return this.constraint;
 	}
 	
+	@Override
+	public Node getParent() {
+		return parent;
+	}
+
+	@Override
+	public void setParent(Node node) {
+		this.parent = node;
+	}
 }

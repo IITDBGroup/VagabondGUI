@@ -19,6 +19,7 @@ import org.eclipse.gef.LayerConstants;
 import org.eclipse.gef.RootEditPart;
 import org.eclipse.gef.editparts.LayerManager;
 import org.eclipse.gef.editparts.ScalableFreeformRootEditPart;
+import org.eclipse.gef.editparts.ScalableRootEditPart;
 import org.eclipse.gef.ui.parts.ScrollingGraphicalViewer;
 
 import org.vagabond.rcp.mapview.controller.GraphEditPart;
@@ -26,9 +27,9 @@ import org.vagabond.rcp.mapview.controller.VagabondEditPartFactory;
 import org.vagabond.rcp.util.PluginLogProvider;
 import org.vagabond.util.LoggerUtil;
 
-public class View extends ViewPart {
+public class MapGraphView extends ViewPart {
 	
-	static Logger log = PluginLogProvider.getInstance().getLogger(View.class);
+	static Logger log = PluginLogProvider.getInstance().getLogger(MapGraphView.class);
 	
 	public static final String ID = "org.vagabond.rcp.mapview.view.view";
 
@@ -40,8 +41,8 @@ public class View extends ViewPart {
 	// parts for model elements
 	private EditPartFactory editPartFactory;
 
-	public static View getInstance() {
-		return (View) PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+	public static MapGraphView getInstance() {
+		return (MapGraphView) PlatformUI.getWorkbench().getActiveWorkbenchWindow()
 				.getActivePage().findView(ID);
 	}
 
@@ -51,7 +52,7 @@ public class View extends ViewPart {
 	 */
 	public void createPartControl(Composite parent) {
 		viewer = new ScrollingGraphicalViewer();
-		rootEditPart = new ScalableFreeformRootEditPart();
+		rootEditPart = new ScalableRootEditPart();
 		editPartFactory = new VagabondEditPartFactory();
 		// Initialize the viewer, 'parent' is the
 		// enclosing RCP windowframe
@@ -66,7 +67,9 @@ public class View extends ViewPart {
 		viewer.getControl().addListener (SWT.Resize,  new Listener () {
 		    public void handleEvent (Event e) {
 		    	try {
-					viewer.setContents(ContentProvider.getInstance().generateGraph());
+		    		log.debug("resize on map graph");
+		    		viewer.getRootEditPart().getContents().refresh();
+//					viewer.setContents(ContentProvider.getInstance().generateGraph());
 				} catch (Exception e1) {
 					LoggerUtil.logException(e1, log);
 				}

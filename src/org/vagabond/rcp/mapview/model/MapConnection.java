@@ -33,4 +33,16 @@ public class MapConnection implements Connection {
 		this.target = target;
 		target.addTargetConnection(this);
 	}
+
+	@Override
+	public boolean getSourceAttachLeft() {
+		// connection from rel to map
+		return (getSource().getParent() instanceof RelationGraphNode) ? false : true;
+	}
+
+	@Override
+	public boolean getTargetAttachLeft() {
+		// connection from rel to map?
+		return (getSource().getParent() instanceof RelationGraphNode) ? true : false;
+	}
 }

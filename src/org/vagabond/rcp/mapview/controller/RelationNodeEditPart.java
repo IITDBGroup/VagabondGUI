@@ -2,14 +2,19 @@ package org.vagabond.rcp.mapview.controller;
 
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.vagabond.rcp.mapview.model.Node;
 import org.vagabond.rcp.mapview.model.RelationGraphNode;
 import org.vagabond.rcp.mapview.view.RelationFigure;
+import org.vagabond.rcp.util.PluginLogProvider;
 
 public class RelationNodeEditPart extends AbstractGraphicalEditPart {
+
+	static Logger log = PluginLogProvider.getInstance().getLogger(
+			RelationNodeEditPart.class);
 	
 	public RelationNodeEditPart(Node node) { 
 		setModel(node);
@@ -37,9 +42,13 @@ public class RelationNodeEditPart extends AbstractGraphicalEditPart {
 		RelationFigure figure = (RelationFigure)getFigure();
 		RelationGraphNode node = (RelationGraphNode) getModel();
 		GraphEditPart parent = (GraphEditPart)getParent();
-		figure.revalidatePrefferedSize();
-		figure.revalidate();
-		Rectangle r = new Rectangle(node.getConstraint());
+		Rectangle r;
+//		figure.revalidatePrefferedSize();
+//		figure.revalidate();
+		r = new Rectangle(figure.getBounds());
+		r.height = -1;
+		r.width = -1;
+		log.debug("Relation " + node.getName() +  "constraints is " + r.toString());
 		parent.setLayoutConstraint(this, figure, r);
 	}
 

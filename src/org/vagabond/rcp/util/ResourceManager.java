@@ -13,7 +13,7 @@ public class ResourceManager {
 
 	private static ResourceManager inst = new ResourceManager ();
 	
-	private Bundle bundle;
+	private Bundle bundle = null;
 	
 	public static ResourceManager getInstance() {
 		return inst;
@@ -24,7 +24,10 @@ public class ResourceManager {
 	}
 	
 	public InputStream getResource(String name) throws IOException  {
-		return bundle.getEntry(name).openStream();
+		if (bundle != null)
+			return bundle.getEntry(name).openStream();
+		else
+			return ClassLoader.getSystemResourceAsStream(name);
 	}
 	
 	public Enumeration<String> getResources (String dir) {

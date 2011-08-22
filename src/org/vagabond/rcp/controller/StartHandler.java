@@ -24,7 +24,7 @@ import org.vagabond.rcp.gui.views.MappingsView;
 import org.vagabond.rcp.gui.views.TransView;
 import org.vagabond.rcp.mapview.controller.GraphEditPart;
 import org.vagabond.rcp.mapview.model.ContentProvider;
-import org.vagabond.rcp.mapview.view.View;
+import org.vagabond.rcp.mapview.view.MapGraphView;
 import org.vagabond.rcp.model.TableViewManager;
 import org.vagabond.rcp.util.PluginLogProvider;
 import org.vagabond.rcp.util.ResourceManager;
@@ -71,7 +71,7 @@ public class StartHandler extends AbstractHandler {
 				"database and loaded schema");
 		
 		try {
-			View.getInstance().getViewer().setContents(ContentProvider.getInstance().generateGraph());
+			MapGraphView.getInstance().getViewer().setContents(ContentProvider.getInstance().generateGraph());
 //	    	GraphEditPart graph = (GraphEditPart) View.getInstance().getViewer().getRootEditPart().getChildren().get(0);
 //	    	graph.setLayoutConstraints();
 			

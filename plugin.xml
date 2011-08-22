@@ -22,7 +22,7 @@
    <extension
          point="org.eclipse.ui.views">
       <view
-            class="org.vagabond.rcp.mapview.view.View"
+            class="org.vagabond.rcp.mapview.view.MapGraphView"
             id="org.vagabond.rcp.mapview.view.view"
             name="Overview"
             restorable="true">

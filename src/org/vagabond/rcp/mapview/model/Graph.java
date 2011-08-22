@@ -8,75 +8,98 @@ import java.util.TreeMap;
 
 
 public class Graph { 
-	private Map<String, Node> sourceRelations; 
-	private Map<String, Node> targetRelations; 
-	private Map<String, Node> mappings;
+	private Map<String, MappingGraphNode> mappings;
+	private List<Node> children;
+	private Schema source;
+	private Schema target;
+	private List<MappingGraphNode> maps;
 	private String name; 
 	
 	public Graph() {
-		sourceRelations = new TreeMap<String, Node>();
-		targetRelations = new TreeMap<String, Node>();
-		mappings = new TreeMap<String, Node>();
+		init();
 	}
 	
 	public Graph(String name){
-		sourceRelations = new TreeMap<String, Node>();
-		targetRelations = new TreeMap<String, Node>();
-		mappings = new TreeMap<String, Node>();
+		init();
 		this.name = name; 
 	}
 	
-	public List getRelations() {
-		List result = new ArrayList();
+	private void init() {
+		source = new Schema(true);
+		target = new Schema(false);
+		mappings = new TreeMap<String, MappingGraphNode>();
+		children = new ArrayList<Node> ();
+		maps = new ArrayList<MappingGraphNode> ();
+	}
+	
+	public List<RelationGraphNode> getRelations() {
+		List<RelationGraphNode> result = new ArrayList<RelationGraphNode>();
 		result.addAll(getSourceRelations());
 		result.addAll(getTargetRelations());
 
 		return result;
 	}
 	
-	public List getChildren() {
-		List result = new ArrayList();
-		result.addAll(getSourceRelations());
-		result.addAll(getTargetRelations());
-		result.addAll(getMappings());
-		
-		return result;
+	public List<Node> getChildren() {
+		return children;
+	}
+	
+	public Schema getSourceSchema () {
+		return source;
+	}
+	
+	public Schema getTargetSchema () {
+		return target;
+	}
+	
+	public void addRelation (Node rel, Schema schema) {
+		assert(rel instanceof RelationGraphNode);
+		schema.addRel((RelationGraphNode) rel);
+		children.add(rel);
 	}
 	
 	public void addSourceRelation(String name, Node rel){
-		sourceRelations.put(name, rel);
+		assert(rel instanceof RelationGraphNode);
+		source.addRel((RelationGraphNode) rel);
+		children.add(rel);
 	}
 	
-	public List getSourceRelations() {
-		return new ArrayList<Node>(sourceRelations.values()); 
+	public List<RelationGraphNode> getSourceRelations() {
+		return source.getRels(); 
 	}
 	
 	public RelationGraphNode getSourceRelation(String name){
-		return (RelationGraphNode) sourceRelations.get(name); 
+		return source.getRel(name); 
 	}
 	
 	public void addTargetRelation(String name, Node rel){
-		targetRelations.put(name, rel);
+		assert(rel instanceof RelationGraphNode);
+		target.addRel((RelationGraphNode) rel);
+		children.add(rel);
 	}
 	
-	public List getTargetRelations(){
-		return new ArrayList<Node>(targetRelations.values()); 
+	public List<RelationGraphNode> getTargetRelations(){
+		return target.getRels(); 
 	}
 	
 	public RelationGraphNode getTargetRelation(String name){
-		return (RelationGraphNode) targetRelations.get(name); 
+		return target.getRel(name); 
 	}
 	
 	public void addMapping(String name, Node rel){
-		mappings.put(name, rel);
+		assert(rel instanceof MappingGraphNode);
+		MappingGraphNode map = (MappingGraphNode) rel;
+		mappings.put(name, map);
+		maps.add(map);
+		children.add(map);
 	}
 	
 	public List getMappings() {
-		return new ArrayList<Node>(mappings.values()); 
+		return maps; 
 	}
 	
 	public MappingGraphNode getMapping(String name){
-		return (MappingGraphNode) mappings.get(name); 
+		return mappings.get(name); 
 	}
 	
 	public String getName() {
@@ -84,11 +107,11 @@ public class Graph {
 	}
 	
 	public boolean isSourceRelation (RelationGraphNode rel) {
-		return sourceRelations.containsValue(rel);
+		return source.hasRel(rel);
 	}
 
 	public boolean isTargetRelation(RelationGraphNode rel) {
-		return targetRelations.containsValue(rel);
+		return target.hasRel(rel);
 	}
 	
 	public void setName(String name) {

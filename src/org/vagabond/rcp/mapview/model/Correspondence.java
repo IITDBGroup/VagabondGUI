@@ -33,4 +33,14 @@ public class Correspondence implements Connection {
 		this.target = target;
 		target.addTargetConnection(this);
 	}
+
+	@Override
+	public boolean getSourceAttachLeft() {
+		return false;
+	}
+
+	@Override
+	public boolean getTargetAttachLeft() {
+		return true;
+	}
 }

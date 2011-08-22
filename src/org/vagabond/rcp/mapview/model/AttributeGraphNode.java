@@ -6,9 +6,11 @@ import java.util.List;
 public class AttributeGraphNode implements Node {
 	private List sourceConnections, targetConnections;
 	private String name;
+	private Node parent;
 	
-	public AttributeGraphNode(String name){ 
+	public AttributeGraphNode(String name, Node parent){ 
 		this.name = name;
+		this.parent = parent;
 	}
 	
 	public List getSourceConnections() {
@@ -45,5 +47,15 @@ public class AttributeGraphNode implements Node {
 	
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	@Override
+	public Node getParent() {
+		return parent;
+	}
+
+	@Override
+	public void setParent(Node node) {
+		this.parent = node;
 	}
 }	

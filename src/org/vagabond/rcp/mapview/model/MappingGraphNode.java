@@ -9,31 +9,37 @@ import org.eclipse.draw2d.geometry.Rectangle;
 
 
 public class MappingGraphNode implements Node { 
-	private Map<String, Node> attributes; 
+	
+	private Map<String, Node> attrMap; 
+	private List<Node> attributes;
 	private String name; 
-
+	private Node parent;
+	
 	private Rectangle constraint;
 	
 	public MappingGraphNode(String name) {
-		this.attributes =  new TreeMap<String, Node>();
-		this.name = name; 
+		this.attrMap =  new TreeMap<String, Node>();
+		this.attributes = new ArrayList<Node> ();
+		this.name = name;
+		this.parent = null;
 	}
 	
 	
 	public void addAttribute(String name, Node attr){
-		attributes.put(name, attr); 
+		attrMap.put(name, attr); 
+		attributes.add(attr);
 	}
 	
 	public Node getAttribute(String name) {
-		return attributes.get(name);
+		return attrMap.get(name);
 	}
 	
 	public List<Node> getAttributes(){
-		return new ArrayList<Node>(attributes.values());
+		return attributes;
 	}
 	
 	public int getNumAttributes() {
-		return attributes.size();
+		return attrMap.size();
 	}
 	
 	public String getName() {
@@ -63,5 +69,15 @@ public class MappingGraphNode implements Node {
 	
 	public Rectangle getConstraint() {
 		return this.constraint;
+	}
+	
+	@Override
+	public Node getParent() {
+		return parent;
+	}
+
+	@Override
+	public void setParent(Node node) {
+		this.parent = node;
 	}
 }

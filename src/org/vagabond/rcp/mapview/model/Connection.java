@@ -13,4 +13,7 @@ public interface Connection {
 	public Node getTarget();
 	
 	public void setTarget(AttributeGraphNode target);
+	
+	public boolean getSourceAttachLeft();
+	public boolean getTargetAttachLeft();
 }

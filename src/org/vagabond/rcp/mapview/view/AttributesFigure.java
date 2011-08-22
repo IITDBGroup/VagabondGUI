@@ -7,18 +7,27 @@ import org.eclipse.draw2d.FlowLayout;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Insets;
+import org.eclipse.swt.graphics.Color;
 
 
 public class AttributesFigure extends Figure {
 
-	public AttributesFigure () {
+	private Color background;
+	
+	public AttributesFigure (Color background) {
 		FlowLayout layout = new FlowLayout();
 		layout.setMinorAlignment(FlowLayout.ALIGN_LEFTTOP);
 		layout.setStretchMinorAxis(false);
 		layout.setHorizontal(false);
 		setLayoutManager(layout);
+		
 		setBorder(new ColumnFigureBorder());
-		setBackgroundColor(ColorConstants.tooltipBackground);
+		if (background != null) {
+			this.background = background;
+			setBackgroundColor(background);
+		}
+		else
+			setBackgroundColor(ColorConstants.tooltipBackground);
 		setForegroundColor(ColorConstants.black);
 		setOpaque(true);
 	}

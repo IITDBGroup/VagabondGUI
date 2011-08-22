@@ -51,14 +51,15 @@ public class StartHandler extends AbstractHandler {
 	
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		Shell shell = HandlerUtil.getActiveWorkbenchWindowChecked(event).getShell();
+		//Shell shell = HandlerUtil.getActiveWorkbenchWindowChecked(event).getShell();
+		Shell shell = HandlerUtil.getActiveShell(event); 
+		
 		try {
 			connectToDB();
 		} catch (Exception e) {
 			showErrorDialog(e, shell, "Error could not connect to DB:\n");
 			return null;
 		}
-		MessageDialog.openInformation(shell, "Notice", "Successfully connected to database");
 		
 		try {
 			loadSchemaFile();
@@ -66,7 +67,8 @@ public class StartHandler extends AbstractHandler {
 			showErrorDialog(e, shell, "Unable to load scenario file:\n");
 			return null;
 		}
-		MessageDialog.openInformation(shell, "Notice", "Successfully loaded schema");
+		MessageDialog.openInformation(shell, "Notice", "Successfully connected to " +
+				"database and loaded schema");
 		
 		try {
 			View.getInstance().getViewer().setContents(ContentProvider.getInstance().generateGraph());

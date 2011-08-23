@@ -12,29 +12,29 @@ import org.eclipse.draw2d.geometry.Rectangle;
 
 public class RelationGraphNode implements Node { 
 	
-	private List<Node> attributes;
-	private Map<String, Node> attrMap; 
+	private List<AttributeGraphNode> attributes;
+	private Map<String, AttributeGraphNode> attrMap; 
 	private String name; 
 	private Node parent = null;
 	private Rectangle constraint;
 	
 	public RelationGraphNode(String name) {
-		this.attrMap =  new TreeMap<String, Node>();
-		this.attributes = new ArrayList<Node> ();
+		this.attrMap =  new TreeMap<String, AttributeGraphNode>();
+		this.attributes = new ArrayList<AttributeGraphNode> ();
 		this.name = name; 
 	}
 	
 	
-	public void addAttribute(String name, Node attr){
+	public void addAttribute(String name, AttributeGraphNode attr){
 		attrMap.put(name, attr); 
 		attributes.add(attr);
 	}
 	
-	public Node getAttribute(String name) {
+	public AttributeGraphNode getAttribute(String name) {
 		return attrMap.get(name);
 	}
 	
-	public List<Node> getAttributes(){
+	public List<AttributeGraphNode> getAttributes(){
 		return attributes;
 	}
 	
@@ -63,17 +63,17 @@ public class RelationGraphNode implements Node {
 		}
 	}
 	
-	private List sourceConnections, targetConnections;
+	private List<Connection> sourceConnections, targetConnections;
 	
-	public List getSourceConnections() {
+	public List<Connection> getSourceConnections() {
 		if (sourceConnections == null)
-			sourceConnections = new ArrayList();
+			sourceConnections = new ArrayList<Connection>();
 		return sourceConnections;
 	}
 	
-	public List getTargetConnections() {
+	public List<Connection> getTargetConnections() {
 		if (targetConnections == null)
-			targetConnections = new ArrayList();
+			targetConnections = new ArrayList<Connection>();
 		return targetConnections;
 	}
 	
@@ -100,6 +100,11 @@ public class RelationGraphNode implements Node {
 	
 	public Rectangle getConstraint() {
 		return this.constraint;
+	}
+	
+	public boolean isSourceRel () {
+		Schema schema = (Schema) getParent();
+		return schema.isSource();
 	}
 	
 	@Override

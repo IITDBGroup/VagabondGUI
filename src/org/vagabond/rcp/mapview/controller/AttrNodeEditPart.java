@@ -3,6 +3,7 @@ package org.vagabond.rcp.mapview.controller;
 import java.util.List;
 
 import org.vagabond.rcp.mapview.model.AttributeGraphNode;
+import org.vagabond.rcp.mapview.model.ForeignKeyConnection;
 import org.vagabond.rcp.mapview.model.MapConnection;
 import org.vagabond.rcp.mapview.model.Node;
 import org.vagabond.rcp.mapview.model.RelationGraphNode;
@@ -41,7 +42,7 @@ public class AttrNodeEditPart extends AbstractGraphicalEditPart implements NodeE
 	
 	@Override
 	protected IFigure createFigure() {
-		IFigure node = new AttributeFigure();		
+		IFigure node = new AttributeFigure(false);		
 		return node;
 	}
 
@@ -57,18 +58,8 @@ public class AttrNodeEditPart extends AbstractGraphicalEditPart implements NodeE
 	protected void refreshVisuals() {
 		AttributeFigure figure = (AttributeFigure) getFigure();
 		AttributeGraphNode node = (AttributeGraphNode) getModel();
-//		GraphicalEditPart parent = (GraphicalEditPart) getParent();
 		figure.setAttrName(node.getName());
-//		Rectangle r = new Rectangle(figure.getBounds());
-		
-//		log.debug("Attr: " + node.getName() + " will be at " + r.toString());
-//		parent.setLayoutConstraint(this, figure, r);
-//		figure.revalidate();
-//		if (parent instanceof RelationNodeEditPart) 
-//			((RelationNodeEditPart)parent).setLayoutConstraint(this, figure, r);
-//		else
-//			((MappingNodeEditPart)parent).setLayoutConstraint(this, figure, r);
-		
+		figure.setBoldFont(node.isPK());
 	}
 
 	protected List getModelSourceConnections() {
@@ -89,6 +80,11 @@ public class AttrNodeEditPart extends AbstractGraphicalEditPart implements NodeE
 			return new LeftRightParentBoxFigureAnchor(getFigure(), 
 					mapConnModel.getSourceAttachLeft());
 		}
+		if (connection instanceof ForeignKeyConnEditPart) {
+			ForeignKeyConnection fk = (ForeignKeyConnection) connection.getModel();
+			return new LeftRightParentBoxFigureAnchor(getFigure(), 
+					fk.getSourceAttachLeft());
+		}
 		throw new RuntimeException ("unkown connection type " 
 				+ connection.getClass().getName());
 //        return new LeftRightParentBoxFigureAnchor(getFigure(), false);
@@ -108,6 +104,11 @@ public class AttrNodeEditPart extends AbstractGraphicalEditPart implements NodeE
 			MapConnection mapConnModel = (MapConnection) connection.getModel();
 			return new LeftRightParentBoxFigureAnchor(getFigure(), 
 					mapConnModel.getTargetAttachLeft());
+		}
+		if (connection instanceof ForeignKeyConnEditPart) {
+			ForeignKeyConnection fk = (ForeignKeyConnection) connection.getModel();
+			return new LeftRightParentBoxFigureAnchor(getFigure(), 
+					fk.getTargetAttachLeft());
 		}
 		throw new RuntimeException ("unkown connection type " 
 				+ connection.getClass().getName());

@@ -20,13 +20,15 @@ public class AttributeFigure extends Figure {
 	static Logger log = PluginLogProvider.getInstance().getLogger(AttributeFigure.class);
 	
 	private Label label;
+	private boolean boldFont;
 
-	public AttributeFigure() {
+	public AttributeFigure(boolean bold) {
+		this.boldFont = bold;
+		
 		ConstrainedToolbarLayout layout = new ConstrainedToolbarLayout();
 		layout.setMinorAlignment(ToolbarLayout.ALIGN_TOPLEFT);
 		layout.setStretchMinorAxis(false);
 		layout.setSpacing(0);
-//		setBorder(new AttributeFigureBorder());
 		setLayoutManager(layout);
 
 		try {
@@ -35,7 +37,7 @@ public class AttributeFigure extends Figure {
 			LoggerUtil.logException(e, log);
 			label = new Label();
 		}
-		label.setFont(SWTResourceManager.getSystemFont(10, false));
+		label.setFont(SWTResourceManager.getSystemFont(10, bold));
 		
 		add(label);
 	}
@@ -56,5 +58,12 @@ public class AttributeFigure extends Figure {
 	
 	public void setAttrName (String name) {
 		label.setText(name);
+	}
+	
+	public void setBoldFont (boolean boldFont) {
+		if (this.boldFont != boldFont) {
+			label.setFont(SWTResourceManager.getSystemFont(10, boldFont));
+			this.boldFont = boldFont;
+		}
 	}
 }

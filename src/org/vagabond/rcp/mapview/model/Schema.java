@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Schema {
+public class Schema implements Node {
 
 	public static final String SOURCE = "source";
 	public static final String TARGET = "target";
@@ -13,6 +13,7 @@ public class Schema {
 	private boolean source;
 	private List<RelationGraphNode> rels;
 	private Map<String, RelationGraphNode> relNameMap;
+	private Node parent = null;
 	
 	public Schema (boolean source) {
 		this.source = source;
@@ -37,6 +38,7 @@ public class Schema {
 	}
 	
 	public void addRel(RelationGraphNode node) {
+		node.setParent(this);
 		rels.add(node);
 		relNameMap.put(node.getName(), node);
 	}
@@ -47,5 +49,27 @@ public class Schema {
 	
 	public boolean hasRel (RelationGraphNode rel) {
 		return rels.contains(rel);
+	}
+
+	@Override
+	public void setName(String name) {
+		// do nothing
+	}
+
+	@Override
+	public String getName() {
+		if (source)
+			return "source";
+		return "target";
+	}
+
+	@Override
+	public Node getParent() {
+		return parent;
+	}
+
+	@Override
+	public void setParent(Node node) {
+		this.parent = node;
 	}
 }

@@ -11,6 +11,7 @@ import org.vagabond.rcp.util.PluginLogProvider;
 import org.vagabond.xmlmodel.AttrDefType;
 import org.vagabond.xmlmodel.CorrespondenceType;
 import org.vagabond.xmlmodel.CorrespondencesType;
+import org.vagabond.xmlmodel.ForeignKeyType;
 import org.vagabond.xmlmodel.MappingType;
 import org.vagabond.xmlmodel.MappingsType;
 import org.vagabond.xmlmodel.RelAtomType;
@@ -46,7 +47,8 @@ public class ContentProvider {
 			log.debug("MapScenarioHolder has document");
 			generateRelations(holder, graph.getSourceSchema());
 			generateRelations(holder, graph.getTargetSchema());
-//			generateTargetRelations(holder);
+			generateForeignKeys(holder, true);
+			generateForeignKeys(holder, false);
 			generateMappings(holder);
 			generateCorrespondences(holder);
 			generateMapConnections(holder);
@@ -55,49 +57,19 @@ public class ContentProvider {
 		return graph;
 	}
 	
-//	private void generateSourceRelations(MapScenarioHolder holder) {
-//		SchemaType source = holder.getScenario().getSchemas().getSourceSchema();
-//		int width, height, xPos, yPos, yGap;
-//		String relName, attrName;
-//		RelationGraphNode node;
-//		AttributeGraphNode attrNode;
-//		
-//		xPos = 10; yPos = 10; yGap = 20;
-//		width = 100; height = 14;
-//		
-//		for (RelationType rel : source.getRelationArray()) {
-//			relName = "source." + rel.getName();
-//			node = newRelation(relName);
-//
-//			for (AttrDefType attr : rel.getAttrArray()) {
-//				attrName = attr.getName();
-//				attrNode = newAttribute(attrName, node);
-//				node.addAttribute(attrName, attrNode);
-//			}
-//			
-//			node.setConstraint(new Rectangle(new Point(xPos, yPos), 
-//					new Dimension(width, height*(node.getNumAttributes()+1))));
-//			yPos = yPos + yGap + height*(node.getNumAttributes()+1);
-//			this.graph.addSourceRelation(relName, node);
-//		}
-//	}
-	
 	private void generateRelations (MapScenarioHolder holder, Schema schema) {
 		SchemaType mapSchema;
-		int width, height, xPos, yPos, yGap;
 		String relName, attrName;
 		RelationGraphNode node;
 		AttributeGraphNode attrNode;
 		String schemaPrefix;
+	
 		// get schema from XML model
 		mapSchema = (schema.isSource()) ? 
 				holder.getScenario().getSchemas().getSourceSchema() :
 					holder.getScenario().getSchemas().getTargetSchema()	;
 		schemaPrefix = (schema.isSource()) ?
 				"source." : "target.";
-				
-		xPos = 10; yPos = 10; yGap = 20;
-		width = 100; height = 14;
 		
 		for (RelationType rel : mapSchema.getRelationArray()) {
 			relName = schemaPrefix + rel.getName();
@@ -109,55 +81,26 @@ public class ContentProvider {
 				attrNode = newAttribute(attrName, node);
 				node.addAttribute(attrName, attrNode);
 			}
-			
-//			node.setConstraint(new Rectangle(xPos, yPos, -1,-1));
-			yPos = yPos + yGap + height*(node.getNumAttributes()+1);
+
 			this.graph.addRelation(node, schema);
+			
+			// handle primary key
+			if (rel.getPrimaryKey() != null) {
+				for(String attr: rel.getPrimaryKey().getAttrArray()) {
+					node.getAttribute(attr).setPK(true);
+				}
+			}
 		}		
 	}
-	
-//	private void generateTargetRelations(MapScenarioHolder holder) {
-//		SchemaType target = holder.getScenario().getSchemas().getTargetSchema();
-//		int width, height, xPos, yPos, yGap;
-//		String relName, attrName;
-//		RelationGraphNode node;
-//		AttributeGraphNode attrNode;
-//		
-//		xPos = View.getInstance().getViewer().getControl().getBounds().width - 130;
-//		yPos = 10;
-//		yGap = 20;
-//		width = 100; height = 14;
-//		
-//		for (RelationType rel : target.getRelationArray()) {
-//			relName = "target." + rel.getName();
-//			node = newRelation(relName);
-//			
-//			for (AttrDefType attr : rel.getAttrArray()) {
-//				attrName = attr.getName();
-//				attrNode = newAttribute(attrName, node);
-//				node.addAttribute(attrName, attrNode);
-//			}
-//			
-//			node.setConstraint(new Rectangle(new Point(xPos, yPos), 
-//					new Dimension(width, height*(node.getNumAttributes()+1))));
-//			yPos = yPos + yGap + height*(node.getNumAttributes()+1);
-//			this.graph.addTargetRelation(relName, node);
-//		}
-//	}
+
 	
 	private void generateMappings(MapScenarioHolder holder) throws Exception {
 		MappingsType maps = holder.getScenario().getMappings();
-		int width, height, xPos, yPos, yGap;
 		String mapName, varName;
 		MappingGraphNode node;
 		AttributeGraphNode attrNode;
 		MappingGraph mapGraph;
-		
-//		xPos = MapGraphView.getInstance().getViewer().getControl().getBounds().width/2 - 55; 
-		xPos = 30;
-		yPos = 70; yGap = 20;
-		width = 100; height = 14;
-		
+				
 		for (MappingType map: maps.getMappingArray()) {
  			mapName = map.getId();
 			node = newMapping(mapName);
@@ -173,10 +116,25 @@ public class ContentProvider {
 				node.addAttribute(varName, attrNode);
 			}
 			
-//			node.setConstraint(new Rectangle(new Point(xPos, yPos), 
-//					new Dimension(width, height*(node.getNumAttributes()+1))));
-			yPos = yPos + yGap + height*(node.getNumAttributes()+1);
 			this.graph.addMapping(mapName, node);
+		}
+	}
+	
+	private void generateForeignKeys (MapScenarioHolder holder, boolean source) {
+		SchemaType schema = source ?
+				holder.getScenario().getSchemas().getSourceSchema():
+					holder.getScenario().getSchemas().getTargetSchema();
+		ForeignKeyConnection fkConn;
+		AttributeGraphNode[] sources, targets;
+		
+		for(ForeignKeyType fk: schema.getForeignKeyArray()) {
+			sources = graph.getAttrs(fk.getFrom(), source);
+			targets = graph.getAttrs(fk.getTo(), source);
+			
+			for (int i = 0; i < sources.length; i++) {
+				fkConn = new ForeignKeyConnection(fk.getId(),sources[i], 
+						targets[i]);
+			}
 		}
 	}
 	

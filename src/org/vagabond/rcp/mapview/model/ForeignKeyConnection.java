@@ -1,46 +1,51 @@
 package org.vagabond.rcp.mapview.model;
 
-public class Correspondence implements Connection {
-	private AttributeGraphNode source, target;
+public class ForeignKeyConnection implements Connection {
+
 	private String name;
+	private AttributeGraphNode source;
+	private AttributeGraphNode target;
 	
-	public Correspondence () {
-		source = null; 
-		target = null;
-		name = null;
-	}
-	
-	public Correspondence (String name, AttributeGraphNode source, 
+	public ForeignKeyConnection (String name, AttributeGraphNode source, 
 			AttributeGraphNode target) {
 		this.name = name;
 		setSource(source);
 		setTarget(target);
 	}
 	
-	public String getName() {
-		return name; 
-	}
 	
+	@Override
+	public String getName() {
+		return name;
+	}
+
+	@Override
 	public void setName(String name) {
 		this.name = name;
 	}
-	
+
+	@Override
 	public Node getSource() {
 		return source;
 	}
-	
+
+	@Override
 	public void setSource(AttributeGraphNode source) {
+		assert(source.getParent() instanceof RelationGraphNode);
 		if (this.source != null)
 			source.removeSourceConnection(this);
 		this.source = source;
 		source.addSourceConnection(this);
 	}
-	
+
+	@Override
 	public Node getTarget() {
 		return target;
 	}
-	
+
+	@Override
 	public void setTarget(AttributeGraphNode target) {
+		assert(target.getParent() instanceof RelationGraphNode);
 		if (this.target != null)
 			target.removeTargetConnection(this);
 		this.target = target;
@@ -49,11 +54,14 @@ public class Correspondence implements Connection {
 
 	@Override
 	public boolean getSourceAttachLeft() {
-		return false;
+		RelationGraphNode sourceRel = (RelationGraphNode) source.getParent();
+		return sourceRel.isSourceRel();
 	}
 
 	@Override
 	public boolean getTargetAttachLeft() {
-		return true;
+		RelationGraphNode sourceRel = (RelationGraphNode) source.getParent();
+		return sourceRel.isSourceRel();
 	}
+
 }

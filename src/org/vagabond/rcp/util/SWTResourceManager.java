@@ -39,9 +39,12 @@ public class SWTResourceManager {
 		return instance.colors.get(rgb);
 	}
 	
-	public static void nameColor (String name, RGB rgb) {
+	public static Color nameColor (String name, RGB rgb) {
+		if (instance.namedColors.containsKey(name))
+			return getColor(name);
 		Color named = getColor(rgb);
 		instance.namedColors.put(name, rgb);
+		return named;
 	}
 	
 	public static Color getColor(String name) {

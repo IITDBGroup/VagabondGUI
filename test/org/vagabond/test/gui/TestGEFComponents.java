@@ -12,10 +12,13 @@ import org.eclipse.draw2d.XYLayout;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.editparts.ScalableRootEditPart;
 import org.eclipse.gef.ui.parts.ScrollingGraphicalViewer;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.vagabond.mapping.model.MapScenarioHolder;
 import org.vagabond.mapping.model.ModelLoader;
@@ -27,6 +30,7 @@ import org.vagabond.rcp.mapview.view.LeftRightParentBoxFigureAnchor;
 import org.vagabond.rcp.mapview.view.MappingFigure;
 import org.vagabond.rcp.mapview.view.RelationFigure;
 import org.vagabond.rcp.util.PluginLogProvider;
+import org.vagabond.util.LoggerUtil;
 
 public class TestGEFComponents {
 
@@ -42,11 +46,11 @@ public class TestGEFComponents {
 		shell.setText("UMLClassFigure Test");
 //		LightweightSystem lws = new LightweightSystem(shell);
 		
-		ScrollingGraphicalViewer viewer;
+		final ScrollingGraphicalViewer viewer;
 		
 //		Figure contents =TopLevelContents.createContents(); 
 		
-		ModelLoader.getInstance().loadToInst("../TrampExGen/resource/test/simpleTest.xml");
+		ModelLoader.getInstance().loadToInst("../TrampExGen/resource/exampleScenarios/homelessDebugged.xml");
 		log.debug(MapScenarioHolder.getInstance().getDocument().toString());
 		
 		
@@ -58,6 +62,24 @@ public class TestGEFComponents {
 		viewer.createControl(shell);
 		viewer.setRootEditPart(rootEditPart);
 		viewer.setEditPartFactory(editPartFactory);
+		
+		viewer.getControl().addListener (SWT.Resize,  new Listener () {
+		    public void handleEvent (Event e) {
+		    	try {
+		    		log.debug("resize on map graph");
+		    		GraphEditPart part = (GraphEditPart) viewer.getRootEditPart().getContents();
+		    		part.setLayoutConstraints();
+		    		
+		    		// refresh
+		    		viewer.getRootEditPart().getContents().refresh();
+				} catch (Exception e1) {
+					LoggerUtil.logException(e1, log);
+				}
+//		    	// resize map
+//		    	GraphEditPart graph = (GraphEditPart) viewer.getRootEditPart().getChildren().get(0);
+//		    	graph.setLayoutConstraints();
+		    }
+		});
 		
 		ContentProvider.getInstance().generateGraph();
 		viewer.setContents(ContentProvider.getInstance().getGraph());

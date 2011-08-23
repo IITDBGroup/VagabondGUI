@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.vagabond.xmlmodel.AttrRefType;
+
 
 public class Graph { 
 	private Map<String, MappingGraphNode> mappings;
@@ -118,6 +120,30 @@ public class Graph {
 		this.name = name;
 	}
 	
+	public AttributeGraphNode getAttr (AttrRefType attrRef, boolean source) {
+		RelationGraphNode rel = source ? 
+				getSourceRelation(attrRef.getTableref()) :
+				getTargetRelation(attrRef.getTableref());
+		return rel.getAttribute(attrRef.getAttrArray()[0]);
+	}
+	
+	public AttributeGraphNode[] getAttrs (AttrRefType attrRef, boolean source) {
+		AttributeGraphNode[] result = 
+			new AttributeGraphNode[attrRef.getAttrArray().length];
+		String schemaPrefix = (source) ? "source." : "target.";
+		String fullRelName = schemaPrefix + attrRef.getTableref();
+		RelationGraphNode rel = (source ?  
+				getSourceRelation(fullRelName) :
+				getTargetRelation(fullRelName));
+		
+		for (int i = 0; i < result.length; i++) {
+			result[i] = rel.getAttribute(attrRef.getAttrArray()[i]);
+		}
+	
+		return result;
+	}
+	
+	@Override
 	public boolean equals(Object obj) {
 		if (!(obj instanceof Node) || obj == null) {
 			return false;

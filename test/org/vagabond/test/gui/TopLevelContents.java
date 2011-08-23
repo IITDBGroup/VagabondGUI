@@ -23,49 +23,36 @@ public class TopLevelContents {
 		XYLayout contentsLayout = new XYLayout();
 		contents.setLayoutManager(contentsLayout);
 
-		//			Font classFont = new Font(null, "Arial", 12, SWT.BOLD);
-		//			Label nameLabel1 = new Label("Relation one");
-		//			nameLabel1.setFont(classFont);
-		//
-		//			Label nameLabel2 = new Label("Relation two");
-		//			nameLabel1.setFont(classFont);
-
 		final RelationFigure relFigure1 = new RelationFigure();
 		relFigure1.setNameText("Relation One");
 		final RelationFigure relFigure2 = new RelationFigure();
-		relFigure2.setNameText("Relation Two");
+		relFigure2.setNameText("Relation Two long long");
 
 		final MappingFigure mapFig = new MappingFigure();
 		mapFig.setNameText("M1");
 
-		//			Label aLabel1 = new Label("One Name(1)");
-		//			Label aLabel2 = new Label("One Attr(2)");
-		//			Label aLabel3 = new Label("One Attr(3) long long long");
-		//			Label aLabel4 = new Label("Two Name(1)");
-		//			Label aLabel5 = new Label("Two Attr(2)");
-
 		Image image = new Image(Display.getCurrent(), new FileInputStream("icons/attribute.gif"));
 
-		AttributeFigure aLabel1 = new AttributeFigure ();
+		AttributeFigure aLabel1 = new AttributeFigure (true);
 		aLabel1.setAttrName("One Name(1)");
 		aLabel1.getLabel().setIcon(image);
-		AttributeFigure aLabel2 = new AttributeFigure ();
+		AttributeFigure aLabel2 = new AttributeFigure (false);
 		aLabel2.setAttrName("One Name(2)");
 		aLabel2.getLabel().setIcon(image);
-		AttributeFigure aLabel3 = new AttributeFigure ();
+		AttributeFigure aLabel3 = new AttributeFigure (false);
 		aLabel3.setAttrName("One Name(3) long long long");
 		aLabel3.getLabel().setIcon(image);
 
-		AttributeFigure aLabel4 = new AttributeFigure ();
+		AttributeFigure aLabel4 = new AttributeFigure (true);
 		aLabel4.setAttrName("Two Name(1)");
 		aLabel4.getLabel().setIcon(image);
-		AttributeFigure aLabel5 = new AttributeFigure ();
+		AttributeFigure aLabel5 = new AttributeFigure (false);
 		aLabel5.setAttrName("Two Name(2)");
 		aLabel5.getLabel().setIcon(image);
 
-		AttributeFigure mLabel1 = new AttributeFigure();
+		AttributeFigure mLabel1 = new AttributeFigure(false);
 		mLabel1.setAttrName("a");
-		AttributeFigure mLabel2 = new AttributeFigure();
+		AttributeFigure mLabel2 = new AttributeFigure(false);
 		mLabel2.setAttrName("b");
 
 

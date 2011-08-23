@@ -3,6 +3,7 @@ package org.vagabond.rcp.mapview.controller;
 import org.vagabond.rcp.mapview.model.AttributeGraphNode;
 import org.vagabond.rcp.mapview.model.Connection;
 import org.vagabond.rcp.mapview.model.Correspondence;
+import org.vagabond.rcp.mapview.model.ForeignKeyConnection;
 import org.vagabond.rcp.mapview.model.Graph;
 import org.vagabond.rcp.mapview.model.MapConnection;
 import org.vagabond.rcp.mapview.model.MappingGraphNode;
@@ -38,6 +39,8 @@ public class VagabondEditPartFactory implements EditPartFactory {
 			editPart = new CorrespondenceEditPart((Correspondence)model);
 		} else if (model instanceof MapConnection) {
 			editPart = new MapConnectionEditPart((MapConnection)model);
+		} else if (model instanceof ForeignKeyConnection) {
+			editPart = new ForeignKeyConnEditPart((ForeignKeyConnection) model);
 		}
 		
 		log.debug(editPart.toString());

@@ -4,24 +4,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AttributeGraphNode implements Node {
-	private List sourceConnections, targetConnections;
+	private List<Connection> sourceConnections, targetConnections;
 	private String name;
 	private Node parent;
+	private boolean isPK;
 	
 	public AttributeGraphNode(String name, Node parent){ 
 		this.name = name;
 		this.parent = parent;
+		this.isPK = false;
 	}
 	
-	public List getSourceConnections() {
+	public List<Connection> getSourceConnections() {
 		if (sourceConnections == null)
-			sourceConnections = new ArrayList();
+			sourceConnections = new ArrayList<Connection>();
 		return sourceConnections;
 	}
 	
-	public List getTargetConnections() {
+	public List<Connection> getTargetConnections() {
 		if (targetConnections == null)
-			targetConnections = new ArrayList();
+			targetConnections = new ArrayList<Connection>();
 		return targetConnections;
 	}
 	
@@ -67,5 +69,13 @@ public class AttributeGraphNode implements Node {
 		result.append(')');
 		
 		return result.toString();
+	}
+
+	public boolean isPK() {
+		return isPK;
+	}
+
+	public void setPK(boolean isPK) {
+		this.isPK = isPK;
 	}
 }	

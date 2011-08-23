@@ -68,14 +68,14 @@ public class MapGraphView extends ViewPart {
 		    public void handleEvent (Event e) {
 		    	try {
 		    		log.debug("resize on map graph");
+		    		
+		    		GraphEditPart part = (GraphEditPart) viewer.getRootEditPart().getContents();
+		    		part.setLayoutConstraints();
+		    		
 		    		viewer.getRootEditPart().getContents().refresh();
-//					viewer.setContents(ContentProvider.getInstance().generateGraph());
 				} catch (Exception e1) {
 					LoggerUtil.logException(e1, log);
 				}
-//		    	// resize map
-//		    	GraphEditPart graph = (GraphEditPart) viewer.getRootEditPart().getChildren().get(0);
-//		    	graph.setLayoutConstraints();
 		    }
 		});
 	}

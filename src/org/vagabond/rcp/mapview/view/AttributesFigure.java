@@ -7,6 +7,7 @@ import org.eclipse.draw2d.FlowLayout;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.LineBorder;
+import org.eclipse.draw2d.ToolbarLayout;
 import org.eclipse.draw2d.geometry.Insets;
 import org.eclipse.swt.graphics.Color;
 
@@ -16,14 +17,14 @@ public class AttributesFigure extends Figure {
 	private Color background;
 	
 	public AttributesFigure (Color background) {
-		FlowLayout layout = new FlowLayout();
-		layout.setMinorAlignment(FlowLayout.ALIGN_LEFTTOP);
-		layout.setStretchMinorAxis(false);
+		ToolbarLayout layout = new ToolbarLayout();
 		layout.setHorizontal(false);
+		layout.setSpacing(0);
+		layout.setStretchMinorAxis(true);
+		
 		setLayoutManager(layout);
 		
-//		setBorder(new ColumnFigureBorder());
-		setBorder(new LineBorder(ColorConstants.black, 1));
+		setBorder(new ColumnFigureBorder());
 		if (background != null) {
 			this.background = background;
 			setBackgroundColor(background);
@@ -33,18 +34,19 @@ public class AttributesFigure extends Figure {
 		setForegroundColor(ColorConstants.black);
 		setOpaque(true);
 	}
-
+	
 	class ColumnFigureBorder extends AbstractBorder
 	{
 	
 		public Insets getInsets(IFigure figure)
 		{
-			return new Insets(5, 3, 3, 1);
+			return new Insets(2, 3, 3, 4);
 		}
 	
 		public void paint(IFigure figure, Graphics graphics, Insets insets)
 		{
-			graphics.drawLine(getPaintRectangle(figure, insets).getTopLeft(), tempRect.getTopRight());
+			graphics.drawLine(getPaintRectangle(figure, insets).getTopLeft(), 
+					tempRect.getTopRight());
 		}
 	}
 	

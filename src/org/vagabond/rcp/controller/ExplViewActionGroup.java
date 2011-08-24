@@ -5,6 +5,7 @@ import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.actions.ActionGroup;
 import org.eclipse.ui.actions.SelectionListenerAction;
 import org.vagabond.rcp.gui.views.ExplRankView;
+import org.vagabond.rcp.model.ContentProvider;
 
 public class ExplViewActionGroup extends ActionGroup {
 	private final ExplRankView explView;
@@ -27,7 +28,7 @@ public class ExplViewActionGroup extends ActionGroup {
     }
 	
 	public void updateActionBars() {
-		this.nextAction.setEnabled(ExplRankView.getInstance().getExplCollection().hasNext());
+		this.nextAction.setEnabled(ContentProvider.getInstance().getExplCol().hasNext());
 		this.previousAction.setEnabled(true);
 	}
 }

@@ -1,5 +1,6 @@
 package org.vagabond.rcp.gui.views;
 
+import org.apache.log4j.Logger;
 import org.eclipse.jface.viewers.ITreeSelection;
 import org.eclipse.jface.viewers.TreePath;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -15,19 +16,27 @@ import org.vagabond.explanation.marker.IAttributeValueMarker;
 import org.vagabond.explanation.marker.IMarkerSet;
 import org.vagabond.explanation.marker.MarkerFactory;
 import org.vagabond.explanation.model.ExplanationCollection;
+import org.vagabond.explanation.model.IExplanationSet;
 import org.vagabond.rcp.controller.ExplGenContentProvider;
 import org.vagabond.rcp.controller.ExplGenLabelProvider;
 import org.vagabond.rcp.controller.ExplViewActionGroup;
+import org.vagabond.rcp.util.PluginLogProvider;
+import org.vagabond.util.LoggerUtil;
 
 import com.quantum.sql.SQLResultSetResults;
 
 public class ExplRankView extends ViewPart {
+
+	static Logger log = PluginLogProvider.getInstance().getLogger(
+			ExplRankView.class);
+	
 	public static final String ID = "org.vagabond.rcp.gui.views.explrankview";
 
 	private TreeViewer viewer;
 	private ExplanationSetGenerator gen = new ExplanationSetGenerator();
-	private ExplanationCollection col;
 	protected ExplViewActionGroup actionGroup;
+	private IExplanationSet curSet = null;
+	
 
 	public static ExplRankView getInstance() {
 		return (ExplRankView) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(ID);
@@ -65,17 +74,23 @@ public class ExplRankView extends ViewPart {
 		viewer.getControl().setLayoutData(gridData);		
 	}
 
-	public void updateView() {
-		if (!col.hasNext())
-			col.resetIter();
-		
-		viewer.setInput(col.next());
+	public void updateView (IExplanationSet explSet) {
+		this.curSet = explSet;
+		viewer.setInput(explSet);
 		this.actionGroup.updateActionBars();
 	}
 	
-	public ExplanationCollection getExplCollection() {
-		return col;
-	}
+//	public void updateView() {
+//		if (!col.hasNext())
+//			col.resetIter();
+//		
+//		viewer.setInput(col.next());
+//		this.actionGroup.updateActionBars();
+//	}
+	
+//	public ExplanationCollection getExplCollection() {
+//		return col;
+//	}
 	
 	/**
 	 * Passing the focus request to the viewer's control.
@@ -84,18 +99,17 @@ public class ExplRankView extends ViewPart {
 		viewer.getControl().setFocus();
 	}
 	
-	public void generateErrorExpl(ITreeSelection selection) {
-		IMarkerSet m;
-
-		try {
-			m = parseMarkers(selection);
-			col = gen.findExplanations(m);
-			updateView();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
+//	public void generateErrorExpl(ITreeSelection selection) {
+//		IMarkerSet m;
+//
+//		try {
+//			m = parseMarkers(selection);
+//			col = gen.findExplanations(m);
+//			updateView();
+//		} catch (Exception e) {
+//			LoggerUtil.logException(e, log);
+//		}
+//	}
 	
 	private IMarkerSet parseMarkers(ITreeSelection selection) throws Exception {
 		String relation, tid, attribute;

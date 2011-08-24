@@ -24,11 +24,11 @@ import org.vagabond.mapping.model.MapScenarioHolder;
 import org.vagabond.mapping.model.ModelLoader;
 import org.vagabond.rcp.mapview.controller.GraphEditPart;
 import org.vagabond.rcp.mapview.controller.VagabondEditPartFactory;
-import org.vagabond.rcp.mapview.model.ContentProvider;
 import org.vagabond.rcp.mapview.view.AttributeFigure;
 import org.vagabond.rcp.mapview.view.LeftRightParentBoxFigureAnchor;
 import org.vagabond.rcp.mapview.view.MappingFigure;
 import org.vagabond.rcp.mapview.view.RelationFigure;
+import org.vagabond.rcp.model.ContentProvider;
 import org.vagabond.rcp.util.PluginLogProvider;
 import org.vagabond.util.LoggerUtil;
 

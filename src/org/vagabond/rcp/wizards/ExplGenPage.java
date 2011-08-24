@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.ITreeSelection;
@@ -20,8 +21,16 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
+import org.vagabond.explanation.generation.ExplanationSetGenerator;
+import org.vagabond.explanation.marker.IAttributeValueMarker;
+import org.vagabond.explanation.marker.IMarkerSet;
+import org.vagabond.explanation.marker.MarkerFactory;
+import org.vagabond.explanation.model.ExplanationCollection;
 import org.vagabond.rcp.gui.views.ExplRankView;
 import org.vagabond.rcp.gui.views.ExplView;
+import org.vagabond.rcp.model.ContentProvider;
+import org.vagabond.rcp.util.PluginLogProvider;
+import org.vagabond.util.LoggerUtil;
 
 import com.quantum.Messages;
 import com.quantum.model.Bookmark;
@@ -32,9 +41,13 @@ import com.quantum.sql.SQLResults;
 import com.quantum.ui.dialog.SQLExceptionDialog;
 
 public class ExplGenPage extends WizardPage {
+
+	static Logger log = PluginLogProvider.getInstance().getLogger(ExplGenPage.class);
+	
 	protected IStructuredSelection selection;
 	private SQLResultSetResults results;
 	private TreeViewer viewer;
+	private ExplanationSetGenerator gen = new ExplanationSetGenerator();
 	
 	public ExplGenPage(String pageName) {
 		super(pageName);
@@ -134,12 +147,57 @@ public class ExplGenPage extends WizardPage {
     	ITreeSelection selection = (ITreeSelection) viewer.getSelection();
     	
     	if (selection != null) {
-    		ExplView.getInstance().generateErrorExpl(selection);
-    		ExplRankView.getInstance().generateErrorExpl(selection);
+    		generateErrorExpl(selection);
+    		ExplView.getInstance().updateView();
+    		if (ContentProvider.getInstance().getExplCol().hasNext())
+    			ExplRankView.getInstance().updateView(ContentProvider
+    					.getInstance().getExplCol().next());
     		return true;
     	}
     	
     	return false;
     }
+    
+    
+    
+    public void generateErrorExpl(ITreeSelection selection) {
+		IMarkerSet m;
+    	ExplanationCollection col;
+    	
+    	try {
+			m = parseMarkers(selection);
+			col = gen.findExplanations(m);
+			ContentProvider.getInstance().getExplModel().setCol(col);
+			ContentProvider.getInstance().getExplModel().setMarkers(m);
+		} catch (Exception e) {
+			LoggerUtil.logException(e, log);
+		}
+    }
+    
+	private IMarkerSet parseMarkers(ITreeSelection selection) throws Exception {
+		String relation, tid, attribute;
+		SQLResultSetResults.Row r;
+		IMarkerSet m = MarkerFactory.newMarkerSet();
+		IAttributeValueMarker e;
+		TreePath[] paths = selection.getPaths();
+		int i = 0;
+		
+		for (TreePath p : paths) {
+			i = 0;
+			r = (SQLResultSetResults.Row)p.getFirstSegment();
+			relation = r.getResultSet().getName();
+			tid = r.getAsStringArray()[0];
+			attribute = "";
+			for (String s : r.getAsStringArray()) {
+				i = i+1;
+				if (s.equals((String)p.getLastSegment()))
+					attribute = r.getResultSet().getColumnName(i);
+			}
+			e = (IAttributeValueMarker)MarkerFactory.newAttrMarker(relation,tid,attribute);
+			m.add(e);
+		}
+		
+		return m;
+	}
 
 }

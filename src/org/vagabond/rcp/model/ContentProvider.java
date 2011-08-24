@@ -1,11 +1,23 @@
-package org.vagabond.rcp.mapview.model;
+package org.vagabond.rcp.model;
 
 import org.apache.log4j.Logger;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
+import org.vagabond.explanation.marker.IMarkerSet;
+import org.vagabond.explanation.model.ExplanationCollection;
 import org.vagabond.mapping.model.MapScenarioHolder;
 import org.vagabond.mapping.model.MappingGraph;
+import org.vagabond.rcp.mapview.model.AttributeGraphNode;
+import org.vagabond.rcp.mapview.model.Connection;
+import org.vagabond.rcp.mapview.model.Correspondence;
+import org.vagabond.rcp.mapview.model.ForeignKeyConnection;
+import org.vagabond.rcp.mapview.model.Graph;
+import org.vagabond.rcp.mapview.model.MapConnection;
+import org.vagabond.rcp.mapview.model.MappingGraphNode;
+import org.vagabond.rcp.mapview.model.Node;
+import org.vagabond.rcp.mapview.model.RelationGraphNode;
+import org.vagabond.rcp.mapview.model.Schema;
 import org.vagabond.rcp.mapview.view.MapGraphView;
 import org.vagabond.rcp.util.PluginLogProvider;
 import org.vagabond.xmlmodel.AttrDefType;
@@ -18,6 +30,14 @@ import org.vagabond.xmlmodel.RelAtomType;
 import org.vagabond.xmlmodel.RelationType;
 import org.vagabond.xmlmodel.SchemaType;
 
+/**
+ * Global container for model information, also generates the 
+ * graph model.
+ * 
+ * @author lord_pretzel
+ *
+ */
+
 public class ContentProvider {
 	
 	static Logger log = PluginLogProvider.getInstance().getLogger(
@@ -25,13 +45,15 @@ public class ContentProvider {
 	
 	private static ContentProvider instance = new ContentProvider();
 	private Graph graph;
-
+	private ExplanationModel expls;
+	
 	public static ContentProvider getInstance() {
 		return instance;
 	}
 	
 	private ContentProvider() {
 		graph = new Graph();
+		setExpls(new ExplanationModel());
 	}
 	
 	public Graph getGraph() {
@@ -255,5 +277,21 @@ public class ContentProvider {
 				+ source.getName() + " to " + target.getName());
 		
 		return result;
+	}
+	
+	public ExplanationCollection getExplCol () {
+		return expls.getCol();
+	}
+	
+	public IMarkerSet getErrorMarkers () {
+		return expls.getMarkers();
+	}
+
+	public ExplanationModel getExplModel () {
+		return expls;
+	}
+	
+	public void setExpls(ExplanationModel expls) {
+		this.expls = expls;
 	}
 }

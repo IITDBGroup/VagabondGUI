@@ -1,6 +1,5 @@
 package org.vagabond.rcp.mapview.view;
 
-import org.vagabond.rcp.mapview.model.ContentProvider;
 import org.apache.log4j.Logger;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
@@ -24,6 +23,7 @@ import org.eclipse.gef.ui.parts.ScrollingGraphicalViewer;
 
 import org.vagabond.rcp.mapview.controller.GraphEditPart;
 import org.vagabond.rcp.mapview.controller.VagabondEditPartFactory;
+import org.vagabond.rcp.model.ContentProvider;
 import org.vagabond.rcp.util.PluginLogProvider;
 import org.vagabond.util.LoggerUtil;
 

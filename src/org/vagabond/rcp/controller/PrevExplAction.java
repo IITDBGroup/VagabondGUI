@@ -7,6 +7,7 @@ import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.SelectionListenerAction;
 import org.vagabond.rcp.gui.views.ExplRankView;
+import org.vagabond.rcp.model.ContentProvider;
 
 
 public class PrevExplAction extends SelectionListenerAction implements PropertyChangeListener {
@@ -24,8 +25,10 @@ public class PrevExplAction extends SelectionListenerAction implements PropertyC
 	
 	// For now, it just resets the collection iterator
 	public void run() {
-		view.getExplCollection().resetIter();
-		view.updateView();
+		ContentProvider.getInstance().getExplCol().resetIter();
+		
+		if (ContentProvider.getInstance().getExplCol().hasNext())
+			view.updateView(ContentProvider.getInstance().getExplCol().next());
 	}
 	
 	@Override

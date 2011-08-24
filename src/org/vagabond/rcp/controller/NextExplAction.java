@@ -7,6 +7,7 @@ import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.SelectionListenerAction;
 import org.vagabond.rcp.gui.views.ExplRankView;
+import org.vagabond.rcp.model.ContentProvider;
 
 
 public class NextExplAction extends SelectionListenerAction implements PropertyChangeListener {
@@ -23,12 +24,12 @@ public class NextExplAction extends SelectionListenerAction implements PropertyC
 	}
 	
 	public void run() {
-		view.updateView();
+		view.updateView(ContentProvider.getInstance().getExplCol().next());
 	}
 	
 	@Override
 	public void propertyChange(PropertyChangeEvent arg0) {
-		setEnabled(ExplRankView.getInstance().getExplCollection().hasNext());
+		setEnabled(ContentProvider.getInstance().getExplCol().hasNext());
 	}
 
 }

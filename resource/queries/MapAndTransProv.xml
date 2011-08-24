@@ -9,6 +9,10 @@ FROM (SELECT MAPPROV * FROM ${1}) AS mprov
 WHERE tid = '${2}'
 </entry>
 
-
+<entry key="GetColsForMappings">
+SELECT ${1} FROM 
+(SELECT MAPPROV * FROM ${2}) p 
+WHERE p.trans_prov IN (VALUES ${3})
+</entry>
 
 </properties>

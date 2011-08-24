@@ -1,6 +1,7 @@
 package org.vagabond.rcp.gui.views;
 
 import java.beans.PropertyChangeEvent;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -16,6 +17,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.PlatformUI;
+import org.vagabond.rcp.controller.Filter;
 import org.vagabond.rcp.controller.TargetDBViewActionGroup;
 import org.vagabond.rcp.model.TableViewManager;
 import org.vagabond.rcp.selection.GlobalSelectionController;
@@ -62,6 +64,7 @@ public class TargetDBView extends GenericTableView implements VagaSelectionListe
 		SQLResultSetResults[] resultSets = TableViewManager.getInstance().getResultSets(VIEW_ID);
 		for (int i = 0, length = resultSets == null ? 0 : resultSets.length; i < length; i++) {
 			this.resultSetViewers.add(new ResultSetViewer(this, resultSets[i]));
+			this.filters.add(new Filter(resultSets[i]));
 		}
 	}
 	
@@ -80,12 +83,15 @@ public class TargetDBView extends GenericTableView implements VagaSelectionListe
 			Collection<SQLResultSetResults> additions = getAddedResultSets();
 			for (SQLResultSetResults results : additions) {
 				this.resultSetViewers.add(new ResultSetViewer(this, results));
+				this.filters.add(new Filter(results));
 			}
 
 			Collection<SQLResultSetResults> deletions = getRemovedResultSets();
 			for (SQLResultSetResults results : deletions) {
 				ResultSetViewer viewer = findViewerFor(results);
+				Filter filter = findFilterFor(results);
 				this.resultSetViewers.remove(viewer);
+				this.filters.remove(filter);
 				viewer.dispose();
 			}
 
@@ -136,10 +142,40 @@ public class TargetDBView extends GenericTableView implements VagaSelectionListe
 		
 		if (e.isLimitScope()) {
 			if (e.getElementType().equals(ModelType.Correspondence)) {
-				//TODO
+				// Delete and recreate resultset viewers
+				for (Iterator<ResultSetViewer> i = this.resultSetViewers.iterator(); i.hasNext();) {
+					ResultSetViewer viewer = i.next();
+					viewer.dispose();
+				}
+				this.resultSetViewers.clear();
+				for (Iterator<Filter> i = this.filters.iterator(); i.hasNext();) {
+					Filter filter = i.next();
+					try {
+						SQLResultSetResults r = filter.byCorrespondence(e.getElementIds(), false);
+						this.resultSetViewers.add(new ResultSetViewer(this, r));
+					} catch (Exception e1) {
+						e1.printStackTrace();
+					}
+				}
 			}
 			if (e.getElementType().equals(ModelType.Mapping)) {
-				//TODO
+				// Delete and recreate resultset viewers
+				for (Iterator<ResultSetViewer> i = this.resultSetViewers.iterator(); i.hasNext();) {
+					ResultSetViewer viewer = i.next();
+					viewer.dispose();
+				}
+				this.resultSetViewers.clear();
+				for (Iterator<Filter> i = this.filters.iterator(); i.hasNext();) {
+					Filter filter = i.next();
+					try {
+						SQLResultSetResults r = filter.byMapping(e.getElementIds(), false);
+						if (r != null) {
+							this.resultSetViewers.add(new ResultSetViewer(this, r));
+						}
+					} catch (Exception e1) {
+						e1.printStackTrace();
+					}
+				}
 			}
 		}
 		// normal navigation, just listen on SourceRelationEvents

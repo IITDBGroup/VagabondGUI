@@ -54,7 +54,8 @@ public class ExplView extends ViewPart {
 	private void createViewer(Composite parent) {
 		combo = new Combo(parent, SWT.READ_ONLY | SWT.DROP_DOWN);
 
-		viewer = new DetailViewList<IBasicExplanation> (parent, ExplainDetailViewFactory.withoutExplains);
+		viewer = new DetailViewList<IBasicExplanation> (parent, 
+				ExplainDetailViewFactory.withoutExplains);
 
 		GridData gridData = new GridData();
 		gridData.verticalAlignment = GridData.FILL;

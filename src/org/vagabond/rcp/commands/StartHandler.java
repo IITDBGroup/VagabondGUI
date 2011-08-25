@@ -1,4 +1,4 @@
-package org.vagabond.rcp.controller;
+package org.vagabond.rcp.commands;
 
 
 import java.sql.Connection;
@@ -130,19 +130,9 @@ public class StartHandler extends AbstractHandler {
 		// Load scenario into db
 		DatabaseScenarioLoader.getInstance().loadScenario(c);
 		
-		// won't recognize resource/queries ?
 		try {
 			QueryHolder.getInstance().loadFromURLs(ResourceManager.getInstance()
 					.getResourcesAsStreams("resource/queries", ".xml"));
-//			Enumeration<String> files;
-//			
-//			files = ResourceManager.getInstance().getResources();
-//			while(files.hasMoreElements())
-//				log.debug(files.nextElement());
-//			templateDir = new File ("/Users/viviensuen/Documents/workspace/" +
-//						"VagabondRCP/resource/queries");
-			
-//			QueryHolder.getInstance().loadFromDir(templateDir);
 			
 		} 
 		catch (Exception e) {

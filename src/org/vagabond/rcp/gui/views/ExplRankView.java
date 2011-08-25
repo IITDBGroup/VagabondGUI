@@ -1,5 +1,6 @@
 package org.vagabond.rcp.gui.views;
 
+import org.apache.log4j.Layout;
 import org.apache.log4j.Logger;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -64,6 +65,7 @@ public class ExplRankView extends ViewPart {
 	public void updateView (IExplanationSet explSet) {
 		this.curSet = explSet;
 		viewer.updateModel(curSet);
+		
 		this.actionGroup.updateActionBars();
 	}
 	

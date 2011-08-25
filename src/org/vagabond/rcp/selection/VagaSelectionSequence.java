@@ -45,6 +45,21 @@ public class VagaSelectionSequence implements Cloneable {
 		toString = null; //TODO optimize
 	}
 	
+	public void clear () {
+		eventSeq.clear();
+		toString = null;
+	}
+	
+	public void makeSingleton (VagaSelectionEvent e) {
+		eventSeq.clear();
+		eventSeq.add(e);
+		toString = null;
+	}
+	
+	public boolean isLimitScope () {
+		return !eventSeq.isEmpty() && eventSeq.get(0).isLimitScope();
+	}
+	
 	@Override
 	public String toString () {
 		StringBuilder result;
@@ -87,5 +102,17 @@ public class VagaSelectionSequence implements Cloneable {
 		for(VagaSelectionEvent e: seq.eventSeq) {
 			newSeq.eventSeq.add(new VagaSelectionEvent(e));
 		}
+	}
+	
+	public String toUserString () {
+		StringBuilder result = new StringBuilder();
+		
+		result.append(isLimitScope() ? "Drilldown Navigation: " 
+				: "Selected Element(s): ");
+		
+		for(VagaSelectionEvent e: eventSeq)
+			result.append(e.toUserString() + " -> ");
+		result.delete(result.length() - 4, result.length());
+		return result.toString(); //TODO
 	}
  }

@@ -20,38 +20,53 @@ public class VagaSelectionEvent {
 	// single element used to indicate reset all selections
 	public static VagaSelectionEvent DESELECT = new VagaSelectionEvent(
 			ModelType.None, false);
+	public static VagaSelectionEvent RESET_SCOPE = new VagaSelectionEvent(
+			ModelType.None, true);
 	
 	protected ModelType elementType;
 	protected Collection<String> elementIds;
 	protected String toString = null;
 	protected boolean limitScope;
+	protected VagaSelectionEvent subEvent;
 	
 	public VagaSelectionEvent (boolean limitedScope) {
 		this.limitScope = limitedScope;
 	}
 	
+	public VagaSelectionEvent (ModelType elementType, boolean limitScope, 
+			VagaSelectionEvent subEvent, String ... elementIds) {
+		setValues (elementType, limitScope, subEvent, elementIds);
+	}
+	
 	public VagaSelectionEvent (ModelType elementType, boolean limitScope,
 			String ... elementIds) {
-		this.elementIds = new HashSet<String> ();
-		this.elementType = elementType;
-		this.limitScope = limitScope;
-		
-		for(String id: elementIds)
-			this.elementIds.add(id);
+		setValues (elementType, limitScope, null, elementIds);
 	}
 	
 	public VagaSelectionEvent (ModelType elementType, String element) {
-		this.elementIds = new HashSet<String> ();
-		elementIds.add(element);
-		this.elementType = elementType;
-		this.limitScope = false;
+		setValues(elementType, false, null, element);
 	}
 	
 	public VagaSelectionEvent (VagaSelectionEvent e) {
+		setValues (e.elementType, e.limitScope, e.subEvent, e.elementIds);
+	}
+	
+	private void setValues (ModelType elementType, boolean limitScope,
+			VagaSelectionEvent subEvent, Collection<String> elementIds) {
+		this.elementIds = new HashSet<String> (elementIds);
+		this.elementType = elementType;
+		this.limitScope = limitScope;
+		this.subEvent = subEvent;
+	}
+	
+	private void setValues (ModelType elementType, boolean limitScope,
+			VagaSelectionEvent subEvent, String ... elementIds) {
 		this.elementIds = new HashSet<String> ();
-		this.elementType = e.elementType;
+		this.elementType = elementType;
+		this.limitScope = limitScope;
+		this.subEvent = subEvent;
 		
-		for(String id: e.elementIds)
+		for(String id: elementIds)
 			this.elementIds.add(id);
 	}
 
@@ -69,7 +84,11 @@ public class VagaSelectionEvent {
 	}
 	
 	public boolean isEmpty () {
-		return elementType.equals(ModelType.None) || elementIds.isEmpty();
+		return elementType.equals(ModelType.None) && !limitScope;
+	}
+	
+	public boolean isReset () {
+		return elementType.equals(ModelType.None) && limitScope;
 	}
 	
 	public boolean isLimitScope () {
@@ -95,6 +114,25 @@ public class VagaSelectionEvent {
 		
 		toString = buf.toString();
 		return toString;
+	}
+
+	public VagaSelectionEvent getSubEvent() {
+		return subEvent;
+	}
+
+	public void setSubEvent(VagaSelectionEvent subEvent) {
+		this.subEvent = subEvent;
+	}
+
+	public String toUserString() {
+		StringBuilder buf = new StringBuilder();
+		
+		buf.append(elementType.toString());
+		buf.append(" [");
+		buf.append(LoggerUtil.stringColToString(elementIds));
+		buf.append(']');
+		
+		return buf.toString();
 	}
 	
 }

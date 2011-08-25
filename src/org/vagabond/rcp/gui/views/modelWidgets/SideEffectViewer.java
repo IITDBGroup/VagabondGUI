@@ -41,6 +41,18 @@ public class SideEffectViewer {
 		header.setLayoutData(getGridData(false, 0));
 	}
 	
+	public void  setLayoutData (Object layoutData) {
+		comp.setLayoutData(layoutData);
+	}
+
+	public void pack () {
+		comp.pack();
+	}
+	
+	public void layout() {
+		comp.layout(true,true);
+	}
+	
 	private GridData getGridData (boolean grap, int indent) {
 		GridData gridData;
 		

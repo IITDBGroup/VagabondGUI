@@ -30,9 +30,15 @@ public class TestDetailViewList implements DetailViewFactory {
 		ModelLoader.getInstance().loadToInst("../TrampExGen/resource/test/simpleTest.xml");
 		MappingType[] maps  = MapScenarioHolder.getInstance().getDocument()
 				.getMappingScenario().getMappings().getMappingArray();
-		details.updateModel(maps);
+		MappingType[] oMaps = new MappingType[1]; 
+		
+		oMaps[0] = maps[0];
+		details.updateModel(oMaps);
 		shell.setSize(500, 700);
 		shell.open();
+		
+		oMaps[0] = maps[1];
+		details.updateModel(oMaps);
 		
 		while(!display.isDisposed()) {
 			if (!display.readAndDispatch()) {

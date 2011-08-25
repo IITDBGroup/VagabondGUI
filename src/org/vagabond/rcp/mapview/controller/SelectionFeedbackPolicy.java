@@ -17,7 +17,9 @@ public class SelectionFeedbackPolicy extends SelectionEditPolicy {
 		log.debug("selection... " + getHost().getModel().getClass().toString());
 		
 		eventHost = (VagaSelectionEventProvider) getHost();
-		eventHost.fireSelectionEvent(true);
+		// only fire event on user interaction to avoid endless loop
+		if (eventHost.wasUserInteraction())
+			eventHost.fireSelectionEvent(true);
 	}
 	
 	@Override
@@ -27,7 +29,9 @@ public class SelectionFeedbackPolicy extends SelectionEditPolicy {
 		log.debug("deselect... " + getHost().getModel().getClass().toString());
 		
 		eventHost = (VagaSelectionEventProvider) getHost();
-		eventHost.fireSelectionEvent(false);		
+		// only fire event on user interaction to avoid endless loop
+		if (eventHost.wasUserInteraction())
+			eventHost.fireSelectionEvent(false);		
 	}
 	
 	

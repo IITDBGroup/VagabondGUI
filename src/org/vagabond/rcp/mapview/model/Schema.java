@@ -43,6 +43,10 @@ public class Schema implements Node {
 		relNameMap.put(node.getName(), node);
 	}
 	
+	public RelationGraphNode getUnqualRel (String name) {
+		return relNameMap.get(getName() + "." + name);
+	}
+	
 	public RelationGraphNode getRel (String name) {
 		return relNameMap.get(name);
 	}

@@ -9,6 +9,7 @@ import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Widget;
 import org.vagabond.rcp.util.SWTResourceManager;
 
 public class DetailViewList<T> {
@@ -62,11 +63,14 @@ public class DetailViewList<T> {
 			view.showElem(elements[i]);
 			view.addSelectionListener();
 		}
+		child.layout(true, true);
 		sc.setMinSize(child.computeSize(SWT.DEFAULT, SWT.DEFAULT));
-		layout();
 	}
 	
 	private void adaptListLength (int size) {
+//		for(IModelElementDetailView view: views)
+//			view.dispose();
+//		views.clear(); //TODO don't dispose
 		while (size > views.size()) {
 			IModelElementDetailView newView = fac.createView(child);
 			newView.setLayoutData(getGridData());
@@ -110,7 +114,7 @@ public class DetailViewList<T> {
 	}
 	
 	public void layout() {
-		sc.layout();
+		sc.layout(true, true);
 	}
 	
 	public void setLayoutData(Object layoutData) {

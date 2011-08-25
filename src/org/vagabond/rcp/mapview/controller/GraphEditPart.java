@@ -16,15 +16,21 @@ import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.eclipse.gef.editpolicies.RootComponentEditPolicy;
+import org.vagabond.mapping.model.MapScenarioHolder;
+import org.vagabond.rcp.mapview.model.AttributeGraphNode;
+import org.vagabond.rcp.mapview.model.Connection;
+import org.vagabond.rcp.mapview.model.Correspondence;
 import org.vagabond.rcp.mapview.model.Graph;
 import org.vagabond.rcp.mapview.model.MappingGraphNode;
 import org.vagabond.rcp.mapview.model.RelationGraphNode;
 import org.vagabond.rcp.mapview.view.routing.RouterContainer;
+import org.vagabond.rcp.selection.GlobalSelectionController;
 import org.vagabond.rcp.selection.VagaSelectionEvent;
 import org.vagabond.rcp.selection.VagaSelectionEvent.ModelType;
 import org.vagabond.rcp.selection.VagaSelectionListener;
 import org.vagabond.rcp.util.MathHelper;
 import org.vagabond.rcp.util.PluginLogProvider;
+import org.vagabond.xmlmodel.MappingType;
 
 
 public class GraphEditPart extends AbstractGraphicalEditPart 
@@ -55,12 +61,13 @@ public class GraphEditPart extends AbstractGraphicalEditPart
 	@Override
 	public void activate() {
 		super.activate();
+		GlobalSelectionController.addSelectionListener(this);
 	}
 	
 	@Override
 	public void deactivate() {
 		unregisterRouters();
-		
+		GlobalSelectionController.removeSelectionListener(this);
 		super.deactivate();
 	}
 		
@@ -325,9 +332,13 @@ public class GraphEditPart extends AbstractGraphicalEditPart
 
 	@Override
 	public void event(VagaSelectionEvent e) {
+		Graph graph = (Graph) getModel();
+		
 		if (e.isEmpty()) {
 			deselectEverything();
-		} 
+		} else if (e.isReset()) {
+			deselectEverything();
+		}
 		
 		if (e.isLimitScope()) {
 			//TODO what to do
@@ -335,20 +346,68 @@ public class GraphEditPart extends AbstractGraphicalEditPart
 		else {
 			switch(e.getElementType()) {
 			case Mapping:
+				for(String id: e.getElementIds()) {
+					MappingGraphNode map = graph.getMapping(id);
+					MappingNodeEditPart mapPart = (MappingNodeEditPart) 
+							getViewer().getEditPartRegistry().get(map);
+					mapPart.nonUserChangeSelection(true);
+				}
 				break;
 			case Correspondence:
+				for(String id: e.getElementIds()) {
+					Correspondence corr = graph.getCorrespondence(id.toUpperCase());
+					CorrespondenceEditPart corrPart = (CorrespondenceEditPart) 
+							getViewer().getEditPartRegistry().get(corr);
+					corrPart.nonUserChangeSelection(true);
+				}
 				break;
 			case SourceRelation:
+				for(String id: e.getElementIds()) {
+					RelationGraphNode rel = graph.getSourceSchema()
+							.getUnqualRel(id);
+					RelationNodeEditPart relPart = (RelationNodeEditPart) 
+							getViewer().getEditPartRegistry().get(rel);
+					relPart.nonUserChangeSelection(true);
+				}
 				break;
 			case TargetRelation:
+				for(String id: e.getElementIds()) {
+					RelationGraphNode rel = graph.getTargetSchema()
+							.getUnqualRel(id);
+					RelationNodeEditPart relPart = (RelationNodeEditPart) 
+							getViewer().getEditPartRegistry().get(rel);
+					relPart.nonUserChangeSelection(true);
+				}
 				break;
 			}
 		}
 	}
 
 	private void deselectEverything() {
-		// TODO Auto-generated method stub
-		
+		for(Object child: getChildren()) {
+			if (child instanceof MappingNodeEditPart) {
+				((MappingNodeEditPart) child).nonUserChangeSelection(false);
+			}
+			if (child instanceof RelationNodeEditPart) {
+				RelationNodeEditPart relPart = ((RelationNodeEditPart) child); 
+				RelationGraphNode rel = (RelationGraphNode) relPart.getModel();
+				relPart.nonUserChangeSelection(false);
+				
+				// find corr edit parts
+				if (rel.isSourceRel()) {
+					for(AttributeGraphNode attr: rel.getAttributes()) {
+						for(Connection con: attr.getSourceConnections()) {
+							if (con instanceof Correspondence) {
+								CorrespondenceEditPart conPart;
+								conPart = (CorrespondenceEditPart) getViewer()
+										.getEditPartRegistry().get(con);
+								conPart.nonUserChangeSelection(false);
+							}
+						}
+					}
+				}
+			}
+		}
 	}
 
 	@Override

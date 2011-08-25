@@ -264,13 +264,14 @@ public class ContentProvider {
 	}
 	
 	private Connection newCorrespondence(Node source, Node target, String name) {
-		Connection result = new Correspondence();
+		Correspondence result = new Correspondence();
 		
 		result.setSource((AttributeGraphNode) source);
 		result.setTarget((AttributeGraphNode) target);
 		result.setName(name);
 		log.debug("generated correspondence: " + result.getName() + " from "
 				+ source.getName() + " to " + target.getName());
+		graph.addCorrepondence(result);
 		
 		return result;
 	}

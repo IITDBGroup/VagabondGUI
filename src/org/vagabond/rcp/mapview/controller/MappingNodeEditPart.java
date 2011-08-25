@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.vagabond.rcp.mapview.model.MappingGraphNode;
@@ -23,6 +24,9 @@ public class MappingNodeEditPart extends AbstractGraphicalEditPart
 	
 	static Logger log = PluginLogProvider.getInstance().getLogger(
 			MappingNodeEditPart.class);
+	
+	private boolean nonUserSelect = false;
+	private boolean selectionShown = isSelected();
 	
 	public MappingNodeEditPart(Node node) { 
 		setModel(node);
@@ -86,21 +90,41 @@ public class MappingNodeEditPart extends AbstractGraphicalEditPart
 		return figure.getAttrsFigure();
 	}
 	
-	private void changeSelection (boolean selection) {
+	public void nonUserChangeSelection (boolean selected) {
+		nonUserSelect = true;
+		if (isSelected() != selected)
+			this.setSelected(selected ? EditPart.SELECTED_PRIMARY 
+					: EditPart.SELECTED_NONE);
+		showSelection (selected);
+		nonUserSelect = false;
+	}
+	
+	public void showSelection (boolean selection) {
+		if (selectionShown == selection)
+			return;
+		selectionShown = selection;
 		SelectableFigure fig = (SelectableFigure) getFigure();
 		fig.setSelection(selection);
 		fig.revalidate();
+	}
+	
+	public boolean isSelected () {
+		return getSelected() != EditPart.SELECTED_NONE;
 	}
 	
 	@Override
 	public void fireSelectionEvent(boolean selected) {
 		MappingGraphNode map = (MappingGraphNode) getModel();
 	
-		changeSelection(selected);
 		if (selected)
 			GlobalSelectionController.fireModelSelection(new VagaSelectionEvent(
 				ModelType.Mapping, map.getName()));
 		else
 			GlobalSelectionController.fireModelSelection(VagaSelectionEvent.DESELECT);
 	}
+
+	public boolean wasUserInteraction() {
+		return !nonUserSelect;
+	}
+
 }

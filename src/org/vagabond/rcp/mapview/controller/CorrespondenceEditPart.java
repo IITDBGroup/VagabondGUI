@@ -6,6 +6,7 @@ import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.LineBorder;
+import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.editparts.AbstractConnectionEditPart;
 import org.eclipse.gmf.runtime.draw2d.ui.figures.PolylineConnectionEx;
@@ -13,6 +14,7 @@ import org.eclipse.swt.graphics.RGB;
 import org.eclipse.zest.core.widgets.internal.AligningBendpointLocator;
 import org.vagabond.rcp.mapview.model.Connection;
 import org.vagabond.rcp.mapview.model.Correspondence;
+import org.vagabond.rcp.mapview.view.SelectableFigure;
 import org.vagabond.rcp.mapview.view.routing.RouterContainer;
 import org.vagabond.rcp.selection.GlobalSelectionController;
 import org.vagabond.rcp.selection.VagaSelectionEvent;
@@ -21,6 +23,9 @@ import org.vagabond.rcp.util.SWTResourceManager;
 
 public class CorrespondenceEditPart extends AbstractConnectionEditPart 
 		implements VagaSelectionEventProvider {
+	
+	private boolean nonUserSelect = false;
+	private boolean selectionShown = isSelected();
 	
 	public CorrespondenceEditPart(Connection connection) { 
 		setModel(connection);
@@ -45,6 +50,7 @@ public class CorrespondenceEditPart extends AbstractConnectionEditPart
 		c.add(relationshipLabel, relationshipLocator);
 		c.setConnectionRouter(RouterContainer.getInstance()
 				.getRouter("Correspondence"));
+		c.setLineWidth(2);
 		
 		return c;
 	}
@@ -54,17 +60,42 @@ public class CorrespondenceEditPart extends AbstractConnectionEditPart
 		installEditPolicy(EditPolicy.SELECTION_FEEDBACK_ROLE, new SelectionFeedbackPolicy());
 	}
 
+
+	public void nonUserChangeSelection (boolean selected) {
+		nonUserSelect = true;
+		if (isSelected() != selected)
+			this.setSelected(selected ? EditPart.SELECTED_PRIMARY 
+					: EditPart.SELECTED_NONE);
+		showSelection (selected);
+		nonUserSelect = false;
+	}
+	
+	public void showSelection (boolean selection) {
+		if (selectionShown == selection)
+			return;
+		selectionShown = selection;
+		PolylineConnectionEx c = (PolylineConnectionEx) getFigure();
+		c.setLineWidth(selection ? 4 : 2);
+		c.refreshLine();
+	}
+	
+	public boolean isSelected () {
+		return getSelected() != EditPart.SELECTED_NONE;
+	}
+	
 	@Override
 	public void fireSelectionEvent(boolean isSelected) {
-		PolylineConnectionEx c = (PolylineConnectionEx) getFigure();
 		Correspondence cor = (Correspondence) getModel();
 		
-		c.setLineWidth(isSelected ? 4 : 2);
 		if (isSelected)
 			GlobalSelectionController.fireModelSelection(new VagaSelectionEvent(
 					ModelType.Correspondence, cor.getName()));
 		else
 			GlobalSelectionController.fireModelSelection(VagaSelectionEvent.DESELECT);
+	}
+
+	public boolean wasUserInteraction() {
+		return !nonUserSelect;
 	}
 
 }

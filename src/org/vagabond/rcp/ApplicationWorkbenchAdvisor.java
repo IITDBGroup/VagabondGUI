@@ -39,7 +39,7 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 				IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
 				//IViewPart view = window.getActivePage().findView("org.vagabond.rcp.gui.views.sdbview");
 				IHandlerService service = (IHandlerService) window.getService(IHandlerService.class);
-				service.executeCommand("org.vagabond.rcp.util.start", null);
+				service.executeCommand("org.vagabond.rcp.commands.start", null);
 			}
 		} catch (Exception e) {
 			LoggerUtil.logException(e, log);

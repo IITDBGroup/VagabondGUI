@@ -1,6 +1,7 @@
 package org.vagabond.rcp.mapview.model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -10,10 +11,15 @@ import org.vagabond.xmlmodel.AttrRefType;
 
 public class Graph { 
 	private Map<String, MappingGraphNode> mappings;
-	private List<Node> children;
+	private List<MappingGraphNode> maps;
+	private Map<String, Correspondence> corrMap;
+	private List<Correspondence> corr;
+	
 	private Schema source;
 	private Schema target;
-	private List<MappingGraphNode> maps;
+	
+	private List<Node> children;
+	
 	private String name; 
 	
 	public Graph() {
@@ -28,9 +34,11 @@ public class Graph {
 	private void init() {
 		source = new Schema(true);
 		target = new Schema(false);
-		mappings = new TreeMap<String, MappingGraphNode>();
-		children = new ArrayList<Node> ();
+		mappings = new HashMap<String, MappingGraphNode>();
 		maps = new ArrayList<MappingGraphNode> ();
+		corrMap = new HashMap<String, Correspondence> ();
+		corr = new ArrayList<Correspondence> (); 
+		children = new ArrayList<Node> ();
 	}
 	
 	public List<RelationGraphNode> getRelations() {
@@ -93,6 +101,15 @@ public class Graph {
 		mappings.put(name, map);
 		maps.add(map);
 		children.add(map);
+	}
+	
+	public void addCorrepondence (Correspondence corr) {
+		this.corr.add(corr);
+		corrMap.put(corr.getName().toUpperCase(), corr);
+	}
+	
+	public Correspondence getCorrespondence (String id) {
+		return corrMap.get(id);
 	}
 	
 	public List getMappings() {

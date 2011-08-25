@@ -9,18 +9,19 @@ import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.LineBorder;
 import org.eclipse.draw2d.PositionConstants;
 import org.eclipse.draw2d.ToolbarLayout;
-import org.eclipse.gmf.runtime.draw2d.ui.figures.ConstrainedToolbarLayout;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 import org.vagabond.rcp.util.SWTResourceManager;
 
-public class MappingFigure extends Figure {
+public class MappingFigure extends Figure implements SelectableFigure {
 
 
 	public static Color classColor = SWTResourceManager.
 			getColor(new RGB(201,205,215));
+	
 	private Label label;
 	private AttributesFigure attrs;
+	private boolean selection = false;
 	
 	public MappingFigure() {
 		label = new Label();
@@ -41,21 +42,6 @@ public class MappingFigure extends Figure {
 
 		add(label);
 		add(attrs);
-		
-//		ConstrainedToolbarLayout layout = new ConstrainedToolbarLayout();
-//		layout.setMinorAlignment(ToolbarLayout.ALIGN_TOPLEFT);
-//		layout.setStretchMinorAxis(true);
-//		layout.setStretchMajorAxis(true);
-//		layout.setReversed(true);
-//
-//		setLayoutManager(layout);	
-//		setBorder(new LineBorder(ColorConstants.black,1));
-//		setBackgroundColor(classColor);
-//		setOpaque(true);
-//		this.label = name;
-//		//		label.setSize(MIN_WIDTH, MIN_HEIGHT);
-//
-//		add(label);	
 	}
 
 	public void setNameText (String text) {
@@ -70,4 +56,26 @@ public class MappingFigure extends Figure {
 		return attrs;
 	}
 
+	public void setSelected(boolean isSelected)
+	{
+	
+	}
+
+	@Override
+	public void setSelection(boolean selection) {
+		if (this.selection == selection)
+			return;
+		LineBorder lineBorder = (LineBorder) getBorder();
+		this.selection = selection;
+		if (this.selection)
+			lineBorder.setWidth(2);
+		else
+			lineBorder.setWidth(1);
+	}
+
+	@Override
+	public void switchSelection() {
+		setSelection(!this.selection);
+	}
+	
 }

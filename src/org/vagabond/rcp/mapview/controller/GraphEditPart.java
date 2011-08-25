@@ -1,43 +1,52 @@
 package org.vagabond.rcp.mapview.controller;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.Vector;
 
-import org.vagabond.rcp.mapview.model.Correspondence;
-import org.vagabond.rcp.mapview.model.Graph;
-import org.vagabond.rcp.mapview.model.MappingGraphNode;
-import org.vagabond.rcp.mapview.model.RelationGraphNode;
-import org.vagabond.rcp.mapview.view.MyConnectionRouter;
-import org.vagabond.rcp.mapview.view.MapGraphView;
-import org.vagabond.rcp.mapview.view.routing.RouterContainer;
-import org.vagabond.rcp.util.MathHelper;
-import org.vagabond.rcp.util.PluginLogProvider;
-
 import org.apache.log4j.Logger;
-import org.eclipse.gef.LayerConstants;
-import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
-import org.eclipse.gmf.runtime.draw2d.ui.internal.routers.RectilinearRouter;
-import org.eclipse.draw2d.ConnectionLayer;
-import org.eclipse.draw2d.FanRouter;
 import org.eclipse.draw2d.FreeformLayer;
 import org.eclipse.draw2d.FreeformLayout;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.LineBorder;
 import org.eclipse.draw2d.ManhattanConnectionRouter;
 import org.eclipse.draw2d.ShortestPathConnectionRouter;
-import org.eclipse.draw2d.XYLayout;
-import org.eclipse.draw2d.geometry.Dimension;
-import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.gef.EditPolicy;
+import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
+import org.eclipse.gef.editpolicies.RootComponentEditPolicy;
+import org.vagabond.rcp.mapview.model.Graph;
+import org.vagabond.rcp.mapview.model.MappingGraphNode;
+import org.vagabond.rcp.mapview.model.RelationGraphNode;
+import org.vagabond.rcp.mapview.view.routing.RouterContainer;
+import org.vagabond.rcp.selection.VagaSelectionEvent;
+import org.vagabond.rcp.selection.VagaSelectionEvent.ModelType;
+import org.vagabond.rcp.selection.VagaSelectionListener;
+import org.vagabond.rcp.util.MathHelper;
+import org.vagabond.rcp.util.PluginLogProvider;
 
-public class GraphEditPart extends AbstractGraphicalEditPart {
 
+public class GraphEditPart extends AbstractGraphicalEditPart 
+		implements VagaSelectionListener {
+	
 	static Logger log = PluginLogProvider.getInstance().getLogger(GraphEditPart.class);
 	
 	private static final int BORDER_GAP = 50;
 	private static final int MAP_GAP = 70;
 	private static final int YBORDER_GAP = 20;
 	private static final int YMIN_GAP = 30;
+	
+	private static final Set<ModelType> interest;
+	
+	static {
+		interest = new HashSet<ModelType> ();
+		interest.add(ModelType.None);
+		interest.add(ModelType.SourceRelation);
+		interest.add(ModelType.TargetRelation);
+		interest.add(ModelType.Mapping);
+		interest.add(ModelType.Correspondence);
+	}
 	
 	public GraphEditPart(Graph graph) {
 		setModel(graph);
@@ -67,32 +76,6 @@ public class GraphEditPart extends AbstractGraphicalEditPart {
 		layer.setBorder(new LineBorder(1));
 		
 		registerRouters(layer);
-
-		
-//		layer.addMouseListener(new MouseListener() {
-//
-//			@Override
-//			public void mousePressed(MouseEvent me) {
-//				// TODO Auto-generated method stub
-//				ConnectionLayer connLayer = (ConnectionLayer)getLayer(LayerConstants.CONNECTION_LAYER);
-//				connLayer.setVisible(false);
-//			}
-//
-//			@Override
-//			public void mouseReleased(MouseEvent me) {
-//				// TODO Auto-generated method stub
-//				ConnectionLayer connLayer = (ConnectionLayer)getLayer(LayerConstants.CONNECTION_LAYER);
-//				connLayer.setVisible(true);
-//				
-//			}
-//
-//			@Override
-//			public void mouseDoubleClicked(MouseEvent me) {
-//				// TODO Auto-generated method stub
-//				
-//			}
-//			
-//		});
 		
 		return layer;
 	}
@@ -100,16 +83,14 @@ public class GraphEditPart extends AbstractGraphicalEditPart {
 	private void registerRouters (IFigure pane) {
 		ShortestPathConnectionRouter sh;
 		ManhattanConnectionRouter man;
-//		RectilinearRouter rec;
 		
 		sh= new ShortestPathConnectionRouter(pane);
 		sh.setSpacing(10);
-//		rec = new RectilinearRouter();
+
 		RouterContainer.getInstance().registerRouter("Correspondence", sh);
 		
 		man = new ManhattanConnectionRouter();
-		
-		
+				
 		RouterContainer.getInstance().registerRouter("ForeignKey", man);
 	}
 	
@@ -118,13 +99,15 @@ public class GraphEditPart extends AbstractGraphicalEditPart {
 	}
 
 	//Return the lower elements of the model
-	protected List getModelChildren() {
+	protected List<?> getModelChildren() {
 		return ((Graph)getModel()).getChildren();
 	}
 	
 	@Override
 	protected void createEditPolicies() {
-	// Not editing, so keep empty...
+		// disallows the removal of this edit part from its parent
+		installEditPolicy(EditPolicy.COMPONENT_ROLE,
+				new RootComponentEditPolicy());
 	}
 	
 	public void setLayoutConstraints () {
@@ -340,4 +323,39 @@ public class GraphEditPart extends AbstractGraphicalEditPart {
 		return xPos + maxWidth;
 	}
 
+	@Override
+	public void event(VagaSelectionEvent e) {
+		if (e.isEmpty()) {
+			deselectEverything();
+		} 
+		
+		if (e.isLimitScope()) {
+			//TODO what to do
+		}
+		else {
+			switch(e.getElementType()) {
+			case Mapping:
+				break;
+			case Correspondence:
+				break;
+			case SourceRelation:
+				break;
+			case TargetRelation:
+				break;
+			}
+		}
+	}
+
+	private void deselectEverything() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Set<ModelType> interestedIn() {
+		return interest;
+	}
+
+
+	
 }

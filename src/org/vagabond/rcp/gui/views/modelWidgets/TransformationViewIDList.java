@@ -7,7 +7,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.vagabond.rcp.selection.VagaSelectionEvent.ModelType;
 import org.vagabond.rcp.util.SWTResourceManager;
-import org.vagabond.xmlmodel.RelationType;
 import org.vagabond.xmlmodel.TransformationType;
 
 public class TransformationViewIDList extends ModelIdList {

@@ -5,13 +5,19 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.vagabond.rcp.mapview.model.Node;
 import org.vagabond.rcp.mapview.model.RelationGraphNode;
 import org.vagabond.rcp.mapview.view.RelationFigure;
+import org.vagabond.rcp.mapview.view.SelectableFigure;
+import org.vagabond.rcp.selection.GlobalSelectionController;
+import org.vagabond.rcp.selection.VagaSelectionEvent;
+import org.vagabond.rcp.selection.VagaSelectionEvent.ModelType;
 import org.vagabond.rcp.util.PluginLogProvider;
 
-public class RelationNodeEditPart extends AbstractGraphicalEditPart {
+public class RelationNodeEditPart extends AbstractGraphicalEditPart 
+		implements VagaSelectionEventProvider {
 
 	static Logger log = PluginLogProvider.getInstance().getLogger(
 			RelationNodeEditPart.class);
@@ -20,12 +26,13 @@ public class RelationNodeEditPart extends AbstractGraphicalEditPart {
 		setModel(node);
 	}
 	
+		
 	@Override
 	protected IFigure createFigure() {
 		RelationGraphNode node = (RelationGraphNode) getModel();
 		RelationFigure figure = new RelationFigure();
 		figure.setNameText(node.getName());
-//		figure.invalidate();
+		
 		return figure;
 	}
 
@@ -36,6 +43,7 @@ public class RelationNodeEditPart extends AbstractGraphicalEditPart {
 
 	@Override
 	public void deactivate() {
+		super.deactivate();
 	}
 
 	protected void refreshVisuals() {
@@ -43,19 +51,13 @@ public class RelationNodeEditPart extends AbstractGraphicalEditPart {
 		RelationGraphNode node = (RelationGraphNode) getModel();
 		GraphEditPart parent = (GraphEditPart)getParent();
 		Rectangle r;
-//		figure.revalidatePrefferedSize();
-//		figure.revalidate();
+		
 		r = new Rectangle(figure.getBounds());
 		r.height = -1;
 		r.width = -1;
 		log.debug("Relation " + node.getName() +  "constraints is " + r.toString());
 		parent.setLayoutConstraint(this, figure, r);
 	}
-
-//	public void setConstraint (Rectangle r) {
-//		RelationFigure figure = (RelationFigure)getFigure();
-//		figure.setConstraint(figure, r);
-//	}
 	
 	/**
 	 * @return the Content pane for adding or removing child figures
@@ -68,21 +70,33 @@ public class RelationNodeEditPart extends AbstractGraphicalEditPart {
 
 	
 	//Return the lower elements of the model
-	protected List getModelChildren(){
+	protected List<?> getModelChildren(){
 		return ((RelationGraphNode)getModel()).getAttributes();
 	}
 	
-//	protected List getModelSourceConnections() {
-//		return ((RelationGraphNode)getModel()).getSourceConnections();
-//	}
-//	
-//	protected List getModelTargetConnections() {
-//		return ((RelationGraphNode)getModel()).getTargetConnections();
-//	}
-	
 	@Override
 	protected void createEditPolicies() {
-		// Not editing, so keep empty...
+		installEditPolicy(EditPolicy.SELECTION_FEEDBACK_ROLE, new SelectionFeedbackPolicy());
+	}
+
+	private void changeSelection (boolean selection) {
+		SelectableFigure fig = (SelectableFigure) getFigure();
+		fig.setSelection(selection);
+		fig.revalidate();
+	}
+
+	@Override
+	public void fireSelectionEvent(boolean selected) {
+		RelationGraphNode rel = (RelationGraphNode) getModel();
+		ModelType type = (rel.isSourceRel()) ? ModelType.SourceRelation 
+				: ModelType.TargetRelation;
+		
+		changeSelection(selected);
+		if (selected)
+			GlobalSelectionController.fireModelSelection(new VagaSelectionEvent(
+					type, rel.getUnqualName()));
+		else
+			GlobalSelectionController.fireModelSelection(VagaSelectionEvent.DESELECT);
 	}
 
 }

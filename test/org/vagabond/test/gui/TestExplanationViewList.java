@@ -1,7 +1,6 @@
 package org.vagabond.test.gui;
 
 import java.io.File;
-import java.util.Collection;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
@@ -10,20 +9,16 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.vagabond.explanation.generation.ExplanationSetGenerator;
 import org.vagabond.explanation.generation.QueryHolder;
-import org.vagabond.explanation.marker.MarkerFactory;
 import org.vagabond.explanation.marker.MarkerParser;
 import org.vagabond.explanation.marker.SchemaResolver;
 import org.vagabond.explanation.model.ExplanationCollection;
 import org.vagabond.explanation.model.basic.IBasicExplanation;
-import org.vagabond.mapping.model.MapScenarioHolder;
 import org.vagabond.mapping.model.ModelLoader;
 import org.vagabond.mapping.scenarioToDB.DatabaseScenarioLoader;
 import org.vagabond.rcp.gui.views.detailWidgets.DetailViewList;
 import org.vagabond.rcp.gui.views.detailWidgets.ExplainDetailViewFactory;
-import org.vagabond.rcp.gui.views.detailWidgets.ExplanationDetailView;
 import org.vagabond.rcp.util.PluginLogProvider;
 import org.vagabond.util.ConnectionManager;
-import org.vagabond.xmlmodel.MappingType;
 
 public class TestExplanationViewList {
 

@@ -1,19 +1,16 @@
 package org.vagabond.rcp.mapview.controller;
 
+import org.apache.log4j.Logger;
+import org.eclipse.gef.EditPart;
+import org.eclipse.gef.EditPartFactory;
 import org.vagabond.rcp.mapview.model.AttributeGraphNode;
-import org.vagabond.rcp.mapview.model.Connection;
 import org.vagabond.rcp.mapview.model.Correspondence;
 import org.vagabond.rcp.mapview.model.ForeignKeyConnection;
 import org.vagabond.rcp.mapview.model.Graph;
 import org.vagabond.rcp.mapview.model.MapConnection;
 import org.vagabond.rcp.mapview.model.MappingGraphNode;
-import org.vagabond.rcp.mapview.model.Node;
 import org.vagabond.rcp.mapview.model.RelationGraphNode;
 import org.vagabond.rcp.util.PluginLogProvider;
-
-import org.apache.log4j.Logger;
-import org.eclipse.gef.EditPart;
-import org.eclipse.gef.EditPartFactory;
 
 public class VagabondEditPartFactory implements EditPartFactory {
 	

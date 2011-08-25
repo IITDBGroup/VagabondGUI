@@ -9,26 +9,25 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.eclipse.jface.viewers.ISelection;
+import org.apache.log4j.Logger;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.TabFolder;
-import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.PlatformUI;
 import org.vagabond.explanation.generation.prov.SourceProvParser;
 import org.vagabond.explanation.marker.TupleMarker;
 import org.vagabond.rcp.controller.DBViewActionGroup;
 import org.vagabond.rcp.controller.Filter;
-import org.vagabond.rcp.controller.TargetDBViewActionGroup;
 import org.vagabond.rcp.model.TableViewManager;
 import org.vagabond.rcp.selection.GlobalSelectionController;
 import org.vagabond.rcp.selection.VagaSelectionEvent;
 import org.vagabond.rcp.selection.VagaSelectionEvent.ModelType;
 import org.vagabond.rcp.selection.VagaSelectionListener;
+import org.vagabond.rcp.util.PluginLogProvider;
 
 import com.quantum.sql.SQLResultSetResults;
 import com.quantum.view.tableview.ResultSetViewer;
@@ -36,6 +35,9 @@ import com.quantum.view.tableview.ResultSetViewer;
 
 public class SourceDBView extends GenericTableView implements VagaSelectionListener {
 
+	static Logger log = PluginLogProvider.getInstance().getLogger(
+			SourceDBView.class);
+	
 	public static final String ID = "org.vagabond.rcp.gui.views.sdbview";
 	public static final String VIEW_ID = "Source";
 
@@ -43,6 +45,7 @@ public class SourceDBView extends GenericTableView implements VagaSelectionListe
 	
 	static {
 		interest = new HashSet<ModelType> ();
+		interest.add(ModelType.None);
 		interest.add(ModelType.SourceRelation);
 		interest.add(ModelType.Mapping);
 		interest.add(ModelType.Correspondence);
@@ -112,7 +115,7 @@ public class SourceDBView extends GenericTableView implements VagaSelectionListe
 	}
 	
 	private Collection<SQLResultSetResults> getRemovedResultSets() {
-		SQLResultSetResults[] results = TableViewManager.getInstance().getResultSets(this.VIEW_ID);
+		SQLResultSetResults[] results = TableViewManager.getInstance().getResultSets(VIEW_ID);
 		Collection<SQLResultSetResults> collection = (results == null)
 				? new ArrayList<SQLResultSetResults>()
 				: new ArrayList<SQLResultSetResults>(Arrays.asList(results));
@@ -122,7 +125,7 @@ public class SourceDBView extends GenericTableView implements VagaSelectionListe
 	}
 
 	private Collection<SQLResultSetResults> getAddedResultSets() {
-		SQLResultSetResults[] results = TableViewManager.getInstance().getResultSets(this.VIEW_ID);
+		SQLResultSetResults[] results = TableViewManager.getInstance().getResultSets(VIEW_ID);
 		Collection<SQLResultSetResults> collection = (results == null)
 				? new ArrayList<SQLResultSetResults>()
 				: new ArrayList<SQLResultSetResults>(Arrays.asList(results));
@@ -186,55 +189,30 @@ public class SourceDBView extends GenericTableView implements VagaSelectionListe
 
 	@Override
 	public void event(VagaSelectionEvent e) {
-		if (e.isEmpty())
+		if (e.isEmpty()) {
+			resetSelections();
+			filterResultSets(e, true);
 			return;
+		}
 		
 		if (e.isLimitScope()) {
-			if (e.getElementType().equals(ModelType.Correspondence)) {
-				// Delete and recreate resultset viewers
-				for (Iterator<ResultSetViewer> i = this.resultSetViewers.iterator(); i.hasNext();) {
-					ResultSetViewer viewer = i.next();
-					viewer.dispose();
-				}
-				this.resultSetViewers.clear();
-				for (Iterator<Filter> i = this.filters.iterator(); i.hasNext();) {
-					Filter filter = i.next();
-					try {
-						SQLResultSetResults r = filter.byCorrespondence(e.getElementIds(), true);
-						if (r != null)
-							this.resultSetViewers.add(new ResultSetViewer(this, r));
-					} catch (Exception e1) {
-						e1.printStackTrace();
-					}
-				}
-			}
-			if (e.getElementType().equals(ModelType.Mapping)) {
-				// Delete and recreate resultset viewers
-				for (Iterator<ResultSetViewer> i = this.resultSetViewers.iterator(); i.hasNext();) {
-					ResultSetViewer viewer = i.next();
-					viewer.dispose();
-				}
-				this.resultSetViewers.clear();
-				for (Iterator<Filter> i = this.filters.iterator(); i.hasNext();) {
-					Filter filter = i.next();
-					try {
-						SQLResultSetResults r = filter.byMapping(e.getElementIds(), true);
-						if (r != null) {
-							this.resultSetViewers.add(new ResultSetViewer(this, r));
-						}
-					} catch (Exception e1) {
-						e1.printStackTrace();
-					}
-				}
+			if (e.getElementType().equals(ModelType.Correspondence) 
+					|| e.getElementType().equals(ModelType.Mapping)) {
+				filterResultSets(e, true);
 			}
 		}
 		// normal navigation, just listen on SourceRelationEvents
 		else {
 			if (e.getElementType().equals(ModelType.SourceRelation))
 				setSelection(e.getElementIds().iterator().next());
+			if (e.getElementType().equals(ModelType.Mapping)) {
+				filterResultSets(e, true);
+			}
 		}
 	}
 
+
+	
 	@Override
 	public Set<ModelType> interestedIn() {
 		return interest;

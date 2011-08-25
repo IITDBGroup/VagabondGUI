@@ -1,7 +1,6 @@
 package org.vagabond.rcp.controller;
 
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -11,6 +10,8 @@ import org.apache.log4j.Logger;
 import org.vagabond.explanation.generation.QueryHolder;
 import org.vagabond.mapping.model.MapScenarioHolder;
 import org.vagabond.rcp.Activator;
+import org.vagabond.rcp.selection.VagaSelectionEvent;
+import org.vagabond.rcp.selection.VagaSelectionEvent.ModelType;
 import org.vagabond.rcp.util.PluginLogProvider;
 import org.vagabond.util.ConnectionManager;
 import org.vagabond.xmlmodel.CorrespondenceType;
@@ -28,6 +29,7 @@ public class Filter {
 	SQLResultSetResults result;
 	SQLResultSetResults filterResult;
 	Bookmark bookmark;
+	String title;
 	
 	public Filter(SQLResultSetResults result) {
 		String databaseString = Activator.getDefault().getPreferenceStore().getString("DATABASE");
@@ -71,6 +73,7 @@ public class Filter {
 			
 			this.filterResult = (SQLResultSetResults) MultiSQLServer.getInstance().
 					execute(bookmark, c, query);
+			this.filterResult.setName(result.getName());
 		}
 		return filterResult;
 	}
@@ -91,6 +94,16 @@ public class Filter {
 		return byMapping(maps, source);
 	}
 
+	public SQLResultSetResults filterByEvent (VagaSelectionEvent e, boolean source) throws Exception {
+		if (e.isEmpty())
+			return result;
+		if (e.getElementType().equals(ModelType.Mapping))
+			return byMapping(e.getElementIds(), source);
+		if (e.getElementType().equals(ModelType.Correspondence))
+			return byCorrespondence(e.getElementIds(), source);
+		throw new Exception("do not know how to filter on event " + e.toString());
+	}
+	
 	
 	public SQLResultSetResults getResultSet() {
 		return this.result;

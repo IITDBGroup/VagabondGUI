@@ -1,6 +1,5 @@
 package org.vagabond.rcp.wizards;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -17,8 +16,6 @@ import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Tree;
-import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 import org.vagabond.explanation.generation.ExplanationSetGenerator;
@@ -33,12 +30,8 @@ import org.vagabond.rcp.util.PluginLogProvider;
 import org.vagabond.util.LoggerUtil;
 
 import com.quantum.Messages;
-import com.quantum.model.Bookmark;
-import com.quantum.sql.MultiSQLServer;
 import com.quantum.sql.SQLResultSetResults;
 import com.quantum.sql.SQLResultSetResults.Row;
-import com.quantum.sql.SQLResults;
-import com.quantum.ui.dialog.SQLExceptionDialog;
 
 public class ExplGenPage extends WizardPage {
 
@@ -113,7 +106,7 @@ public class ExplGenPage extends WizardPage {
 						.getImage(ISharedImages.IMG_OBJ_FOLDER);
 			}
 			return PlatformUI.getWorkbench().getSharedImages()
-			.getImage(ISharedImages.IMG_OBJ_FILE);
+					.getImage(ISharedImages.IMG_OBJ_FILE);
 		}
 
 	}

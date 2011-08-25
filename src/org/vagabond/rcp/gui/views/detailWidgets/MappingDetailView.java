@@ -15,8 +15,6 @@ import org.vagabond.rcp.gui.views.modelWidgets.SourceRelationViewIDList;
 import org.vagabond.rcp.gui.views.modelWidgets.TargetRelationViewIDList;
 import org.vagabond.rcp.gui.views.modelWidgets.TransformationViewIDList;
 import org.vagabond.rcp.selection.EventUtil;
-import org.vagabond.rcp.selection.GlobalSelectionController;
-import org.vagabond.rcp.selection.VagaSelectionEvent;
 import org.vagabond.rcp.selection.VagaSelectionEvent.ModelType;
 import org.vagabond.util.LoggerUtil;
 import org.vagabond.xmlmodel.MappingType;
@@ -131,19 +129,13 @@ public class MappingDetailView extends ModelElementDetailView {
 		overviewLabel.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseDown (MouseEvent e) {
-				// inform global selection controller
-				GlobalSelectionController
-						.fireModelSelection(new VagaSelectionEvent(
-								ModelType.Mapping, getId()));
+				fireSelectionEvent(ModelType.Mapping);
 			}
 		});
 		group.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseDown (MouseEvent e) {
-				// inform global selection controller
-				GlobalSelectionController
-						.fireModelSelection(new VagaSelectionEvent(
-								ModelType.Mapping, getId()));
+				fireSelectionEvent(ModelType.Mapping);
 			}
 		});
 	}

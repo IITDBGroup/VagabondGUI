@@ -28,8 +28,6 @@ import com.quantum.sql.MultiSQLServer;
 import com.quantum.sql.SQLResultSetResults;
 import com.quantum.sql.SQLResults;
 import com.quantum.view.tableview.TableView;
-import com.quantum.wizards.SQLRowWizard;
-import com.quantum.wizards.UpdateRowPage;
 
 public class TargetDBViewActionGroup extends DBViewActionGroup {
 	
@@ -131,9 +129,9 @@ public class TargetDBViewActionGroup extends DBViewActionGroup {
 		return this.tableView.getSelectedResultSet();
 	}
 	
-	private SQLResultSetResults.Row getSelection() {
-		return this.tableView.getSelectedFirstRow();
-	}
+//	private SQLResultSetResults.Row getSelection() {
+//		return this.tableView.getSelectedFirstRow();
+//	}
 	
 	private IStructuredSelection getTableRowSelection() {
 		return this.tableView.getTableRowSelection();

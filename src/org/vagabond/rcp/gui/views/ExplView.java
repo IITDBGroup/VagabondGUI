@@ -1,9 +1,6 @@
 package org.vagabond.rcp.gui.views;
 
 import org.apache.log4j.Logger;
-import org.eclipse.jface.viewers.ITreeSelection;
-import org.eclipse.jface.viewers.TreePath;
-import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -13,21 +10,13 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
-import org.vagabond.explanation.generation.ExplanationSetGenerator;
 import org.vagabond.explanation.marker.IAttributeValueMarker;
-import org.vagabond.explanation.marker.IMarkerSet;
-import org.vagabond.explanation.marker.MarkerFactory;
 import org.vagabond.explanation.model.ExplanationCollection;
 import org.vagabond.explanation.model.basic.IBasicExplanation;
-import org.vagabond.rcp.controller.ExplGenContentProvider;
-import org.vagabond.rcp.controller.ExplGenLabelProvider;
 import org.vagabond.rcp.gui.views.detailWidgets.DetailViewList;
 import org.vagabond.rcp.gui.views.detailWidgets.ExplainDetailViewFactory;
 import org.vagabond.rcp.model.ContentProvider;
 import org.vagabond.rcp.util.PluginLogProvider;
-import org.vagabond.util.LoggerUtil;
-
-import com.quantum.sql.SQLResultSetResults;
 
 public class ExplView extends ViewPart {
 	public static final String ID = "org.vagabond.rcp.gui.views.explview";

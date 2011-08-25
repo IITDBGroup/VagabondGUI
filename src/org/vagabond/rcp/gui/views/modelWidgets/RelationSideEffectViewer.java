@@ -17,8 +17,6 @@ import org.vagabond.explanation.marker.MarkerSetUtil;
 import org.vagabond.explanation.model.basic.IBasicExplanation;
 import org.vagabond.rcp.selection.GlobalSelectionController;
 import org.vagabond.rcp.selection.RelationSideEffectEvent;
-import org.vagabond.rcp.selection.VagaSelectionEvent;
-import org.vagabond.rcp.selection.VagaSelectionEvent.ModelType;
 import org.vagabond.util.Pair;
 
 public class RelationSideEffectViewer {

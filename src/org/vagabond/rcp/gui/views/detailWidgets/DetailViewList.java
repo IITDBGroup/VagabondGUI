@@ -87,6 +87,13 @@ public class DetailViewList<T> {
 		return result;
 	}
 	
+	public void clearSelection () {
+		if (curSelection != -1) {
+			views.get(curSelection).setSelection(false);
+		}
+		curSelection = -1;
+	}
+	
 	public void selectElement (int pos) {
 		if (curSelection != -1) {
 			views.get(curSelection).setSelection(false);

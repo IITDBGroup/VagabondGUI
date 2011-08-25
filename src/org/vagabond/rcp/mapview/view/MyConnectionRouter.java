@@ -8,12 +8,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.draw2d.AbstractRouter;
 import org.eclipse.draw2d.Bendpoint;
 import org.eclipse.draw2d.Connection;
+import org.eclipse.draw2d.ConnectionRouter;
 import org.eclipse.draw2d.FigureListener;
-import org.eclipse.draw2d.LayoutListener;
-import org.eclipse.draw2d.AbstractRouter;
 import org.eclipse.draw2d.IFigure;
+import org.eclipse.draw2d.LayoutListener;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.PointList;
 import org.eclipse.draw2d.geometry.PrecisionPoint;
@@ -44,20 +45,20 @@ public final class MyConnectionRouter extends AbstractRouter {
 		}
 	}
 
-	private Map constraintMap = new HashMap();
-	private Map figuresToBounds;
-	private Map connectionToPaths;
+	private Map<Connection, Object> constraintMap = new HashMap<Connection, Object>();
+	private Map<IFigure, Rectangle> figuresToBounds;
+	private Map<Connection, Path> connectionToPaths;
 	private boolean isDirty;
 	private ShortestPathRouter algorithm = new ShortestPathRouter();
 	private IFigure container;
-	private Set staleConnections = new HashSet();
+	private Set<Connection> staleConnections = new HashSet<Connection>();
 	private LayoutListener listener = new LayoutTracker();
 
 	private FigureListener figureListener = new FigureListener() {
 		public void figureMoved(IFigure source) {
 			Rectangle newBounds = source.getBounds().getCopy();
 			if (algorithm.updateObstacle(
-					(Rectangle) figuresToBounds.get(source), newBounds)) {
+					figuresToBounds.get(source), newBounds)) {
 				queueSomeRouting();
 				isDirty = true;
 			}
@@ -97,7 +98,7 @@ public final class MyConnectionRouter extends AbstractRouter {
 	}
 
 	private void hookAll() {
-		figuresToBounds = new HashMap();
+		figuresToBounds = new HashMap<IFigure, Rectangle>();
 		for (int i = 0; i < container.getChildren().size(); i++) {
 			IFigure child = (IFigure) container.getChildren().get(i);
 			addChild(child);
@@ -111,10 +112,10 @@ public final class MyConnectionRouter extends AbstractRouter {
 	private void unhookAll() {
 		container.removeLayoutListener(listener);
 		if (figuresToBounds != null) {
-			Iterator figureItr = figuresToBounds.keySet().iterator();
+			Iterator<IFigure> figureItr = figuresToBounds.keySet().iterator();
 			while (figureItr.hasNext()) {
 				// Must use iterator's remove to avoid concurrent modification
-				IFigure child = (IFigure) figureItr.next();
+				IFigure child = figureItr.next();
 				figureItr.remove();
 				removeChild(child);
 			}
@@ -158,20 +159,20 @@ public final class MyConnectionRouter extends AbstractRouter {
 	private void processLayout() {
 		if (staleConnections.isEmpty())
 			return;
-		((Connection) staleConnections.iterator().next()).revalidate();
+		staleConnections.iterator().next().revalidate();
 	}
 
 	private void processStaleConnections() {
-		Iterator iter = staleConnections.iterator();
+		Iterator<Connection> iter = staleConnections.iterator();
 		if (iter.hasNext() && connectionToPaths == null) {
-			connectionToPaths = new HashMap();
+			connectionToPaths = new HashMap<Connection, Path>();
 			hookAll();
 		}
 
 		while (iter.hasNext()) {
-			Connection conn = (Connection) iter.next();
+			Connection conn = iter.next();
 
-			Path path = (Path) connectionToPaths.get(conn);
+			Path path = connectionToPaths.get(conn);
 			if (path == null) {
 				path = new Path(conn);
 				connectionToPaths.put(conn, path);
@@ -211,7 +212,7 @@ public final class MyConnectionRouter extends AbstractRouter {
 			return;
 		try {
 			ignoreInvalidate = true;
-			((Connection) connectionToPaths.keySet().iterator().next())
+			connectionToPaths.keySet().iterator().next()
 					.revalidate();
 		} finally {
 			ignoreInvalidate = false;
@@ -226,7 +227,7 @@ public final class MyConnectionRouter extends AbstractRouter {
 		constraintMap.remove(connection);
 		if (connectionToPaths == null)
 			return;
-		Path path = (Path) connectionToPaths.remove(connection);
+		Path path = connectionToPaths.remove(connection);
 		algorithm.removePath(path);
 		isDirty = true;
 		if (connectionToPaths.isEmpty()) {

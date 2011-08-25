@@ -2,31 +2,18 @@ package org.vagabond.rcp.mapview.controller;
 
 import java.util.List;
 
-import org.vagabond.rcp.mapview.model.AttributeGraphNode;
-import org.vagabond.rcp.mapview.model.ForeignKeyConnection;
-import org.vagabond.rcp.mapview.model.MapConnection;
-import org.vagabond.rcp.mapview.model.Node;
-import org.vagabond.rcp.mapview.model.RelationGraphNode;
-
 import org.apache.log4j.Logger;
 import org.eclipse.draw2d.ChopboxAnchor;
 import org.eclipse.draw2d.ConnectionAnchor;
 import org.eclipse.draw2d.IFigure;
-import org.eclipse.draw2d.Label;
-import org.eclipse.draw2d.PositionConstants;
-import org.eclipse.draw2d.RectangleFigure;
 import org.eclipse.gef.ConnectionEditPart;
-import org.eclipse.gef.EditPart;
-import org.eclipse.gef.GraphicalEditPart;
 import org.eclipse.gef.NodeEditPart;
 import org.eclipse.gef.Request;
-import org.eclipse.gef.editparts.AbstractEditPart;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Font;
-import org.eclipse.draw2d.geometry.Rectangle;
-
+import org.vagabond.rcp.mapview.model.AttributeGraphNode;
+import org.vagabond.rcp.mapview.model.ForeignKeyConnection;
+import org.vagabond.rcp.mapview.model.MapConnection;
+import org.vagabond.rcp.mapview.model.Node;
 import org.vagabond.rcp.mapview.view.AttributeFigure;
 import org.vagabond.rcp.mapview.view.LeftRightParentBoxFigureAnchor;
 import org.vagabond.rcp.util.PluginLogProvider;

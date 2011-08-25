@@ -1,7 +1,6 @@
 package org.vagabond.rcp.gui.views;
 
 import java.beans.PropertyChangeEvent;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -27,7 +26,6 @@ import org.vagabond.rcp.selection.VagaSelectionListener;
 
 import com.quantum.sql.SQLResultSetResults;
 import com.quantum.view.tableview.ResultSetViewer;
-import com.quantum.view.tableview.TableViewActionGroup;
 
 
 public class TargetDBView extends GenericTableView implements VagaSelectionListener {
@@ -38,6 +36,7 @@ public class TargetDBView extends GenericTableView implements VagaSelectionListe
 	
 	static {
 		interest = new HashSet<ModelType> ();
+		interest.add(ModelType.None);
 		interest.add(ModelType.SourceRelation);
 		interest.add(ModelType.Mapping);
 		interest.add(ModelType.Correspondence);
@@ -137,51 +136,24 @@ public class TargetDBView extends GenericTableView implements VagaSelectionListe
 
 	@Override
 	public void event(VagaSelectionEvent e) {
-		if (e.isEmpty())
+		if (e.isEmpty()) {
+			filterResultSets(e, false);
 			return;
+		}
 		
 		if (e.isLimitScope()) {
-			if (e.getElementType().equals(ModelType.Correspondence)) {
-				// Delete and recreate resultset viewers
-				for (Iterator<ResultSetViewer> i = this.resultSetViewers.iterator(); i.hasNext();) {
-					ResultSetViewer viewer = i.next();
-					viewer.dispose();
-				}
-				this.resultSetViewers.clear();
-				for (Iterator<Filter> i = this.filters.iterator(); i.hasNext();) {
-					Filter filter = i.next();
-					try {
-						SQLResultSetResults r = filter.byCorrespondence(e.getElementIds(), false);
-						this.resultSetViewers.add(new ResultSetViewer(this, r));
-					} catch (Exception e1) {
-						e1.printStackTrace();
-					}
-				}
-			}
-			if (e.getElementType().equals(ModelType.Mapping)) {
-				// Delete and recreate resultset viewers
-				for (Iterator<ResultSetViewer> i = this.resultSetViewers.iterator(); i.hasNext();) {
-					ResultSetViewer viewer = i.next();
-					viewer.dispose();
-				}
-				this.resultSetViewers.clear();
-				for (Iterator<Filter> i = this.filters.iterator(); i.hasNext();) {
-					Filter filter = i.next();
-					try {
-						SQLResultSetResults r = filter.byMapping(e.getElementIds(), false);
-						if (r != null) {
-							this.resultSetViewers.add(new ResultSetViewer(this, r));
-						}
-					} catch (Exception e1) {
-						e1.printStackTrace();
-					}
-				}
+			if (e.getElementType().equals(ModelType.Correspondence) 
+					|| e.getElementType().equals(ModelType.Mapping)) {
+				filterResultSets(e, false);
 			}
 		}
 		// normal navigation, just listen on SourceRelationEvents
 		else {
 			if (e.getElementType().equals(ModelType.SourceRelation))
 				setSelection(e.getElementIds().iterator().next());
+			if (e.getElementType().equals(ModelType.Mapping)) {
+				filterResultSets(e, false);
+			}
 		}
 	}
 

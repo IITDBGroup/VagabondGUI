@@ -2,32 +2,24 @@ package org.vagabond.rcp.mapview.controller;
 
 import java.util.List;
 
-import org.vagabond.rcp.mapview.model.Graph;
+import org.apache.log4j.Logger;
+import org.eclipse.draw2d.IFigure;
+import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.gef.EditPolicy;
+import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.vagabond.rcp.mapview.model.MappingGraphNode;
 import org.vagabond.rcp.mapview.model.Node;
 import org.vagabond.rcp.mapview.model.RelationGraphNode;
-
-import org.apache.log4j.Logger;
-import org.eclipse.draw2d.ConnectionLayer;
-import org.eclipse.draw2d.GridLayout;
-import org.eclipse.draw2d.IFigure;
-import org.eclipse.draw2d.Label;
-import org.eclipse.draw2d.MarginBorder;
-import org.eclipse.draw2d.PositionConstants;
-import org.eclipse.draw2d.RectangleFigure;
-import org.eclipse.draw2d.ShortestPathConnectionRouter;
-import org.eclipse.gef.LayerConstants;
-import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Font;
-import org.eclipse.draw2d.geometry.Rectangle;
-
 import org.vagabond.rcp.mapview.view.MappingFigure;
 import org.vagabond.rcp.mapview.view.RelationFigure;
+import org.vagabond.rcp.mapview.view.SelectableFigure;
+import org.vagabond.rcp.selection.GlobalSelectionController;
+import org.vagabond.rcp.selection.VagaSelectionEvent;
+import org.vagabond.rcp.selection.VagaSelectionEvent.ModelType;
 import org.vagabond.rcp.util.PluginLogProvider;
 
-public class MappingNodeEditPart extends AbstractGraphicalEditPart {
+public class MappingNodeEditPart extends AbstractGraphicalEditPart 
+		implements VagaSelectionEventProvider {
 	
 	static Logger log = PluginLogProvider.getInstance().getLogger(
 			MappingNodeEditPart.class);
@@ -51,6 +43,7 @@ public class MappingNodeEditPart extends AbstractGraphicalEditPart {
 
 	@Override
 	public void deactivate() {
+		super.deactivate();
 	}
 
 	protected void refreshVisuals() {
@@ -75,13 +68,13 @@ public class MappingNodeEditPart extends AbstractGraphicalEditPart {
 		figure.setConstraint(figure, r);
 	}
 
-	protected List getModelChildren(){
+	protected List<?> getModelChildren(){
 		return ((MappingGraphNode)getModel()).getAttributes();
 	}
 
 	@Override
 	protected void createEditPolicies() {
-		// Not editing, so keep empty...
+		installEditPolicy(EditPolicy.SELECTION_FEEDBACK_ROLE, new SelectionFeedbackPolicy());
 	}
 
 	/**
@@ -91,5 +84,23 @@ public class MappingNodeEditPart extends AbstractGraphicalEditPart {
 	{
 		MappingFigure figure = (MappingFigure) getFigure();
 		return figure.getAttrsFigure();
+	}
+	
+	private void changeSelection (boolean selection) {
+		SelectableFigure fig = (SelectableFigure) getFigure();
+		fig.setSelection(selection);
+		fig.revalidate();
+	}
+	
+	@Override
+	public void fireSelectionEvent(boolean selected) {
+		MappingGraphNode map = (MappingGraphNode) getModel();
+	
+		changeSelection(selected);
+		if (selected)
+			GlobalSelectionController.fireModelSelection(new VagaSelectionEvent(
+				ModelType.Mapping, map.getName()));
+		else
+			GlobalSelectionController.fireModelSelection(VagaSelectionEvent.DESELECT);
 	}
 }

@@ -1,9 +1,6 @@
 package org.vagabond.rcp.model;
 
 import org.apache.log4j.Logger;
-import org.eclipse.draw2d.geometry.Dimension;
-import org.eclipse.draw2d.geometry.Point;
-import org.eclipse.draw2d.geometry.Rectangle;
 import org.vagabond.explanation.marker.IMarkerSet;
 import org.vagabond.explanation.model.ExplanationCollection;
 import org.vagabond.mapping.model.MapScenarioHolder;
@@ -18,7 +15,6 @@ import org.vagabond.rcp.mapview.model.MappingGraphNode;
 import org.vagabond.rcp.mapview.model.Node;
 import org.vagabond.rcp.mapview.model.RelationGraphNode;
 import org.vagabond.rcp.mapview.model.Schema;
-import org.vagabond.rcp.mapview.view.MapGraphView;
 import org.vagabond.rcp.util.PluginLogProvider;
 import org.vagabond.xmlmodel.AttrDefType;
 import org.vagabond.xmlmodel.CorrespondenceType;
@@ -166,7 +162,7 @@ public class ContentProvider {
 		String corrName, sourceRel, sourceAttr, targetRel, targetAttr;
 
 		for (CorrespondenceType corr : corrs.getCorrespondenceArray()) {
-			corrName = corr.getId();
+			corrName = corr.getId().toUpperCase();
 			
 			sourceRel = "source." + corr.getFrom().getTableref();
 			sourceAttr = corr.getFrom().getAttrArray(0);

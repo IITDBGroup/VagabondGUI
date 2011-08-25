@@ -11,8 +11,6 @@ import org.vagabond.mapping.model.MapScenarioHolder;
 import org.vagabond.rcp.gui.views.modelWidgets.MappingViewIDList;
 import org.vagabond.rcp.gui.views.modelWidgets.SourceRelationViewIDList;
 import org.vagabond.rcp.gui.views.modelWidgets.TargetRelationViewIDList;
-import org.vagabond.rcp.selection.GlobalSelectionController;
-import org.vagabond.rcp.selection.VagaSelectionEvent;
 import org.vagabond.rcp.selection.VagaSelectionEvent.ModelType;
 import org.vagabond.xmlmodel.CorrespondenceType;
 
@@ -82,19 +80,13 @@ public class CorrespondenceDetailView extends ModelElementDetailView {
 		overviewLabel.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseDown (MouseEvent e) {
-				// inform global selection controller
-				GlobalSelectionController
-						.fireModelSelection(new VagaSelectionEvent(
-								ModelType.Correspondence, getId()));
+				fireSelectionEvent(ModelType.Correspondence);
 			}
 		});
 		group.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseDown (MouseEvent e) {
-				// inform global selection controller
-				GlobalSelectionController
-						.fireModelSelection(new VagaSelectionEvent(
-								ModelType.Correspondence, getId()));
+				fireSelectionEvent(ModelType.Correspondence);
 			}
 		});	
 	}

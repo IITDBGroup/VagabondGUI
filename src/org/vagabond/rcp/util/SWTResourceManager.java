@@ -1,13 +1,9 @@
 package org.vagabond.rcp.util;
 
-import java.io.IOException;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
-import javax.swing.colorchooser.ColorSelectionModel;
-
+import org.apache.log4j.Logger;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
@@ -17,6 +13,8 @@ import org.eclipse.swt.widgets.Display;
 
 public class SWTResourceManager {
 
+	static Logger log = PluginLogProvider.getInstance().getLogger(SWTResourceManager.class);
+	
 	private Map<String,Font> fonts;
 	private Map<RGB,Color> colors;
 	private Map<String, RGB> namedColors;
@@ -33,10 +31,18 @@ public class SWTResourceManager {
 	
 	public static Color getColor(RGB rgb) {
 		if (!instance.colors.containsKey(rgb)) {
-			instance.colors.put(rgb, new Color(Display.getCurrent(),rgb));
+			instance.colors.put(rgb, new Color(null,rgb));
 		}
 		
 		return instance.colors.get(rgb);
+	}
+	
+	public static Color getColor(int r, int g, int b) {
+		return getColor(new RGB(r,g,b));
+	}
+	
+	public static Color getSystemColor (int id) {
+		return getDisplay().getSystemColor(id);
 	}
 	
 	public static Color nameColor (String name, RGB rgb) {
@@ -55,7 +61,7 @@ public class SWTResourceManager {
 		String fontName = (bold ? "BOLD_" : "") + "SYSTEM_FONT_" + size;
 		
 		if (!instance.fonts.containsKey(fontName)) {
-			Font sysFont = Display.getCurrent().getSystemFont();
+			Font sysFont = getDisplay().getSystemFont();
 			Font font = new Font(null, 
 					sysFont.getFontData()[0].getName(), size, 
 					bold ? SWT.BOLD : SWT.NONE);
@@ -71,7 +77,7 @@ public class SWTResourceManager {
 	
 	public static Font getFont(String name, String font, int size, boolean bold) {
 		if (!instance.fonts.containsKey(name)) {
-			instance.fonts.put(name, new Font(Display.getCurrent(), 
+			instance.fonts.put(name, new Font(null, 
 					font, size, bold ? SWT.BOLD : SWT.NONE));	
 		}
 		return instance.fonts.get(name);		
@@ -86,7 +92,7 @@ public class SWTResourceManager {
 	public static Image getImage (String name) throws Exception {
 		if (!instance.images.containsKey(name)) {
 			Image newImage;
-			newImage = new Image(Display.getCurrent(), 
+			newImage = new Image(null, 
 			        ResourceManager.getInstance().getResource("icons/attribute.gif"));
 			instance.images.put(name, newImage);
 		}
@@ -94,13 +100,23 @@ public class SWTResourceManager {
 		return instance.images.get(name);
 	}
 	
+	private static Display getDisplay () {
+		if (Display.getCurrent() != null)
+			return Display.getCurrent();
+		return Display.getDefault();
+	}
+	
 	public static void dispose () {
+		log.debug("dispose fonts");
 		for(Font f: instance.fonts.values())
 			f.dispose();
+		log.debug("dispose colors");
 		for(Color c: instance.colors.values())
 			c.dispose();
+		log.debug("dispose images");
 		for(Image i: instance.images.values())
 			i.dispose();
+		log.debug("dispose done");
 	}
 	
 }

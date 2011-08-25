@@ -5,6 +5,9 @@ import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
+import org.vagabond.rcp.selection.GlobalSelectionController;
+import org.vagabond.rcp.selection.VagaSelectionEvent;
+import org.vagabond.rcp.selection.VagaSelectionEvent.ModelType;
 import org.vagabond.rcp.util.SWTResourceManager;
 
 public abstract class ModelElementDetailView implements 
@@ -48,11 +51,28 @@ public abstract class ModelElementDetailView implements
 		}
 	}
 
+	public boolean getSelection () {
+		return selected;
+	}
+	
 	public String getId() {
 		return id;
 	}
 
 	public void setId(String id) {
 		this.id = id;
+	}
+	
+	protected void fireSelectionEvent (ModelType type) {
+		setSelection(!getSelection());
+		if (getSelection()) {
+			// inform global selection controller
+			GlobalSelectionController
+					.fireModelSelection(new VagaSelectionEvent(type, getId()));
+		}
+		else {
+			GlobalSelectionController.fireModelSelection(
+					VagaSelectionEvent.DESELECT);
+		}
 	}
 }

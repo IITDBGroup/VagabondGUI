@@ -1,11 +1,9 @@
 package org.vagabond.rcp.mapview.model;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.Vector;
 
 import org.eclipse.draw2d.geometry.Rectangle;
 
@@ -44,6 +42,10 @@ public class RelationGraphNode implements Node {
 	
 	public String getName() {
 		return name; 
+	}
+	
+	public String getUnqualName () {
+		return name.substring(7);
 	}
 	
 	public void setName(String name) {

@@ -1,11 +1,8 @@
 package org.vagabond.rcp.mapview.controller;
 
 import org.eclipse.draw2d.ColorConstants;
-import org.eclipse.draw2d.FanRouter;
 import org.eclipse.draw2d.IFigure;
-import org.eclipse.draw2d.ManhattanConnectionRouter;
 import org.eclipse.draw2d.PolygonDecoration;
-import org.eclipse.draw2d.ShortestPathConnectionRouter;
 import org.eclipse.gef.editparts.AbstractConnectionEditPart;
 import org.eclipse.gmf.runtime.draw2d.ui.figures.PolylineConnectionEx;
 import org.vagabond.rcp.mapview.model.Connection;

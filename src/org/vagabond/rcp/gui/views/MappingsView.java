@@ -4,21 +4,12 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
-import org.eclipse.jface.viewers.ArrayContentProvider;
-import org.eclipse.jface.viewers.DoubleClickEvent;
-import org.eclipse.jface.viewers.IDoubleClickListener;
-import org.eclipse.jface.viewers.ITableLabelProvider;
-import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
-import org.vagabond.mapping.model.MapScenarioHolder;
 import org.vagabond.rcp.gui.views.detailWidgets.DetailViewFactory;
 import org.vagabond.rcp.gui.views.detailWidgets.DetailViewList;
 import org.vagabond.rcp.gui.views.detailWidgets.MappingDetailView;
@@ -31,8 +22,6 @@ import org.vagabond.rcp.selection.VagaSelectionListener;
 import org.vagabond.rcp.util.PluginLogProvider;
 import org.vagabond.util.LoggerUtil;
 import org.vagabond.xmlmodel.MappingType;
-import org.vagabond.xmlmodel.MappingsType;
-import org.vagabond.xmlmodel.RelAtomType;
 
 public class MappingsView extends ViewPart implements DetailViewFactory, VagaSelectionListener {
 	
@@ -44,6 +33,7 @@ public class MappingsView extends ViewPart implements DetailViewFactory, VagaSel
 	static {
 		interest = new HashSet<ModelType> ();
 		interest.add(ModelType.Mapping);
+		interest.add(ModelType.None);
 	}
 	
 	private DetailViewList<MappingType> mapViewer;
@@ -98,8 +88,10 @@ public class MappingsView extends ViewPart implements DetailViewFactory, VagaSel
 
 	@Override
 	public void event(VagaSelectionEvent e) {
-		if (e.isEmpty())
+		if (e.isEmpty()) {
+			mapViewer.clearSelection();
 			return;
+		}
 		
 		if (e.isLimitScope()) {
 			try  {

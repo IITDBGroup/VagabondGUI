@@ -2,31 +2,26 @@ package org.vagabond.rcp.mapview.view;
 
 
 
-import org.eclipse.draw2d.AbstractBorder;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Figure;
-import org.eclipse.draw2d.Graphics;
-import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.LineBorder;
 import org.eclipse.draw2d.MarginBorder;
 import org.eclipse.draw2d.PositionConstants;
 import org.eclipse.draw2d.ToolbarLayout;
 import org.eclipse.draw2d.geometry.Insets;
-import org.eclipse.gmf.runtime.draw2d.ui.figures.ConstrainedToolbarLayout;
-import org.eclipse.gmf.runtime.draw2d.ui.figures.OneLineBorder;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 import org.vagabond.rcp.util.SWTResourceManager;
 
-public class RelationFigure extends Figure {
+public class RelationFigure extends Figure implements SelectableFigure {
 	public static Color classColor = SWTResourceManager.getColor(
 			new RGB(255,205,215));
 
 	private Label label;
 	private AttributesFigure attrs;
-
+	private boolean selection = false;
+	
 	public RelationFigure() {
 		label = new Label();
 		label.setFont(SWTResourceManager.getBoldSystemFont(12));
@@ -62,30 +57,27 @@ public class RelationFigure extends Figure {
 		return attrs;
 	}
 
-	public void setSelected(boolean isSelected)
-	{
+
+	@Override
+	public void setSelection(boolean selection) {
+		if (this.selection == selection)
+			return;
 		LineBorder lineBorder = (LineBorder) getBorder();
-		if (isSelected)
-		{
+		this.selection = selection;
+		if (this.selection) {
 			lineBorder.setWidth(2);
+			lineBorder.setColor(GraphColors.selected);
 		}
-		else
-		{
+		else {
 			lineBorder.setWidth(1);
-		}
-	}
-	
-	public class RelationLineBorder extends LineBorder  {
-		
-		public RelationLineBorder(Color lineColor, int width) {
-			super(lineColor, width);
-		}
-		
-		@Override
-		public Insets getInsets(IFigure figure) {
-			return new Insets(getWidth() + 3);
-		}
+			lineBorder.setColor(GraphColors.black);
+		}		
 	}
 
+
+	@Override
+	public void switchSelection() {
+		setSelection(!this.selection);
+	}
 
 }

@@ -1,7 +1,5 @@
 package org.vagabond.rcp.mapview.view;
 
-import java.io.IOException;
-
 import org.apache.log4j.Logger;
 import org.eclipse.draw2d.AbstractBorder;
 import org.eclipse.draw2d.Figure;
@@ -21,7 +19,8 @@ public class AttributeFigure extends Figure {
 	
 	private Label label;
 	private boolean boldFont;
-
+	private boolean selection = false;
+	
 	public AttributeFigure(boolean bold) {
 		this.boldFont = bold;
 		
@@ -64,6 +63,13 @@ public class AttributeFigure extends Figure {
 		if (this.boldFont != boldFont) {
 			label.setFont(SWTResourceManager.getSystemFont(10, boldFont));
 			this.boldFont = boldFont;
+		}
+	}
+	
+	public void setSelected (boolean selection) {
+		if (this.selection != selection) {
+			log.debug("selection changed to " + selection);
+			this.selection = selection;
 		}
 	}
 }

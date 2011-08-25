@@ -1,20 +1,12 @@
 package org.vagabond.test.gui;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
-import org.eclipse.draw2d.Figure;
-import org.eclipse.draw2d.LightweightSystem;
-import org.eclipse.draw2d.PolylineConnection;
-import org.eclipse.draw2d.XYLayout;
-import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.gef.EditDomain;
 import org.eclipse.gef.editparts.ScalableRootEditPart;
 import org.eclipse.gef.ui.parts.ScrollingGraphicalViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
@@ -24,10 +16,6 @@ import org.vagabond.mapping.model.MapScenarioHolder;
 import org.vagabond.mapping.model.ModelLoader;
 import org.vagabond.rcp.mapview.controller.GraphEditPart;
 import org.vagabond.rcp.mapview.controller.VagabondEditPartFactory;
-import org.vagabond.rcp.mapview.view.AttributeFigure;
-import org.vagabond.rcp.mapview.view.LeftRightParentBoxFigureAnchor;
-import org.vagabond.rcp.mapview.view.MappingFigure;
-import org.vagabond.rcp.mapview.view.RelationFigure;
 import org.vagabond.rcp.model.ContentProvider;
 import org.vagabond.rcp.util.PluginLogProvider;
 import org.vagabond.util.LoggerUtil;
@@ -47,7 +35,7 @@ public class TestGEFComponents {
 //		LightweightSystem lws = new LightweightSystem(shell);
 		
 		final ScrollingGraphicalViewer viewer;
-		
+		EditDomain domain;
 //		Figure contents =TopLevelContents.createContents(); 
 		
 		ModelLoader.getInstance().loadToInst("../TrampExGen/resource/exampleScenarios/homelessDebugged.xml");
@@ -81,6 +69,10 @@ public class TestGEFComponents {
 		    }
 		});
 		
+//		domain = new DefaultEditDomain(null);
+//		domain.addViewer(viewer);
+		
+		// generate contents
 		ContentProvider.getInstance().generateGraph();
 		viewer.setContents(ContentProvider.getInstance().getGraph());
 		// Set the view's background to white

@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
-import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.vagabond.rcp.gui.views.CorrView;
 import org.vagabond.rcp.gui.views.ExplView;

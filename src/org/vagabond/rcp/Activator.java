@@ -13,7 +13,6 @@ import org.vagabond.rcp.util.PluginLogProvider;
 import org.vagabond.rcp.util.ResourceManager;
 import org.vagabond.util.LogProviderHolder;
 
-import com.quantum.QuantumPlugin;
 import com.quantum.log.PluginLogManager;
 
 /**
@@ -30,7 +29,6 @@ public class Activator extends AbstractUIPlugin {
 	private static Activator plugin;
 	
 	// logger objects
-	private PluginLogManager logManager = null;
     private Logger log = null;
 
 	
@@ -57,6 +55,7 @@ public class Activator extends AbstractUIPlugin {
 	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext)
 	 */
 	public void stop(BundleContext context) throws Exception {
+		log.debug("Activator stop");
 		plugin = null;
 		super.stop(context);
 	}

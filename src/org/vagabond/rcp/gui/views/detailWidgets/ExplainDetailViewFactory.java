@@ -2,9 +2,6 @@ package org.vagabond.rcp.gui.views.detailWidgets;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
-import org.vagabond.explanation.model.basic.CopySourceError;
-import org.vagabond.explanation.model.basic.IBasicExplanation;
-import org.vagabond.explanation.model.basic.SuperflousMappingError;
 
 public class ExplainDetailViewFactory implements DetailViewFactory {
 

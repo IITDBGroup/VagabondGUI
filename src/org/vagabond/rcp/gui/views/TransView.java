@@ -6,9 +6,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
-import java.util.Vector;
 
 import org.apache.log4j.Logger;
+import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceConverter;
 import org.eclipse.swt.SWT;
@@ -16,24 +16,17 @@ import org.eclipse.swt.custom.ExtendedModifyEvent;
 import org.eclipse.swt.custom.ExtendedModifyListener;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.custom.StyledText;
-import org.eclipse.swt.events.MouseAdapter;
-import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.PlatformUI;
 import org.vagabond.mapping.model.MapScenarioHolder;
 import org.vagabond.rcp.gui.views.modelWidgets.MappingViewIDList;
-import org.vagabond.rcp.gui.views.modelWidgets.RelationViewIDList;
 import org.vagabond.rcp.gui.views.modelWidgets.SourceRelationViewIDList;
 import org.vagabond.rcp.gui.views.modelWidgets.TargetRelationViewIDList;
 import org.vagabond.rcp.selection.EventUtil;
@@ -44,10 +37,8 @@ import org.vagabond.rcp.selection.VagaSelectionListener;
 import org.vagabond.rcp.util.PluginLogProvider;
 import org.vagabond.rcp.util.SWTResourceManager;
 import org.vagabond.util.LoggerUtil;
-import org.vagabond.xmlmodel.MappingType;
 import org.vagabond.xmlmodel.RelationType;
 import org.vagabond.xmlmodel.TransformationType;
-import org.vagabond.xmlmodel.TransformationsType;
 
 import com.quantum.PluginPreferences;
 import com.quantum.QuantumPlugin;
@@ -81,6 +72,7 @@ public class TransView extends SQLQueryView implements VagaSelectionListener {
 	
 	static {
 		 interest = new HashSet<ModelType> ();
+		 interest.add(ModelType.None);
 		 interest.add(ModelType.Transformation);
 	}
 	
@@ -372,13 +364,13 @@ public class TransView extends SQLQueryView implements VagaSelectionListener {
 			// this.boldTable = store.getBoolean("quantum.table.bold");
 			// this.boldText= store.getBoolean("quantum.text.bold");
 			// this.boldVariable = store.getBoolean("quantum.variable.bold");
-			Display display = Display.getCurrent();
+//			Display display = Display.getCurrent();
 			
-			this.DEFAULT = display.getSystemColor(SWT.COLOR_BLACK);
-			this.KEYWORD = display.getSystemColor(SWT.COLOR_DARK_MAGENTA);
-			this.STRING_LITERAL = display.getSystemColor(SWT.COLOR_DARK_BLUE);
-			this.COMMENT = display.getSystemColor(SWT.COLOR_DARK_GREEN);
-			this.NUMERIC = display.getSystemColor(SWT.COLOR_DARK_CYAN);
+			this.DEFAULT = ColorConstants.black;
+			this.KEYWORD = SWTResourceManager.getSystemColor(SWT.COLOR_DARK_MAGENTA);
+			this.STRING_LITERAL = SWTResourceManager.getSystemColor(SWT.COLOR_DARK_BLUE);
+			this.COMMENT = SWTResourceManager.getSystemColor(SWT.COLOR_DARK_GREEN);
+			this.NUMERIC = SWTResourceManager.getSystemColor(SWT.COLOR_DARK_CYAN);
 		}
 		public synchronized void updateText(String text, int start, int length) {
 			requests.add(new UpdateRequest(text, start, length));

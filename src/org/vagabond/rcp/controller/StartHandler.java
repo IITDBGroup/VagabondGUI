@@ -1,10 +1,7 @@
 package org.vagabond.rcp.controller;
 
 
-import java.io.File;
 import java.sql.Connection;
-import java.util.Enumeration;
-import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.commands.AbstractHandler;
@@ -51,7 +48,6 @@ public class StartHandler extends AbstractHandler {
 	
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		//Shell shell = HandlerUtil.getActiveWorkbenchWindowChecked(event).getShell();
 		Shell shell = HandlerUtil.getActiveShell(event); 
 		
 		try {
@@ -78,8 +74,6 @@ public class StartHandler extends AbstractHandler {
 			MapGraphView.getInstance().getViewer().flush();
 			part.setLayoutConstraints();
 			part.refresh();
-//	    	GraphEditPart graph = (GraphEditPart) View.getInstance().getViewer().getRootEditPart().getChildren().get(0);
-//	    	graph.setLayoutConstraints();
 			
 			TransView.getInstance().setTransformations(MapScenarioHolder
 					.getInstance().getDocument().getMappingScenario()
@@ -190,8 +184,7 @@ public class StartHandler extends AbstractHandler {
 	}
 	
 	private void showErrorDialog (Exception e, Shell shell) {
-		LoggerUtil.logException(e, log);
-		MessageDialog.openInformation(shell, "Error", e.getMessage());
+		showErrorDialog(e, shell, "");
 	}
 
 	private void showErrorDialog (Exception e, Shell shell, String message) {

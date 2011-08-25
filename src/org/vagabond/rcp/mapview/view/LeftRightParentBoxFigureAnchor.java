@@ -4,7 +4,6 @@ import org.eclipse.draw2d.AbstractConnectionAnchor;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
-import org.vagabond.rcp.mapview.model.RelationGraphNode;
 
 public class LeftRightParentBoxFigureAnchor extends AbstractConnectionAnchor {
 

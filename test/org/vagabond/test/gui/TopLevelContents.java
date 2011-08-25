@@ -4,13 +4,11 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
 import org.eclipse.draw2d.Figure;
-import org.eclipse.draw2d.LightweightSystem;
 import org.eclipse.draw2d.PolylineConnection;
 import org.eclipse.draw2d.XYLayout;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Shell;
 import org.vagabond.rcp.mapview.view.AttributeFigure;
 import org.vagabond.rcp.mapview.view.LeftRightParentBoxFigureAnchor;
 import org.vagabond.rcp.mapview.view.MappingFigure;

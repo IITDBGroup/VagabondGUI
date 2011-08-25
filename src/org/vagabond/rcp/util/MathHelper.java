@@ -1,6 +1,5 @@
 package org.vagabond.rcp.util;
 
-import java.math.*;
 
 public class MathHelper {
 

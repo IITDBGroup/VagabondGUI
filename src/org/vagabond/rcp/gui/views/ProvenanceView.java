@@ -8,6 +8,7 @@ import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.vagabond.rcp.controller.DBViewActionGroup;
+
 import com.quantum.sql.SQLResultSetResults;
 import com.quantum.view.tableview.ResultSetViewer;
 

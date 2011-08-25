@@ -35,6 +35,7 @@ public class CorrView extends ViewPart implements VagaSelectionListener, DetailV
 	static {
 		interest = new HashSet<ModelType> ();
 		interest.add(ModelType.Correspondence);
+		interest.add(ModelType.None);
 	}
 	
 	private DetailViewList<CorrespondenceType> viewer;
@@ -84,8 +85,10 @@ public class CorrView extends ViewPart implements VagaSelectionListener, DetailV
 
 	@Override
 	public void event(VagaSelectionEvent e) {
-		if(e.isEmpty())
+		if(e.isEmpty()) {
+			viewer.clearSelection();
 			return;
+		}
 		
 		if (e.isLimitScope()) {
 			try {

@@ -3,7 +3,6 @@ package org.vagabond.rcp.selection;
 import java.util.Collection;
 import java.util.HashSet;
 
-import org.vagabond.util.CollectionUtils;
 import org.vagabond.util.LoggerUtil;
 
 public class VagaSelectionEvent {

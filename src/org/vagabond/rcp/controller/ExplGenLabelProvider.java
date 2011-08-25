@@ -1,8 +1,6 @@
 package org.vagabond.rcp.controller;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -172,6 +170,6 @@ public class ExplGenLabelProvider extends LabelProvider {
 					.getImage(ISharedImages.IMG_OBJS_WARN_TSK);
 		}
 		return PlatformUI.getWorkbench().getSharedImages()
-		.getImage(ISharedImages.IMG_OBJ_FILE);
+				.getImage(ISharedImages.IMG_OBJ_FILE);
 	}
 }

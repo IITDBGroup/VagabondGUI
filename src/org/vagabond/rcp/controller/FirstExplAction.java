@@ -14,36 +14,36 @@ import org.vagabond.rcp.util.PluginLogProvider;
 import org.vagabond.rcp.util.SWTResourceManager;
 import org.vagabond.util.LoggerUtil;
 
+public class FirstExplAction extends SelectionListenerAction implements PropertyChangeListener {
 
-public class PrevExplAction extends SelectionListenerAction implements PropertyChangeListener {
-	
-	static Logger log = PluginLogProvider.getInstance().getLogger(
-			PrevExplAction.class);
+	static Logger log = PluginLogProvider.getInstance().getLogger(FirstExplAction.class);
 	
 	private ExplRankView view;
 	
-	public PrevExplAction(ExplRankView view) {
+	protected FirstExplAction(ExplRankView view) {
 		super("");
 		this.view = view;
-		setText("Previous");
+		setText("First");
 		try {
-			setImageDescriptor(SWTResourceManager.getImageDescriptor("verysmall_go-previous.png"));
+			setImageDescriptor(SWTResourceManager.getImageDescriptor("verysmall_go-first.png"));
 		} catch (IOException e) {
 			LoggerUtil.logException(e, log);
 		}
-		setToolTipText("Show previous ranked explanation");
+		setToolTipText("Show top ranked explanation");
 		setEnabled(false);
 	}
 	
 	// For now, it just resets the collection iterator
 	public void run() {
-		if (ContentProvider.getInstance().getExplCol().hasPrevious())
-			view.updateView(ContentProvider.getInstance().getExplCol().previous());
+		ContentProvider.getInstance().getExplCol().resetIter();
+		
+		if (ContentProvider.getInstance().getExplCol().hasNext())
+			view.updateView(ContentProvider.getInstance().getExplCol().next());
 	}
-	
+
 	@Override
 	public void propertyChange(PropertyChangeEvent arg0) {
-		setEnabled(ContentProvider.getInstance().getExplCol().hasPrevious());
+		setEnabled(true);
 	}
 
 }

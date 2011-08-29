@@ -1,13 +1,16 @@
 package org.vagabond.rcp.util;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
 
@@ -19,6 +22,7 @@ public class SWTResourceManager {
 	private Map<RGB,Color> colors;
 	private Map<String, RGB> namedColors;
 	private Map<String, Image> images;
+	private Map<String, ImageDescriptor> iDescs;
 	
 	private static SWTResourceManager instance = new SWTResourceManager();
 	
@@ -27,6 +31,7 @@ public class SWTResourceManager {
 		colors = new HashMap<RGB,Color> ();
 		namedColors = new HashMap<String,RGB> ();
 		images = new HashMap<String, Image> ();
+		iDescs = new HashMap<String, ImageDescriptor> ();
 	}
 	
 	public static Color getColor(RGB rgb) {
@@ -93,11 +98,23 @@ public class SWTResourceManager {
 		if (!instance.images.containsKey(name)) {
 			Image newImage;
 			newImage = new Image(null, 
-			        ResourceManager.getInstance().getResource("icons/attribute.gif"));
+			        ResourceManager.getInstance().getResource("icons/" + name));
 			instance.images.put(name, newImage);
 		}
 		
 		return instance.images.get(name);
+	}
+	
+	public static ImageDescriptor getImageDescriptor (String name) throws IOException {
+		if (!instance.iDescs.containsKey(name)) {
+			Image newImage;
+			newImage = new Image(null, 
+			        ResourceManager.getInstance().getResource("icons/" + name));
+			
+			instance.iDescs.put(name, ImageDescriptor.createFromImage(newImage));
+		}
+		
+		return instance.iDescs.get(name);
 	}
 	
 	private static Display getDisplay () {

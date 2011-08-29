@@ -142,7 +142,6 @@ public class ContentProvider {
 		SchemaType schema = source ?
 				holder.getScenario().getSchemas().getSourceSchema():
 					holder.getScenario().getSchemas().getTargetSchema();
-		ForeignKeyConnection fkConn;
 		AttributeGraphNode[] sources, targets;
 		
 		for(ForeignKeyType fk: schema.getForeignKeyArray()) {
@@ -150,7 +149,7 @@ public class ContentProvider {
 			targets = graph.getAttrs(fk.getTo(), source);
 			
 			for (int i = 0; i < sources.length; i++) {
-				fkConn = new ForeignKeyConnection(fk.getId(),sources[i], 
+				new ForeignKeyConnection(fk.getId(),sources[i], 
 						targets[i]);
 			}
 		}
@@ -177,13 +176,11 @@ public class ContentProvider {
 	
 	private void generateMapConnections(MapScenarioHolder holder) {
 		MappingsType maps = holder.getScenario().getMappings();
-		SchemaType source = holder.getScenario().getSchemas().getSourceSchema();
-		SchemaType target = holder.getScenario().getSchemas().getTargetSchema();
 		String mapName;
 		int i=0,j=0;
 		
 		AttributeGraphNode sourceN, targetN;
-		String connName = "", sourceRel, sourceAttr, targetRel, targetAttr;
+		String sourceRel, sourceAttr, targetRel, targetAttr;
 		
 		for (MappingType map: maps.getMappingArray()) {
 			mapName = map.getId();

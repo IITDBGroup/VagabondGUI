@@ -71,7 +71,7 @@ public class TargetDBView extends GenericTableView implements VagaSelectionListe
 		GlobalSelectionController.addSelectionListener(this);
         this.actionGroup = new TargetDBViewActionGroup(this);
 
-        IActionBars actionBars = getViewSite().getActionBars();
+//        IActionBars actionBars = getViewSite().getActionBars();
 //        this.actionGroup.fillActionBars(actionBars);
 	}
 	
@@ -104,9 +104,10 @@ public class TargetDBView extends GenericTableView implements VagaSelectionListe
 			}
 		}
 	}
-	
+
 	private Collection<SQLResultSetResults> getRemovedResultSets() {
-		SQLResultSetResults[] results = TableViewManager.getInstance().getResultSets(this.VIEW_ID);
+		SQLResultSetResults[] results = TableViewManager.getInstance()
+				.getResultSets(VIEW_ID);
 		Collection<SQLResultSetResults> collection = (results == null)
 				? new ArrayList<SQLResultSetResults>()
 				: new ArrayList<SQLResultSetResults>(Arrays.asList(results));
@@ -116,14 +117,15 @@ public class TargetDBView extends GenericTableView implements VagaSelectionListe
 	}
 
 	private Collection<SQLResultSetResults> getAddedResultSets() {
-		SQLResultSetResults[] results = TableViewManager.getInstance().getResultSets(this.VIEW_ID);
+		SQLResultSetResults[] results = TableViewManager.getInstance()
+				.getResultSets(VIEW_ID);
 		Collection<SQLResultSetResults> collection = (results == null)
 				? new ArrayList<SQLResultSetResults>()
 				: new ArrayList<SQLResultSetResults>(Arrays.asList(results));
 		collection.removeAll(getResultSets());
 		return collection;
 	}
-	
+
 
 	private Collection<SQLResultSetResults> getResultSets() {
 		List<SQLResultSetResults> list = new ArrayList<SQLResultSetResults>();

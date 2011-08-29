@@ -6,7 +6,7 @@ import org.eclipse.draw2d.PolylineConnection;
 import org.eclipse.gef.editparts.AbstractConnectionEditPart;
 import org.eclipse.swt.SWT;
 import org.vagabond.rcp.mapview.model.Connection;
-import org.vagabond.rcp.mapview.view.MappingFigure;
+import org.vagabond.rcp.util.SWTResourceManager;
 
 public class MapConnectionEditPart extends AbstractConnectionEditPart {
 	public MapConnectionEditPart(Connection connection) { 
@@ -15,7 +15,7 @@ public class MapConnectionEditPart extends AbstractConnectionEditPart {
 
 	protected IFigure createFigure() {
 		PolylineConnection c = new PolylineConnection();
-		c.setForegroundColor(MappingFigure.classColor);
+		c.setForegroundColor(SWTResourceManager.getColor(178,56,44));
 		
 		// create label
 //		MidpointLocator relationshipLocator = 

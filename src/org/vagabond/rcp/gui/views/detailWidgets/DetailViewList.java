@@ -9,7 +9,6 @@ import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Widget;
 import org.vagabond.rcp.util.SWTResourceManager;
 
 public class DetailViewList<T> {

@@ -29,7 +29,7 @@ public class PluginLogProvider implements LogProvider {
 	}
 
 	@Override
-	public Logger getLogger(Class clazz) {
+	public Logger getLogger(Class<?> clazz) {
 		if (logManager == null)
 			return Logger.getLogger(clazz);
 		return logManager.getLogger(clazz.getName());

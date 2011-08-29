@@ -28,6 +28,7 @@ import org.vagabond.xmlmodel.RelationType;
 import org.vagabond.xmlmodel.TransformationType;
 
 public class ExplGenLabelProvider extends LabelProvider {
+	@SuppressWarnings("unchecked")
 	@Override
 	public String getText(Object element) {
 		if (element instanceof IBasicExplanation) {

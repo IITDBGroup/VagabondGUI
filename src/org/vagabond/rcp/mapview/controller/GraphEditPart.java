@@ -16,7 +16,6 @@ import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.eclipse.gef.editpolicies.RootComponentEditPolicy;
-import org.vagabond.mapping.model.MapScenarioHolder;
 import org.vagabond.rcp.mapview.model.AttributeGraphNode;
 import org.vagabond.rcp.mapview.model.Connection;
 import org.vagabond.rcp.mapview.model.Correspondence;
@@ -30,7 +29,6 @@ import org.vagabond.rcp.selection.VagaSelectionEvent.ModelType;
 import org.vagabond.rcp.selection.VagaSelectionListener;
 import org.vagabond.rcp.util.MathHelper;
 import org.vagabond.rcp.util.PluginLogProvider;
-import org.vagabond.xmlmodel.MappingType;
 
 
 public class GraphEditPart extends AbstractGraphicalEditPart 
@@ -124,7 +122,7 @@ public class GraphEditPart extends AbstractGraphicalEditPart
 		Vector<MappingNodeEditPart> mappingEdits;
 		int curX = 0;
 		int sourceWidth, targetWidth, mapWidth, viewWidth, totalWidth;
-		int sourceHeight, targetHeight, mapHeight, viewHeight, maxHeight, 
+		int sourceHeight, targetHeight, mapHeight, viewHeight, // maxHeight, 
 			totalHeight;
 		int sourceY, sourceGapY, targetY, targetGapY, mapY, mapGapY;
 		
@@ -164,7 +162,7 @@ public class GraphEditPart extends AbstractGraphicalEditPart
 		targetHeight = getMaxHeight(targetRelEdits);
 		mapHeight = getMaxHeight(mappingEdits);
 		viewHeight = this.getViewer().getControl().getBounds().height;
-		maxHeight = MathHelper.max(sourceHeight,targetHeight, mapHeight); 
+//		maxHeight = MathHelper.max(sourceHeight,targetHeight, mapHeight); 
 		totalHeight = MathHelper.max(addGaps(sourceHeight, sourceRelEdits.size()),
 				addGaps(targetHeight, targetRelEdits.size()),
 				addGaps(mapHeight, mappingEdits.size()),

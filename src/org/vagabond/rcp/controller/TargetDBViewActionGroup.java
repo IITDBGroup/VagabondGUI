@@ -43,6 +43,7 @@ public class TargetDBViewActionGroup extends DBViewActionGroup {
 			setText(Messages.getString("tableview.provenance"));
 		}
 
+		@SuppressWarnings("unchecked")
 		public void run() {
 			SQLResultSetResults resultSet = getSelectedSQLResults();
 			IStructuredSelection selection = getTableRowSelection();
@@ -57,7 +58,9 @@ public class TargetDBViewActionGroup extends DBViewActionGroup {
 			
 			SourceDBView.getInstance().resetSelections();
 			
-			for (Iterator<SQLResultSetResults.Row> i = selection.iterator(); i.hasNext();) {
+			for (Iterator<SQLResultSetResults.Row> i = 
+				(Iterator<SQLResultSetResults.Row>) selection.iterator(); 
+				i.hasNext();) {
 				SQLResultSetResults.Row r = i.next();
 				if (relations != "" && tids != "") {
 					if (!relations.contains(resultSet.getName()))
@@ -90,8 +93,6 @@ public class TargetDBViewActionGroup extends DBViewActionGroup {
 		public void run() {
 			SQLResultSetResults resultSet = getSelectedSQLResults();
 			IStructuredSelection selection = getTableRowSelection();
-			String relations = "";
-			String tids = "";
 			
 			if (resultSet == null || resultSet.isMetaData() || selection.size() < 1) {
 				MessageDialog.openInformation(

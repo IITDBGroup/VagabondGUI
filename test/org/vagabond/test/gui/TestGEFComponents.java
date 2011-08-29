@@ -2,7 +2,6 @@ package org.vagabond.test.gui;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
-import org.eclipse.gef.EditDomain;
 import org.eclipse.gef.editparts.ScalableRootEditPart;
 import org.eclipse.gef.ui.parts.ScrollingGraphicalViewer;
 import org.eclipse.swt.SWT;
@@ -35,9 +34,6 @@ public class TestGEFComponents {
 //		LightweightSystem lws = new LightweightSystem(shell);
 		
 		final ScrollingGraphicalViewer viewer;
-		EditDomain domain;
-//		Figure contents =TopLevelContents.createContents(); 
-		
 		ModelLoader.getInstance().loadToInst("../TrampExGen/resource/exampleScenarios/homelessDebugged.xml");
 		log.debug(MapScenarioHolder.getInstance().getDocument().toString());
 		

@@ -23,6 +23,7 @@ import org.vagabond.explanation.marker.IAttributeValueMarker;
 import org.vagabond.explanation.marker.IMarkerSet;
 import org.vagabond.explanation.marker.MarkerFactory;
 import org.vagabond.explanation.model.ExplanationCollection;
+import org.vagabond.explanation.ranking.SideEffectExplanationRanker;
 import org.vagabond.rcp.gui.views.ExplRankView;
 import org.vagabond.rcp.gui.views.ExplView;
 import org.vagabond.rcp.model.ContentProvider;
@@ -38,7 +39,6 @@ public class ExplGenPage extends WizardPage {
 	static Logger log = PluginLogProvider.getInstance().getLogger(ExplGenPage.class);
 	
 	protected IStructuredSelection selection;
-	private SQLResultSetResults results;
 	private TreeViewer viewer;
 	private ExplanationSetGenerator gen = new ExplanationSetGenerator();
 	
@@ -61,7 +61,7 @@ public class ExplGenPage extends WizardPage {
 		@Override
 		public Object[] getElements(Object inputElement) {
 			if (inputElement instanceof List)
-				return ((List) inputElement).toArray();
+				return ((List<?>) inputElement).toArray();
 			return null;
 		}
 
@@ -112,10 +112,11 @@ public class ExplGenPage extends WizardPage {
 	}
 	
 	public void init(SQLResultSetResults results, IStructuredSelection selection) {
-    	this.results = results;
+//    	this.results = results;
 		this.selection = selection;
     }
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void createControl(Composite parent) {
 		viewer = new TreeViewer(parent, SWT.MULTI | SWT.H_SCROLL
@@ -160,6 +161,7 @@ public class ExplGenPage extends WizardPage {
     	try {
 			m = parseMarkers(selection);
 			col = gen.findExplanations(m);
+			col.createRanker(new SideEffectExplanationRanker());
 			ContentProvider.getInstance().getExplModel().setCol(col);
 			ContentProvider.getInstance().getExplModel().setMarkers(m);
 		} catch (Exception e) {

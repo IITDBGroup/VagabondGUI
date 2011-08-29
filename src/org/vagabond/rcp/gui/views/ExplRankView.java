@@ -1,6 +1,5 @@
 package org.vagabond.rcp.gui.views;
 
-import org.apache.log4j.Layout;
 import org.apache.log4j.Logger;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;

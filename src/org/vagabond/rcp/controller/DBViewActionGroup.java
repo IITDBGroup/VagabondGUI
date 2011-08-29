@@ -6,11 +6,11 @@ import com.quantum.view.tableview.TableView;
 import com.quantum.view.tableview.TableViewActionGroup;
 
 public class DBViewActionGroup extends TableViewActionGroup {
-	private final TableView tableView;
+//	private final TableView tableView;
 	
 	public DBViewActionGroup(TableView tableView) {
 		super(tableView);
-		this.tableView = tableView;
+//		this.tableView = tableView;
 		this.mouseDblClk = null;
 	}
 	

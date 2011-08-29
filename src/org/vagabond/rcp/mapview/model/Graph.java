@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 import org.vagabond.xmlmodel.AttrRefType;
 
@@ -112,7 +111,7 @@ public class Graph {
 		return corrMap.get(id);
 	}
 	
-	public List getMappings() {
+	public List<MappingGraphNode> getMappings() {
 		return maps; 
 	}
 	

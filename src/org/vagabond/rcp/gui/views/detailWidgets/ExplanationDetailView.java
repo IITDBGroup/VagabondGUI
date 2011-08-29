@@ -6,12 +6,10 @@ import org.apache.log4j.Logger;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.RGB;
-import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.vagabond.explanation.marker.IMarkerSet;
 import org.vagabond.explanation.model.basic.CopySourceError;
@@ -55,10 +53,11 @@ public class ExplanationDetailView implements IModelElementDetailView {
 		group.setFont(SWTResourceManager.getBoldSystemFont(12));
 		group.setLayoutData(getFillData(1));
 		
-		overview = new Text(group, SWT.NONE);
+		overview = new Text(group, SWT.WRAP);
 		overview.setEditable(false);
 		overview.setEnabled(false);
 		overview.setBackground(comp.getBackground());
+		overview.setForeground(ColorConstants.black);
 		overview.setLayoutData(getGridData(1));
 		
 		addGuiElements();
@@ -128,52 +127,70 @@ public class ExplanationDetailView implements IModelElementDetailView {
 		stats.updateModel(expl);
 		createId(expl);
 		
-//		overview.pack();
-//		sides.pack();
-//		sides.layout();
-//		group.pack();
 		sides.layout();
 		group.layout(true,true);
 		comp.layout(true,true);
 	}
 	
+	@SuppressWarnings("unchecked")
 	protected void updateOverview (IBasicExplanation expl) {
 		StringBuilder buf = new StringBuilder();
 		
 		if (expl instanceof CopySourceError) {
 			IMarkerSet sourceSE = (IMarkerSet) expl.getExplanation();
-			overview.setText(sourceSE.toString() );
+			IMarkerSet targetSE = (IMarkerSet) expl.getTargetSideEffects();
+			
+			buf.append("Erroneous source data values at " + sourceSE.toUserString());
+			buf.append(" were copied to " + expl.explains().toUserString());
+			if (!targetSE.isEmpty()) {
+				buf.append(" (and to ");
+				buf.append(targetSE.toUserString());
+				buf.append(')');
+			}
+			buf.append('.');
+			overview.setText(buf.toString());
 		} else if (expl instanceof InfluenceSourceError) {
 			IMarkerSet sourceSE = (IMarkerSet) expl.getExplanation();
-			overview.setText(sourceSE.toString());
+			overview.setText(sourceSE.toUserString());
 		} else if (expl instanceof CorrespondenceError) {
 			Set<CorrespondenceType> corrs = (Set<CorrespondenceType>) expl.getExplanation();
+			
+			buf.append("Corresponce(s) ");
 			for(CorrespondenceType corr: corrs)
 				buf.append(corr.getId().toUpperCase() + ",");
-			buf.append("A corresponce is not correct and should be removed\n");
-			buf.append("A corresponce is not correct and should be removed\n");
-			buf.append("A corresponce is not correct and should be removed\n");
-			buf.append("A corresponce is not correct and should be removed\n");
-			buf.append("A corresponce is not correct and should be removed\n");
 			buf.deleteCharAt(buf.length() - 1);
+			buf.append(" are/is not correct and should be removed.");
+			
 			overview.setText(buf.toString());
 		} else if (expl instanceof SuperflousMappingError) {
 			Set<MappingType> maps = (Set<MappingType>) expl.getExplanation();
+			
+			buf.append("Mapping(s) ");
 			for(MappingType map: maps)
 				buf.append(map.getId() + ",");
 			buf.deleteCharAt(buf.length() - 1);
+			buf.append(" are/is not correct and should be removed.");
+			
 			overview.setText(buf.toString());
 		} else if (expl instanceof SourceSkeletonMappingError) {
 			Set<MappingType> maps = (Set<MappingType>) expl.getExplanation();
+			
+			buf.append("Mapping(s) ");
 			for(MappingType map: maps)
 				buf.append(map.getId() + ",");
 			buf.deleteCharAt(buf.length() - 1);
+			buf.append(" use(s) source foreign key constaints in an incorrect way.");
+			
 			overview.setText(buf.toString());
 		} else if (expl instanceof TargetSkeletonMappingError) {
 			Set<MappingType> maps = (Set<MappingType>) expl.getExplanation();
+			
+			buf.append("Mapping(s) ");
 			for(MappingType map: maps)
 				buf.append(map.getId() + ",");
 			buf.deleteCharAt(buf.length() - 1);
+			buf.append(" use(s) target foreign key constaints in an incorrect way.");
+			
 			overview.setText(buf.toString());
 		}
 	}
@@ -184,6 +201,7 @@ public class ExplanationDetailView implements IModelElementDetailView {
 				+ explToText(expl));
 	}
 	
+	@SuppressWarnings("unchecked")
 	protected String explToText (IBasicExplanation expl) {
 		StringBuilder buf = new StringBuilder();
 		
@@ -224,9 +242,9 @@ public class ExplanationDetailView implements IModelElementDetailView {
 	
 	protected String getTypeText (IBasicExplanation expl) {
 		if (expl instanceof CopySourceError) {
-			return "Copy Source Error";
+			return "Source Copy Error";
 		} else if (expl instanceof InfluenceSourceError) {
-			return "Source Data Join Error";
+			return "Source Join  Value Error";
 		} else if (expl instanceof CorrespondenceError) {
 			return "Correspondence Error";
 		} else if (expl instanceof SuperflousMappingError) {

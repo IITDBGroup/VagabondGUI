@@ -73,6 +73,7 @@ public class RelationSideEffectViewer {
 		lab.setText(rel + "(" + markers.getSize() + ")");
 		lab.setData(new Pair<String, IMarkerSet> (rel, markers));
 		lab.addMouseListener(new MouseAdapter () {
+			@SuppressWarnings("unchecked")
 			@Override
 			public void mouseDown (MouseEvent e) {
 				Label lab = (Label) e.getSource();

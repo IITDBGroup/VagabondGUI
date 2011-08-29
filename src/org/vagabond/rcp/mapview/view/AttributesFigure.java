@@ -12,8 +12,6 @@ import org.eclipse.swt.graphics.Color;
 
 public class AttributesFigure extends Figure {
 
-	private Color background;
-	
 	public AttributesFigure (Color background) {
 		ToolbarLayout layout = new ToolbarLayout();
 		layout.setHorizontal(false);
@@ -24,7 +22,6 @@ public class AttributesFigure extends Figure {
 		
 		setBorder(new ColumnFigureBorder());
 		if (background != null) {
-			this.background = background;
 			setBackgroundColor(background);
 		}
 		else

@@ -154,16 +154,23 @@
          <menu
                label="File">
             <command
-                  commandId="org.eclipse.ui.exit"
-                  label="Exit">
+                  commandId="org.eclipse.ui.file.exit"
+                  label="Quit"
+                  style="push"
+                  tooltip="Quit Vagabond">
             </command>
          </menu>
          <menu
                id="connectionMenu"
                label="Actions">
             <command
-                  commandId="org.vagabond.rcp.commands.start"
+                  commandId="org.vagabond.rcp.commands.loadscenario"
                   label="Load Scenario"
+                  style="push">
+            </command>
+            <command
+                  commandId="org.vagabond.rcp.commands.start"
+                  label="Load Default Scenario"
                   style="push">
             </command>
          </menu>
@@ -173,7 +180,7 @@
             <command
                   commandId="org.vagabond.rcp.commands.changenavigationstyle"
                   label="Change Navigation Style"
-                  style="push">
+                  style="toggle">
             </command> 
             <command
                   commandId="org.eclipse.ui.window.preferences"
@@ -182,16 +189,40 @@
             </command>
          </menu>
       </menuContribution>
-      <menuContribution locationURI="toolbar:org.ecplise.ui.main.toolbar">
-      	<toolbar  
-               id="org.vagabond.rcp.commands.toolbar.mainToolbar">  
-            <command  
-                  commandId="org.vagabond.rcp.commands.changenavigationstyle"  
-                  icon="icons/alt_window_16.gif"  
-                  label="Switch Navigation Style"  
-                  style="push">  
-            </command>  
-         </toolbar>  
+      <menuContribution
+            locationURI="toolbar:org.eclipse.ui.main.toolbar">
+         <toolbar
+               id="org.vagabond.rcp.toolbars.VivienVagabond"
+               label="VagabondToolBar">
+            <command
+                  commandId="org.vagabond.rcp.commands.changenavigationstyle"
+                  icon="icons/small_googles.png"
+                  label="toggle"
+                  style="toggle"
+                  tooltip="Change Navigation Style">
+            </command>
+            <command
+                  commandId="org.vagabond.rcp.commands.loadscenario"
+                  icon="icons/small_load.png"
+                  label="Load Scenario"
+                  style="push"
+                  tooltip="Load a mapping scenario from an XML file">
+            </command>
+            <command
+                  commandId="org.vagabond.rcp.commands.start"
+                  icon="icons/small_go-next.png"
+                  label="Load Default Scenario"
+                  style="push"
+                  tooltip="Load the scenario set as default in the preferences">
+            </command>
+            <command
+                  commandId="org.eclipse.ui.window.preferences"
+                  icon="icons/small_preferences.png"
+                  label="Preferences"
+                  style="push"
+                  tooltip="Edit Preferences">
+            </command>
+         </toolbar>
       </menuContribution>
    </extension>
    <extension
@@ -210,12 +241,12 @@
          point="org.eclipse.ui.preferencePages">
       <page
             class="org.vagabond.rcp.preferences.SchemaSettings"
-            id="org.rcp.preferences.schemasettings"
+            id="org.vagabond.rcp.preferences.schemasettings"
             name="Schema Settings">
       </page>
       <page
             class="org.vagabond.rcp.preferences.DBSettings"
-            id="org.rcp.preferences.dbsettings"
+            id="org.vagabond.rcp.preferences.dbsettings"
             name="Connection Settings">
       </page>
    </extension>
@@ -228,8 +259,15 @@
       </command>
       <command
             defaultHandler="org.vagabond.rcp.commands.ChangeNavigationStyleHandler"
+            description="change the type of navigation (drill down vs. selection)"
             id="org.vagabond.rcp.commands.changenavigationstyle"
-            name="Start">
+            name="ChangeNaviagionStyle">
+      </command>
+      <command
+            defaultHandler="org.vagabond.rcp.commands.LoadScenarioHandler"
+            description="Load mapping scenario from XML file"
+            id="org.vagabond.rcp.commands.loadscenario"
+            name="LoadScenario">
       </command>
    </extension>
    <extension
@@ -237,6 +275,30 @@
       <manager
             class="org.vagabond.rcp.model.TableViewManager">
       </manager>
+   </extension>
+   <extension
+         point="org.eclipse.ui.activities">
+      <category
+            description="Debugging a mapping scenario"
+            id="org.vagabond.rcp.activity.category.mapdebug.category.mapdebug"
+            name="MappingScenarioDebugging">
+      </category>
+      <activity
+            id="org.vagabond.rcp.activity.standard"
+            name="VagabondNormalActivity">
+      </activity>
+      <categoryActivityBinding
+            activityId="org.vagabond.rcp.activity.standard"
+            categoryId="org.vagabond.rcp.activity.category.mapdebug.category.mapdebug">
+      </categoryActivityBinding>
+      <activityPatternBinding
+            activityId="org.vagabond.rcp.activity.standard"
+            pattern=".*eclipse.*/.*">
+      </activityPatternBinding>
+      <activityPatternBinding
+            activityId="org.vagabond.rcp.activity.standard"
+            pattern="org\.eclipse\.ui\.editors/org\.eclipse\.ui\.edit\.text\.goto/.*">
+      </activityPatternBinding>
    </extension>
 
 </plugin>

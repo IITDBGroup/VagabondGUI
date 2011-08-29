@@ -30,6 +30,7 @@ import org.vagabond.rcp.selection.VagaSelectionListener;
 import org.vagabond.rcp.util.PluginLogProvider;
 
 import com.quantum.sql.SQLResultSetResults;
+import com.quantum.sql.SQLResultSetResults.Row;
 import com.quantum.view.tableview.ResultSetViewer;
 
 
@@ -80,7 +81,7 @@ public class SourceDBView extends GenericTableView implements VagaSelectionListe
 		GlobalSelectionController.addSelectionListener(this);
         this.actionGroup = new DBViewActionGroup(this);
 
-        IActionBars actionBars = getViewSite().getActionBars();
+//        IActionBars actionBars = getViewSite().getActionBars();
 //        this.actionGroup.fillActionBars(actionBars);
 	}
 	
@@ -144,12 +145,12 @@ public class SourceDBView extends GenericTableView implements VagaSelectionListe
 	}
 	
 	public void highlightProvenance(SourceProvParser parser) {
-		Iterator iterator = parser.getAllProv().getTuplesInProv().iterator();
+		Iterator<?> iterator = parser.getAllProv().getTuplesInProv().iterator();
 		List<SQLResultSetResults.Row> rows;
 		ResultSetViewer viewer;
 		
 		for (Iterator<ResultSetViewer> i = this.resultSetViewers.iterator(); i.hasNext();) {
-    		rows = new ArrayList();
+    		rows = new ArrayList<Row>();
 			viewer = i.next();
 			iterator = parser.getAllProv().getTuplesInProv().iterator();
 			

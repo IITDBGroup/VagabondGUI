@@ -271,12 +271,12 @@ public class TransView extends SQLQueryView implements VagaSelectionListener {
 	private class UpdateRequest {
 		public UpdateRequest(String text, int start, int length) {
 			this.text = text;
-			this.start = start;
-			this.length = length;
+//			this.start = start;
+//			this.length = length;
 		}
 		public String text;
-		public int start;
-		public int length;
+//		public int start;
+//		public int length;
 	}
 	
 	private class SyntaxHighlighter extends Thread {
@@ -316,11 +316,11 @@ public class TransView extends SQLQueryView implements VagaSelectionListener {
 
 		private boolean running = true;
 		private LinkedList<UpdateRequest> requests = new LinkedList<UpdateRequest>();
-		private final ColorManager colorManager;
+//		private final ColorManager colorManager;
 
 		public SyntaxHighlighter(ColorManager colorManager) {
 			super();
-			this.colorManager = colorManager;
+//			this.colorManager = colorManager;
 
 			setPriority(Thread.NORM_PRIORITY);
 			start();

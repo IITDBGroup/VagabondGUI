@@ -17,7 +17,7 @@ public class MappingFigure extends Figure implements SelectableFigure {
 
 
 	public static Color classColor = SWTResourceManager.
-			getColor(new RGB(201,205,215));
+			getColor(new RGB(255,200,198));
 	
 	private Label label;
 	private AttributesFigure attrs;

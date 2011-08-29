@@ -179,7 +179,7 @@ public final class MyConnectionRouter extends AbstractRouter {
 				algorithm.addPath(path);
 			}
 
-			List constraint = (List) getConstraint(conn);
+			List<?> constraint = (List<?>) getConstraint(conn);
 			if (constraint == null)
 				constraint = Collections.EMPTY_LIST;
 
@@ -261,7 +261,7 @@ public final class MyConnectionRouter extends AbstractRouter {
 			ignoreInvalidate = true;
 			processStaleConnections();
 			isDirty = false;
-			List updated = algorithm.solve();
+			List<?> updated = algorithm.solve();
 			Connection current;
 			for (int i = 0; i < updated.size(); i++) {
 				Path path = (Path) updated.get(i);
@@ -295,11 +295,11 @@ public final class MyConnectionRouter extends AbstractRouter {
 	 *         routings.
 	 * @since 3.5
 	 */
-	public List getPathsAfterRouting() {
+	public List<?> getPathsAfterRouting() {
 		if (isDirty) {
 			processStaleConnections();
 			isDirty = false;
-			List all = algorithm.solve();
+			List<?> all = algorithm.solve();
 			return all;
 
 		}

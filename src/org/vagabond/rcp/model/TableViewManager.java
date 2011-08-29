@@ -1,8 +1,8 @@
 package org.vagabond.rcp.model;
 
 import java.beans.PropertyChangeEvent;
-import java.util.HashMap;
-import java.util.Map;
+//import java.util.HashMap;
+//import java.util.Map;
 
 import org.vagabond.rcp.gui.views.SourceDBView;
 import org.vagabond.rcp.gui.views.TargetDBView;
@@ -17,13 +17,13 @@ public class TableViewManager implements ITableViewManager {
 	
 	private SourceDBView sourceView;
 	private TargetDBView targetView;
-	private Map<String,TableView> viewIdMap;
+//	private Map<String,TableView> viewIdMap;
 	
 	private static TableViewManager instance;
 	
 	private TableViewManager() {
 		SQLResultSetCollection.getInstance().addTableManager(this);
-		viewIdMap = new HashMap<String, TableView> ();
+//		viewIdMap = new HashMap<String, TableView> ();
 	}
 	
 	public static TableViewManager getInstance () {

@@ -14,13 +14,13 @@ import org.eclipse.swt.graphics.RGB;
 import org.eclipse.zest.core.widgets.internal.AligningBendpointLocator;
 import org.vagabond.rcp.mapview.model.Connection;
 import org.vagabond.rcp.mapview.model.Correspondence;
-import org.vagabond.rcp.mapview.view.SelectableFigure;
 import org.vagabond.rcp.mapview.view.routing.RouterContainer;
 import org.vagabond.rcp.selection.GlobalSelectionController;
 import org.vagabond.rcp.selection.VagaSelectionEvent;
 import org.vagabond.rcp.selection.VagaSelectionEvent.ModelType;
 import org.vagabond.rcp.util.SWTResourceManager;
 
+@SuppressWarnings("restriction")
 public class CorrespondenceEditPart extends AbstractConnectionEditPart 
 		implements VagaSelectionEventProvider {
 	

@@ -30,10 +30,12 @@ public class ResourceManager {
 			return ClassLoader.getSystemResourceAsStream(name);
 	}
 	
+	@SuppressWarnings("unchecked")
 	public Enumeration<String> getResources (String dir) {
 		return bundle.getEntryPaths(dir);
 	}
 	
+	@SuppressWarnings("unchecked")
 	public Map<String,URL> getResourcesAsStreams (String dir, String fileSuffix) {
 		Enumeration<String> fileNames;
 		HashMap<String,URL> ins;

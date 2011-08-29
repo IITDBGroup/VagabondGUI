@@ -32,6 +32,8 @@ public class GlobalSelectionController {
 	
 	private VagaSelectionSequence seq;
 	private Map<ModelType, List<VagaSelectionListener>> listeners;
+	private boolean mode = false;
+	
 	
 	/**
 	 * Create the single GlobalSelectionController with an empty selection sequence
@@ -50,8 +52,8 @@ public class GlobalSelectionController {
 	 */
 	
 	public static void fireModelSelection (VagaSelectionEvent e) {
-		log.debug("got selection event: " + e.toString());
-		log.debug("curren sequence is: " + inst.seq.toString());
+		log.debug("got selection event: " + e.toString() + " current sequence is: " 
+				+ inst.seq.toString() + " under mode " + inst.mode);
 		if(!inst.validateEvent(e))
 			return;
 		inst.informListeners(e); //TODO more complex, parts of the seq may be reduced need to tell listeneres about that
@@ -174,9 +176,25 @@ public class GlobalSelectionController {
 		for(ModelType interest: listener.interestedIn())
 			inst.listeners.get(interest).remove(listener);		
 	}
+	
+	public static boolean getMode() {
+		return inst.mode;
+	}
+	
+	public static void setMode (boolean mode) {
+		inst.mode = mode;
+	}
 
 	private void updateStatusLine () {
 		StatusLineController.setStatus(seq.toUserString());
+	}
+
+	public static void switchMode() {
+		inst.mode = !inst.mode;
+	}
+
+	public static String getModeAsString() {
+		return inst.mode ? "Drill down navigation" : "Browsing";
 	}
 	
 }

@@ -10,7 +10,6 @@ import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.vagabond.rcp.mapview.model.MappingGraphNode;
 import org.vagabond.rcp.mapview.model.Node;
-import org.vagabond.rcp.mapview.model.RelationGraphNode;
 import org.vagabond.rcp.mapview.view.MappingFigure;
 import org.vagabond.rcp.mapview.view.RelationFigure;
 import org.vagabond.rcp.mapview.view.SelectableFigure;
@@ -34,7 +33,7 @@ public class MappingNodeEditPart extends AbstractGraphicalEditPart
 	
 	@Override
 	protected IFigure createFigure() {
-		MappingGraphNode node = (MappingGraphNode) getModel();
+//		MappingGraphNode node = (MappingGraphNode) getModel();
 		IFigure figure = new MappingFigure();		
 
 		return figure;

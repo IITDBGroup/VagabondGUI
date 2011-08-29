@@ -16,13 +16,8 @@ import org.vagabond.rcp.mapview.model.AttributeGraphNode;
 import org.vagabond.rcp.mapview.model.ForeignKeyConnection;
 import org.vagabond.rcp.mapview.model.MapConnection;
 import org.vagabond.rcp.mapview.model.Node;
-import org.vagabond.rcp.mapview.model.RelationGraphNode;
 import org.vagabond.rcp.mapview.view.AttributeFigure;
 import org.vagabond.rcp.mapview.view.LeftRightParentBoxFigureAnchor;
-import org.vagabond.rcp.mapview.view.SelectableFigure;
-import org.vagabond.rcp.selection.GlobalSelectionController;
-import org.vagabond.rcp.selection.VagaSelectionEvent;
-import org.vagabond.rcp.selection.VagaSelectionEvent.ModelType;
 import org.vagabond.rcp.util.PluginLogProvider;
 
 public class AttrNodeEditPart extends AbstractGraphicalEditPart 
@@ -57,11 +52,11 @@ public class AttrNodeEditPart extends AbstractGraphicalEditPart
 		figure.setBoldFont(node.isPK());
 	}
 
-	protected List getModelSourceConnections() {
+	protected List<?> getModelSourceConnections() {
 		return ((AttributeGraphNode)getModel()).getSourceConnections();
 	}
 	
-	protected List getModelTargetConnections() {
+	protected List<?> getModelTargetConnections() {
 		return ((AttributeGraphNode)getModel()).getTargetConnections();
 	}
 	

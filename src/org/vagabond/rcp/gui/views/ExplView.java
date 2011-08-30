@@ -92,7 +92,7 @@ public class ExplView extends ViewPart {
 
 		combo.select(0);
 		marker = (IAttributeValueMarker)col.getErrorIdMap().get(0);
-		viewer.updateModel(col.getErrorExplMap().get(marker));
+		viewer.updateModel(col.getErrorExplMap().get(marker).getExplanations());
 	}
 	
 	/**

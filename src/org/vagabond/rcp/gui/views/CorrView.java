@@ -10,6 +10,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
+import org.vagabond.mapping.model.MapScenarioHolder;
 import org.vagabond.rcp.gui.views.detailWidgets.CorrespondenceDetailView;
 import org.vagabond.rcp.gui.views.detailWidgets.DetailViewFactory;
 import org.vagabond.rcp.gui.views.detailWidgets.DetailViewList;
@@ -88,6 +89,10 @@ public class CorrView extends ViewPart implements VagaSelectionListener, DetailV
 		if(e.isEmpty()) {
 			viewer.clearSelection();
 			return;
+		} else if (e.isReset()) {
+			setCorrespondences(MapScenarioHolder
+					.getInstance().getDocument().getMappingScenario()
+					.getCorrespondences().getCorrespondenceArray());
 		}
 		
 		if (e.isLimitScope()) {

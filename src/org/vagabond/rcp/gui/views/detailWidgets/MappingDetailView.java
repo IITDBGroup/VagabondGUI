@@ -3,6 +3,7 @@ package org.vagabond.rcp.gui.views.detailWidgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -27,9 +28,23 @@ public class MappingDetailView extends ModelElementDetailView {
 	private TransformationViewIDList trans;
 	private SourceRelationViewIDList sources;
 	private TargetRelationViewIDList targets;
+	private final MouseListener labelListener;
+	private final MouseListener groupListener;
 	
 	public MappingDetailView(Composite parent, int style) {
 		super(parent, style);
+		labelListener = new MouseAdapter() {
+			@Override
+			public void mouseDown (MouseEvent e) {
+				fireSelectionEvent(ModelType.Mapping);
+			}
+		};
+		groupListener = new MouseAdapter() {
+			@Override
+			public void mouseDown (MouseEvent e) {
+				fireSelectionEvent(ModelType.Mapping);
+			}
+		};
 	}
 
 	@Override
@@ -92,7 +107,7 @@ public class MappingDetailView extends ModelElementDetailView {
 	}
 
 	private void setOverviewLabel (MappingType map) {
-		if (overviewLabel.getImage() != null)
+		if (overviewLabel.getImage() == null)
 			overviewLabel.setImage(PlatformUI.getWorkbench().getSharedImages().getImage(
 				ISharedImages.IMG_OBJ_ELEMENT));
 		overviewLabel.setText(mapToText(map));
@@ -126,18 +141,14 @@ public class MappingDetailView extends ModelElementDetailView {
 
 	@Override
 	public void addSelectionListener() {
-		overviewLabel.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseDown (MouseEvent e) {
-				fireSelectionEvent(ModelType.Mapping);
-			}
-		});
-		group.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseDown (MouseEvent e) {
-				fireSelectionEvent(ModelType.Mapping);
-			}
-		});
+		overviewLabel.addMouseListener(labelListener);
+		group.addMouseListener(groupListener);
+	}
+	
+	@Override
+	public void removeSelectionListener() {
+		overviewLabel.removeMouseListener(labelListener);
+		group.removeMouseListener(groupListener);
 	}
 	
 	

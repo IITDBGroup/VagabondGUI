@@ -31,7 +31,7 @@ public class AttributeFigure extends Figure {
 		setLayoutManager(layout);
 
 		try {
-			label = new Label("", SWTResourceManager.getImage("icons/attribute.gif"));
+			label = new Label("", SWTResourceManager.getImage("attribute.gif"));
 		} catch (Exception e) {
 			LoggerUtil.logException(e, log);
 			label = new Label();

@@ -465,10 +465,15 @@ public class TransView extends SQLQueryView implements VagaSelectionListener {
 	}
 
 	@Override
-	public void event(VagaSelectionEvent e) {
+	public void event(VagaSelectionEvent e) throws Exception {
 		if (e.isEmpty())
 			return;
-		
+		else if (e.isReset()) {
+			setTransformations(MapScenarioHolder
+					.getInstance().getDocument().getMappingScenario()
+					.getTransformations().getTransformationArray());
+			return;
+		}
 		if (!e.isLimitScope()) {
 			try {
 				selectTransformation(e.getElementIds().iterator().next());

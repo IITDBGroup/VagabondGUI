@@ -58,6 +58,7 @@ public class GraphEditPart extends AbstractGraphicalEditPart
 	
 	@Override
 	public void activate() {
+		log.debug("activated");
 		super.activate();
 		GlobalSelectionController.addSelectionListener(this);
 	}
@@ -67,6 +68,7 @@ public class GraphEditPart extends AbstractGraphicalEditPart
 		unregisterRouters();
 		GlobalSelectionController.removeSelectionListener(this);
 		super.deactivate();
+		log.debug("deactivated");
 	}
 		
 	
@@ -338,10 +340,11 @@ public class GraphEditPart extends AbstractGraphicalEditPart
 			deselectEverything();
 		}
 		
-		if (e.isLimitScope()) {
-			//TODO what to do
-		}
-		else {
+		//TODO for now drill down the same as normal navigation
+//		if (e.isLimitScope()) {
+//			//TODO what to do
+//		}
+//		else {
 			switch(e.getElementType()) {
 			case Mapping:
 				for(String id: e.getElementIds()) {
@@ -377,8 +380,11 @@ public class GraphEditPart extends AbstractGraphicalEditPart
 					relPart.nonUserChangeSelection(true);
 				}
 				break;
+			case Transformation:
+				deselectEverything();
+				break;
 			}
-		}
+//		}
 	}
 
 	private void deselectEverything() {

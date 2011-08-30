@@ -8,6 +8,7 @@ import org.apache.log4j.Logger;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.SelectionListenerAction;
+import org.vagabond.explanation.model.ExplanationCollection;
 import org.vagabond.rcp.gui.views.ExplRankView;
 import org.vagabond.rcp.model.ContentProvider;
 import org.vagabond.rcp.util.PluginLogProvider;
@@ -35,10 +36,14 @@ public class FirstExplAction extends SelectionListenerAction implements Property
 	
 	// For now, it just resets the collection iterator
 	public void run() {
-		ContentProvider.getInstance().getExplCol().resetIter();
+		ExplanationCollection col = ContentProvider.getInstance().getExplCol(); 
+		col.resetIter();
 		
-		if (ContentProvider.getInstance().getExplCol().hasNext())
-			view.updateView(ContentProvider.getInstance().getExplCol().next());
+		if (col.hasNext())
+			view.updateView(col.next());
+		StatusLineController.setStatus("Ranked Explanation " + col.getIterPos()
+				+ " of app. " + col.getNumCombinations() 
+				+ " (prefetched " + col.getNumPrefetched() + ")");
 	}
 
 	@Override

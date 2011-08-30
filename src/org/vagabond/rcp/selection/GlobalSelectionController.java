@@ -54,6 +54,10 @@ public class GlobalSelectionController {
 	public static void fireModelSelection (VagaSelectionEvent e) {
 		log.debug("got selection event: " + e.toString() + " current sequence is: " 
 				+ inst.seq.toString() + " under mode " + inst.mode);
+		
+		// depending on mode change type of events
+		e.setLimitScope(getMode());
+		
 		if(!inst.validateEvent(e))
 			return;
 		inst.informListeners(e); //TODO more complex, parts of the seq may be reduced need to tell listeneres about that
@@ -91,8 +95,7 @@ public class GlobalSelectionController {
 				log.debug("sent DESELECTION");
 				informListeners(VagaSelectionEvent.DESELECT);
 			}
-			inst.seq.clear();
-			inst.seq.appendEvent(e);
+			inst.seq.makeSingleton(e);
 			
 			return true;
 		}
@@ -155,7 +158,12 @@ public class GlobalSelectionController {
 	
 	private void informListeners (VagaSelectionEvent e) {
 		for(VagaSelectionListener listener: listeners.get(e.getElementType()))  {
-			listener.event(e);
+			try {
+				listener.event(e);
+			} catch (Exception e1) {
+				LoggerUtil.logException(e1, log, "Error processing event " 
+						+ e.toString  + " by listener " + listener.toString());
+			}
 		}
 	}
 	
@@ -182,6 +190,9 @@ public class GlobalSelectionController {
 	}
 	
 	public static void setMode (boolean mode) {
+		if (!inst.seq.isEmpty())
+			fireModelSelection(inst.mode ? VagaSelectionEvent.RESET_SCOPE 
+					: VagaSelectionEvent.DESELECT);
 		inst.mode = mode;
 	}
 
@@ -191,6 +202,16 @@ public class GlobalSelectionController {
 
 	public static void switchMode() {
 		inst.mode = !inst.mode;
+		if (!inst.seq.isEmpty()) {
+			inst.seq.clear();
+			inst.informListeners(inst.clearForMode(!inst.mode));
+		}
+	}
+	
+	private VagaSelectionEvent clearForMode (boolean mode) {
+		if (mode)
+			return VagaSelectionEvent.RESET_SCOPE;
+		return VagaSelectionEvent.DESELECT;
 	}
 
 	public static String getModeAsString() {

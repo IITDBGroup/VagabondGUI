@@ -82,7 +82,7 @@ public class Filter {
 		Set<String> maps = new HashSet<String>();
 		
 		for (String name : names) {
-			CorrespondenceType corr = MapScenarioHolder.getInstance().getCorr(name.toLowerCase());
+			CorrespondenceType corr = MapScenarioHolder.getInstance().getCorr(name);
 			Collection<MappingType> mappings = MapScenarioHolder.getInstance().getMapsForCorr(corr);
 	
 			for (Iterator<MappingType> i = mappings.iterator(); i.hasNext();) {

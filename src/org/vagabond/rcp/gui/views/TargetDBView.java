@@ -151,11 +151,8 @@ public class TargetDBView extends GenericTableView implements VagaSelectionListe
 		}
 		// normal navigation, just listen on SourceRelationEvents
 		else {
-			if (e.getElementType().equals(ModelType.SourceRelation))
+			if (e.getElementType().equals(ModelType.TargetRelation))
 				setSelection(e.getElementIds().iterator().next());
-			if (e.getElementType().equals(ModelType.Mapping)) {
-				filterResultSets(e, false);
-			}
 		}
 	}
 

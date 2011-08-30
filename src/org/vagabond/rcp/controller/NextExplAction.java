@@ -8,6 +8,7 @@ import org.apache.log4j.Logger;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.SelectionListenerAction;
+import org.vagabond.explanation.model.ExplanationCollection;
 import org.vagabond.rcp.gui.views.ExplRankView;
 import org.vagabond.rcp.model.ContentProvider;
 import org.vagabond.rcp.util.PluginLogProvider;
@@ -35,7 +36,13 @@ public class NextExplAction extends SelectionListenerAction implements PropertyC
 	}
 	
 	public void run() {
-		view.updateView(ContentProvider.getInstance().getExplCol().next());
+		ExplanationCollection col = ContentProvider.getInstance().getExplCol();
+		
+		view.updateView(col.next());
+		
+		StatusLineController.setStatus("Ranked Explanation " + col.getIterPos()
+				+ " of app. " + col.getNumCombinations() 
+				+ " (prefetched " + col.getNumPrefetched() + ")");
 	}
 	
 	@Override

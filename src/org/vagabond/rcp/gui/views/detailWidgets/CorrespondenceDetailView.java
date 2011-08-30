@@ -3,6 +3,7 @@ package org.vagabond.rcp.gui.views.detailWidgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -20,9 +21,23 @@ public class CorrespondenceDetailView extends ModelElementDetailView {
 	private SourceRelationViewIDList sources;
 	private TargetRelationViewIDList targets;
 	private MappingViewIDList maps;
+	private final MouseListener labelListener;
+	private final MouseListener groupListener;
 	
 	public CorrespondenceDetailView(Composite parent, int style) {
 		super(parent, style);
+		labelListener = new MouseAdapter() {
+			@Override
+			public void mouseDown (MouseEvent e) {
+				fireSelectionEvent(ModelType.Correspondence);
+			}
+		};
+		groupListener = new MouseAdapter() {
+			@Override
+			public void mouseDown (MouseEvent e) {
+				fireSelectionEvent(ModelType.Correspondence);
+			}
+		};
 	}
 
 	@Override
@@ -63,6 +78,8 @@ public class CorrespondenceDetailView extends ModelElementDetailView {
 		maps.adaptLabels(MapScenarioHolder.getInstance().getMapsForCorr(corr));
 		sources.adaptLabels(corr.getFrom().getTableref());
 		targets.adaptLabels(corr.getTo().getTableref());
+		
+		layout();
 	}
 	
 	private String corrToString (CorrespondenceType corr) {
@@ -77,17 +94,12 @@ public class CorrespondenceDetailView extends ModelElementDetailView {
 
 	@Override
 	public void addSelectionListener() {
-		overviewLabel.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseDown (MouseEvent e) {
-				fireSelectionEvent(ModelType.Correspondence);
-			}
-		});
-		group.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseDown (MouseEvent e) {
-				fireSelectionEvent(ModelType.Correspondence);
-			}
-		});	
+		overviewLabel.addMouseListener(labelListener);
+		group.addMouseListener(groupListener);
+	}
+	
+	public void removeSelectionListener() {
+		overviewLabel.removeMouseListener(labelListener);
+		group.removeMouseListener(groupListener);
 	}
 }

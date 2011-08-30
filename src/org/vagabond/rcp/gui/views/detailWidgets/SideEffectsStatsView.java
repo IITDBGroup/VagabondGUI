@@ -57,7 +57,7 @@ public class SideEffectsStatsView {
 	
 	public void updateModel (IBasicExplanation expl) {
 		setValueLabel("Source", expl.getSourceSideEffectSize());
-		setValueLabel("Target", expl.getTargetSideEffectSize());
+		setValueLabel("Target", expl.getRealTargetSideEffectSize());
 		setValueLabel("Map", expl.getMappingSideEffectSize());
 		setValueLabel("Corr", expl.getCorrSideEffectSize());
 		setValueLabel("Trans", expl.getTransformationSideEffectSize());

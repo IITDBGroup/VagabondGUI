@@ -74,16 +74,16 @@ public class ExplanationDetailView implements IModelElementDetailView {
 		if (expl instanceof CopySourceError) {
 			return "Data in the source is incorrect.";
 		} else if (expl instanceof InfluenceSourceError) {
-			return "Incorrect data in the source caused an incorrect tuple to be joined";
+			return "Incorrect data in the source caused an incorrect tuple to be joined.";
 		} else if (expl instanceof CorrespondenceError) {
-			return "A corresponce is not correct and should be removed";
+			return "A corresponce is not correct and should be removed.";
 		} else if (expl instanceof SuperflousMappingError) {
 			return "A superfluous mapping is one that should not have " +
 					"been created in the first place.";
 		} else if (expl instanceof SourceSkeletonMappingError) {
-			return "The mapping joins source relations in an incorrect way";
+			return "The mapping joins source relations in an incorrect way.";
 		} else if (expl instanceof TargetSkeletonMappingError) {
-			return "The mapping joins target relations in an incorrect way";
+			return "The mapping joins target relations in an incorrect way.";
 		}
 		log.error("unknown explanation type: " + expl.toString());
 		return null;
@@ -141,17 +141,17 @@ public class ExplanationDetailView implements IModelElementDetailView {
 			IMarkerSet targetSE = (IMarkerSet) expl.getTargetSideEffects();
 			
 			buf.append("Erroneous source data values at " + sourceSE.toUserString());
-			buf.append(" were copied to " + expl.explains().toUserString());
+			buf.append("\n were copied to " + expl.explains().toUserString());
 			if (!targetSE.isEmpty()) {
-				buf.append(" (and to ");
+				buf.append("\n\t(and to ");
 				buf.append(targetSE.toUserString());
 				buf.append(')');
 			}
 			buf.append('.');
-			overview.setText(buf.toString());
 		} else if (expl instanceof InfluenceSourceError) {
 			IMarkerSet sourceSE = (IMarkerSet) expl.getExplanation();
-			overview.setText(sourceSE.toUserString());
+			buf.append("Erroreous source data value at " + sourceSE.toUserString());
+			buf.append("\ncaused a join with an incorrect tuple.");
 		} else if (expl instanceof CorrespondenceError) {
 			Set<CorrespondenceType> corrs = (Set<CorrespondenceType>) expl.getExplanation();
 			
@@ -160,8 +160,6 @@ public class ExplanationDetailView implements IModelElementDetailView {
 				buf.append(corr.getId().toUpperCase() + ",");
 			buf.deleteCharAt(buf.length() - 1);
 			buf.append(" are/is not correct and should be removed.");
-			
-			overview.setText(buf.toString());
 		} else if (expl instanceof SuperflousMappingError) {
 			Set<MappingType> maps = (Set<MappingType>) expl.getExplanation();
 			
@@ -170,8 +168,6 @@ public class ExplanationDetailView implements IModelElementDetailView {
 				buf.append(map.getId() + ",");
 			buf.deleteCharAt(buf.length() - 1);
 			buf.append(" are/is not correct and should be removed.");
-			
-			overview.setText(buf.toString());
 		} else if (expl instanceof SourceSkeletonMappingError) {
 			Set<MappingType> maps = (Set<MappingType>) expl.getExplanation();
 			
@@ -180,8 +176,6 @@ public class ExplanationDetailView implements IModelElementDetailView {
 				buf.append(map.getId() + ",");
 			buf.deleteCharAt(buf.length() - 1);
 			buf.append(" use(s) source foreign key constaints in an incorrect way.");
-			
-			overview.setText(buf.toString());
 		} else if (expl instanceof TargetSkeletonMappingError) {
 			Set<MappingType> maps = (Set<MappingType>) expl.getExplanation();
 			
@@ -190,15 +184,14 @@ public class ExplanationDetailView implements IModelElementDetailView {
 				buf.append(map.getId() + ",");
 			buf.deleteCharAt(buf.length() - 1);
 			buf.append(" use(s) target foreign key constaints in an incorrect way.");
-			
-			overview.setText(buf.toString());
 		}
+		if (addExplains)
+			buf.insert(0, "Explanation for " + expl.getRealExplains().toUserString() + ".\n");
+		overview.setText(buf.toString());
 	}
 	
 	protected void updateHeader (IBasicExplanation expl) {
-		group.setText(getTypeText(expl)  + " "
-				+ (addExplains ? "explains " + expl.explains().toString() : "") + " "
-				+ explToText(expl));
+		group.setText(getTypeText(expl)  + " "	+ explToText(expl));
 	}
 	
 	@SuppressWarnings("unchecked")

@@ -206,9 +206,6 @@ public class SourceDBView extends GenericTableView implements VagaSelectionListe
 		else {
 			if (e.getElementType().equals(ModelType.SourceRelation))
 				setSelection(e.getElementIds().iterator().next());
-			if (e.getElementType().equals(ModelType.Mapping)) {
-				filterResultSets(e, true);
-			}
 		}
 	}
 

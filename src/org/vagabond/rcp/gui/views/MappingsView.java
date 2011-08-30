@@ -10,6 +10,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
+import org.vagabond.mapping.model.MapScenarioHolder;
 import org.vagabond.rcp.gui.views.detailWidgets.DetailViewFactory;
 import org.vagabond.rcp.gui.views.detailWidgets.DetailViewList;
 import org.vagabond.rcp.gui.views.detailWidgets.MappingDetailView;
@@ -90,6 +91,11 @@ public class MappingsView extends ViewPart implements DetailViewFactory, VagaSel
 	public void event(VagaSelectionEvent e) {
 		if (e.isEmpty()) {
 			mapViewer.clearSelection();
+			return;
+		} else if (e.isReset())  {
+			setMappings(MapScenarioHolder
+					.getInstance().getDocument().getMappingScenario()
+					.getMappings().getMappingArray());
 			return;
 		}
 		

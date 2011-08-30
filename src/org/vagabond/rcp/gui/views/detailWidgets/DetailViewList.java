@@ -62,20 +62,20 @@ public class DetailViewList<T> {
 			view.showElem(elements[i]);
 			view.addSelectionListener();
 		}
+		curSelection = -1;
 		child.layout(true, true);
 		sc.setMinSize(child.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 	}
 	
 	private void adaptListLength (int size) {
-//		for(IModelElementDetailView view: views)
-//			view.dispose();
-//		views.clear(); //TODO don't dispose
 		while (size > views.size()) {
 			IModelElementDetailView newView = fac.createView(child);
 			newView.setLayoutData(getGridData());
+			newView.setSelection(false);
 			views.add(newView);
 		}
 		while (size < views.size()) {
+			views.get(0).setSelection(false);
 			views.get(0).dispose();
 			views.remove(0);
 		}

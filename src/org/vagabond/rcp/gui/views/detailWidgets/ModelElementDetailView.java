@@ -3,6 +3,8 @@ package org.vagabond.rcp.gui.views.detailWidgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.vagabond.rcp.selection.GlobalSelectionController;
@@ -20,9 +22,37 @@ public abstract class ModelElementDetailView implements
 	
 	public ModelElementDetailView (Composite parent, int style) {
 		comp = new Composite(parent, style);
-		comp.setLayout(new FillLayout());
+		comp.setLayout(new GridLayout(1,false));
+		
 		group = new Group(comp, SWT.NONE);
+		group.setLayout(new GridLayout(1, false));
+		group.setLayoutData(getFillData(1));
+		
 		createGui();
+	}
+	
+	protected GridData getFillData (int size) {
+		GridData gridData;
+		
+		gridData = new GridData();
+		gridData.grabExcessHorizontalSpace = true;
+		gridData.horizontalAlignment = GridData.FILL;
+		gridData.horizontalSpan = size;
+		gridData.grabExcessVerticalSpace = true;
+		gridData.verticalAlignment = GridData.FILL;
+		
+		return gridData;		
+	}
+	
+	protected GridData getGridData (int size) {
+		GridData gridData;
+		
+		gridData = new GridData();
+		gridData.grabExcessHorizontalSpace = true;
+		gridData.horizontalAlignment = GridData.FILL;
+		gridData.horizontalSpan = size;
+		
+		return gridData;
 	}
 	
 	protected abstract void createGui ();
@@ -33,12 +63,15 @@ public abstract class ModelElementDetailView implements
 	
 	public abstract void showElem (Object data);
 	public abstract void addSelectionListener();
+	public abstract void removeSelectionListener();
 	
 	public void layout () {
-		comp.layout();
+		group.layout(true,true);
+		comp.layout(true, true);
 	}
 	
 	public void dispose () {
+		removeSelectionListener();
 		comp.dispose();
 	}
 	

@@ -94,6 +94,10 @@ public class VagaSelectionEvent {
 	public boolean isLimitScope () {
 		return limitScope;
 	}
+	
+	public void setLimitScope (boolean newScope) {
+		this.limitScope = newScope;
+	}
 
 	public void setElementIds(Collection<String> elementIds) {
 		this.elementIds = elementIds;

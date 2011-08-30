@@ -57,7 +57,7 @@ public class RelationSideEffectViewer {
 		int i = 0;
 		
 		sideEffects = source ? expl.getSourceSideEffects() : 
-				expl.getTargetSideEffects();
+				expl.getRealTargetSideEffects();
 		sideEff = MarkerSetUtil.partitionOnRelation(sideEffects);
 		sortRels = new ArrayList<String> (sideEff.keySet());
 		Collections.sort(sortRels);

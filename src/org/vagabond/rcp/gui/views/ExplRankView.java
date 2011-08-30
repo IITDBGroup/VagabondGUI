@@ -63,7 +63,7 @@ public class ExplRankView extends ViewPart {
 
 	public void updateView (IExplanationSet explSet) {
 		this.curSet = explSet;
-		viewer.updateModel(curSet);
+		viewer.updateModel(curSet.getExplanations());
 		
 		this.actionGroup.updateActionBars();
 	}

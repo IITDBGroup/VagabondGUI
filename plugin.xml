@@ -202,6 +202,16 @@
                   tooltip="Change Navigation Style">
             </command>
             <command
+                  commandId="org.vagabond.rcp.commands.clearselection"
+                  icon="icons/small_process-stop.png"
+                  label="Clear all selections"
+                  style="push">
+            </command>
+            <separator
+                  name="VivienVagabond.separator1"
+                  visible="true">
+            </separator>
+            <command
                   commandId="org.vagabond.rcp.commands.loadscenario"
                   icon="icons/small_load.png"
                   label="Load Scenario"
@@ -268,6 +278,12 @@
             description="Load mapping scenario from XML file"
             id="org.vagabond.rcp.commands.loadscenario"
             name="LoadScenario">
+      </command>
+      <command
+            defaultHandler="org.vagabond.rcp.commands.ClearSelectionHandler"
+            description="Clear all selection and or navigation"
+            id="org.vagabond.rcp.commands.clearselection"
+            name="ClearAllSelections">
       </command>
    </extension>
    <extension

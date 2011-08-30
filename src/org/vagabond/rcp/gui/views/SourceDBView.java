@@ -194,6 +194,10 @@ public class SourceDBView extends GenericTableView implements VagaSelectionListe
 			resetSelections();
 			filterResultSets(e, true);
 			return;
+		} else if (e.isReset()) {
+			resetSelections();
+			filterResultSets(e, true);
+			return;
 		}
 		
 		if (e.isLimitScope()) {

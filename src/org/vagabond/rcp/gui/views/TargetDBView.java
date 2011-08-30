@@ -141,6 +141,9 @@ public class TargetDBView extends GenericTableView implements VagaSelectionListe
 		if (e.isEmpty()) {
 			filterResultSets(e, false);
 			return;
+		}  else if (e.isReset()) {
+			filterResultSets(e, false);
+			return;
 		}
 		
 		if (e.isLimitScope()) {

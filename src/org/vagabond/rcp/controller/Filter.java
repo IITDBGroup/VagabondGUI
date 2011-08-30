@@ -95,7 +95,7 @@ public class Filter {
 	}
 
 	public SQLResultSetResults filterByEvent (VagaSelectionEvent e, boolean source) throws Exception {
-		if (e.isEmpty())
+		if (e.isEmpty() || e.isReset())
 			return result;
 		if (e.getElementType().equals(ModelType.Mapping))
 			return byMapping(e.getElementIds(), source);

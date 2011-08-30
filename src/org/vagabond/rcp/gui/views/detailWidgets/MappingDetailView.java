@@ -107,7 +107,7 @@ public class MappingDetailView extends ModelElementDetailView {
 	}
 
 	private void setOverviewLabel (MappingType map) {
-		if (overviewLabel.getImage() == null)
+		if (overviewLabel.getImage() != null)
 			overviewLabel.setImage(PlatformUI.getWorkbench().getSharedImages().getImage(
 				ISharedImages.IMG_OBJ_ELEMENT));
 		overviewLabel.setText(mapToText(map));

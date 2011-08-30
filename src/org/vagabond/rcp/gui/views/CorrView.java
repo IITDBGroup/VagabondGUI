@@ -72,7 +72,7 @@ public class CorrView extends ViewPart implements VagaSelectionListener, DetailV
 	public void setCorrespondences(CorrespondenceType[] corrs) {
 		GlobalSelectionController.addSelectionListener(this);
 		viewer.updateModel(corrs);
-		viewer.layout();
+//		viewer.layout();
 	}
 
 	public void selectCorrespondence (String id) {

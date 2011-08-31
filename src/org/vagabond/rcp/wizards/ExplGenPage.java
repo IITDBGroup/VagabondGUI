@@ -23,6 +23,7 @@ import org.vagabond.explanation.marker.IAttributeValueMarker;
 import org.vagabond.explanation.marker.IMarkerSet;
 import org.vagabond.explanation.marker.MarkerFactory;
 import org.vagabond.explanation.model.ExplanationCollection;
+import org.vagabond.explanation.ranking.DummyRanker;
 import org.vagabond.explanation.ranking.SideEffectExplanationRanker;
 import org.vagabond.rcp.gui.views.ExplRankView;
 import org.vagabond.rcp.gui.views.ExplView;
@@ -143,6 +144,7 @@ public class ExplGenPage extends WizardPage {
     	if (selection != null) {
     		generateErrorExpl(selection);
     		ExplView.getInstance().updateView();
+    		ContentProvider.getInstance().getExplCol().resetIter();
     		if (ContentProvider.getInstance().getExplCol().hasNext())
     			ExplRankView.getInstance().updateView(ContentProvider
     					.getInstance().getExplCol().next());
@@ -161,9 +163,9 @@ public class ExplGenPage extends WizardPage {
     	try {
 			m = parseMarkers(selection);
 			col = gen.findExplanations(m);
-			col.createRanker(new SideEffectExplanationRanker());
 			ContentProvider.getInstance().getExplModel().setCol(col);
 			ContentProvider.getInstance().getExplModel().setMarkers(m);
+			ContentProvider.getInstance().createRanker();
 		} catch (Exception e) {
 			LoggerUtil.logException(e, log);
 		}

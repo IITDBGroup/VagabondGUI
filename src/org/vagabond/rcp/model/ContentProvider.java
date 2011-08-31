@@ -3,8 +3,11 @@ package org.vagabond.rcp.model;
 import org.apache.log4j.Logger;
 import org.vagabond.explanation.marker.IMarkerSet;
 import org.vagabond.explanation.model.ExplanationCollection;
+import org.vagabond.explanation.ranking.DummyRanker;
+import org.vagabond.explanation.ranking.SideEffectExplanationRanker;
 import org.vagabond.mapping.model.MapScenarioHolder;
 import org.vagabond.mapping.model.MappingGraph;
+import org.vagabond.rcp.gui.views.ExplRankView;
 import org.vagabond.rcp.mapview.model.AttributeGraphNode;
 import org.vagabond.rcp.mapview.model.Connection;
 import org.vagabond.rcp.mapview.model.Correspondence;
@@ -42,6 +45,7 @@ public class ContentProvider {
 	private static ContentProvider instance = new ContentProvider();
 	private Graph graph;
 	private ExplanationModel expls;
+	private boolean useRanking = false;
 	
 	public static ContentProvider getInstance() {
 		return instance;
@@ -288,4 +292,28 @@ public class ContentProvider {
 	public void setExpls(ExplanationModel expls) {
 		this.expls = expls;
 	}
+
+	public boolean isUseRanking() {
+		return useRanking;
+	}
+
+	public void setUseRanking(boolean useRanking) {
+		this.useRanking = useRanking;
+	}
+	
+	public void switchRanking () {
+		this.useRanking = !this.useRanking;
+		log.debug("use ranking? " + this.useRanking);
+		if (expls.getCol() != null)
+			createRanker();
+	}
+
+	public void createRanker() {
+		log.debug("create ranker");
+		if (ContentProvider.getInstance().isUseRanking())
+			expls.getCol().createRanker(new SideEffectExplanationRanker());
+		else
+			expls.getCol().createRanker(new DummyRanker());
+	}
+	
 }

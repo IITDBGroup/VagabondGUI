@@ -72,7 +72,6 @@ public class CorrView extends ViewPart implements VagaSelectionListener, DetailV
 	public void setCorrespondences(CorrespondenceType[] corrs) {
 		GlobalSelectionController.addSelectionListener(this);
 		viewer.updateModel(corrs);
-//		viewer.layout();
 	}
 
 	public void selectCorrespondence (String id) {
@@ -93,10 +92,12 @@ public class CorrView extends ViewPart implements VagaSelectionListener, DetailV
 			setCorrespondences(MapScenarioHolder
 					.getInstance().getDocument().getMappingScenario()
 					.getCorrespondences().getCorrespondenceArray());
+			return;
 		}
 		
 		if (e.isLimitScope()) {
 			try {
+				assert(e.getElementType().equals(ModelType.Mapping));
 				setCorrespondences(EventUtil.getInstance()
 						.getCorrespondencesForIds(e.getElementIds()));
 			} catch (Exception e1) {

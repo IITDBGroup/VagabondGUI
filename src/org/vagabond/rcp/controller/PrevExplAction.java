@@ -43,6 +43,8 @@ public class PrevExplAction extends SelectionListenerAction implements PropertyC
 		if (col.hasPrevious())
 			view.updateView(col.previous());
 		
+		log.debug("at " + col.getIterPos() + " of " + col.getNumCombinations());
+		
 		StatusLineController.setStatus("Ranked Explanation " + col.getIterPos()
 				+ " of app. " + col.getNumCombinations() 
 				+ " (prefetched " + col.getNumPrefetched() + ")");

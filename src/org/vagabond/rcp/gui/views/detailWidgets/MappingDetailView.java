@@ -28,23 +28,26 @@ public class MappingDetailView extends ModelElementDetailView {
 	private TransformationViewIDList trans;
 	private SourceRelationViewIDList sources;
 	private TargetRelationViewIDList targets;
-	private final MouseListener labelListener;
-	private final MouseListener groupListener;
+	private MapMouseListener labelListener;
+	private MapMouseListener groupListener;
+
+	public class MapMouseListener extends MouseAdapter implements MouseListener {
+
+		private MappingDetailView myView;
+		
+		public MapMouseListener (MappingDetailView myView) {
+			this.myView = myView;
+		}
+
+		@Override
+		public void mouseDown(MouseEvent e) {
+			myView.fireSelectionEvent(ModelType.Mapping);
+		}
+		
+	}
 	
 	public MappingDetailView(Composite parent, int style) {
 		super(parent, style);
-		labelListener = new MouseAdapter() {
-			@Override
-			public void mouseDown (MouseEvent e) {
-				fireSelectionEvent(ModelType.Mapping);
-			}
-		};
-		groupListener = new MouseAdapter() {
-			@Override
-			public void mouseDown (MouseEvent e) {
-				fireSelectionEvent(ModelType.Mapping);
-			}
-		};
 	}
 
 	@Override
@@ -141,6 +144,8 @@ public class MappingDetailView extends ModelElementDetailView {
 
 	@Override
 	public void addSelectionListener() {
+		labelListener = new MapMouseListener(this);
+		groupListener = new MapMouseListener(this);
 		overviewLabel.addMouseListener(labelListener);
 		group.addMouseListener(groupListener);
 	}

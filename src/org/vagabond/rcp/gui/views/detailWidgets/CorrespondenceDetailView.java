@@ -21,23 +21,26 @@ public class CorrespondenceDetailView extends ModelElementDetailView {
 	private SourceRelationViewIDList sources;
 	private TargetRelationViewIDList targets;
 	private MappingViewIDList maps;
-	private final MouseListener labelListener;
-	private final MouseListener groupListener;
+	private CorrMouseListener labelListener;
+	private CorrMouseListener groupListener;
+	
+	public class CorrMouseListener extends MouseAdapter implements MouseListener {
+
+		private CorrespondenceDetailView myView;
+		
+		public CorrMouseListener (CorrespondenceDetailView myView) {
+			this.myView = myView;
+		}
+
+		@Override
+		public void mouseDown(MouseEvent e) {
+			myView.fireSelectionEvent(ModelType.Correspondence);
+		}
+		
+	}
 	
 	public CorrespondenceDetailView(Composite parent, int style) {
 		super(parent, style);
-		labelListener = new MouseAdapter() {
-			@Override
-			public void mouseDown (MouseEvent e) {
-				fireSelectionEvent(ModelType.Correspondence);
-			}
-		};
-		groupListener = new MouseAdapter() {
-			@Override
-			public void mouseDown (MouseEvent e) {
-				fireSelectionEvent(ModelType.Correspondence);
-			}
-		};
 	}
 
 	@Override
@@ -94,6 +97,8 @@ public class CorrespondenceDetailView extends ModelElementDetailView {
 
 	@Override
 	public void addSelectionListener() {
+		labelListener = new CorrMouseListener(this);
+		groupListener = new CorrMouseListener(this);
 		overviewLabel.addMouseListener(labelListener);
 		group.addMouseListener(groupListener);
 	}

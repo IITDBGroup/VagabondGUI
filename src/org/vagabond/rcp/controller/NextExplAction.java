@@ -39,7 +39,7 @@ public class NextExplAction extends SelectionListenerAction implements PropertyC
 		ExplanationCollection col = ContentProvider.getInstance().getExplCol();
 		
 		view.updateView(col.next());
-		
+		log.debug("at " + col.getIterPos() + " of " + col.getNumCombinations());
 		StatusLineController.setStatus("Ranked Explanation " + col.getIterPos()
 				+ " of app. " + col.getNumCombinations() 
 				+ " (prefetched " + col.getNumPrefetched() + ")");

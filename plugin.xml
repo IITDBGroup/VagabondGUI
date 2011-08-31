@@ -232,6 +232,17 @@
                   style="push"
                   tooltip="Edit Preferences">
             </command>
+            <separator
+                  name="VivienVagabond.separator2"
+                  visible="true">
+            </separator>
+            <command
+                  commandId="org.vagabond.rcp.commands.switchranking"
+                  icon="icons/small_view-sort.png"
+                  label="Activate/Deactivate Ranking"
+                  style="toggle"
+                  tooltip="Activate or Deactivate the Ranking of Explanations">
+            </command>
          </toolbar>
       </menuContribution>
    </extension>
@@ -284,6 +295,12 @@
             description="Clear all selection and or navigation"
             id="org.vagabond.rcp.commands.clearselection"
             name="ClearAllSelections">
+      </command>
+      <command
+            defaultHandler="org.vagabond.rcp.commands.SwitchRankingHandler"
+            description="Activate/Deactivate Ranking"
+            id="org.vagabond.rcp.commands.switchranking"
+            name="SwitchRanking">
       </command>
    </extension>
    <extension

@@ -101,6 +101,7 @@ public class MappingsView extends ViewPart implements DetailViewFactory, VagaSel
 		
 		if (e.isLimitScope()) {
 			try  {
+				assert(e.getElementType().equals(ModelType.Mapping));
 				setMappings(EventUtil.getInstance().getMappingsForEvent(e));
 			} catch (Exception e1) {
 				LoggerUtil.logException(e1, log);

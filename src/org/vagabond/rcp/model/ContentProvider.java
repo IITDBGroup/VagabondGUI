@@ -4,7 +4,8 @@ import org.apache.log4j.Logger;
 import org.vagabond.explanation.marker.IMarkerSet;
 import org.vagabond.explanation.model.ExplanationCollection;
 import org.vagabond.explanation.ranking.DummyRanker;
-import org.vagabond.explanation.ranking.SideEffectExplanationRanker;
+import org.vagabond.explanation.ranking.AStarExplanationRanker;
+import org.vagabond.explanation.ranking.scoring.SideEffectSizeScore;
 import org.vagabond.mapping.model.MapScenarioHolder;
 import org.vagabond.mapping.model.MappingGraph;
 import org.vagabond.rcp.gui.views.ExplRankView;
@@ -311,7 +312,7 @@ public class ContentProvider {
 	public void createRanker() {
 		log.debug("create ranker");
 		if (ContentProvider.getInstance().isUseRanking())
-			expls.getCol().createRanker(new SideEffectExplanationRanker());
+			expls.getCol().createRanker(new AStarExplanationRanker(SideEffectSizeScore.inst));
 		else
 			expls.getCol().createRanker(new DummyRanker());
 	}

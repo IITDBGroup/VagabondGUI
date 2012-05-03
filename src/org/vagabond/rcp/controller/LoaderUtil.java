@@ -4,7 +4,7 @@ import java.sql.Connection;
 
 import org.apache.log4j.Logger;
 import org.vagabond.explanation.generation.QueryHolder;
-import org.vagabond.explanation.marker.SchemaResolver;
+import org.vagabond.explanation.marker.ScenarioDictionary;
 import org.vagabond.mapping.model.MapScenarioHolder;
 import org.vagabond.mapping.model.ModelLoader;
 import org.vagabond.mapping.scenarioToDB.DatabaseScenarioLoader;
@@ -135,7 +135,7 @@ public class LoaderUtil {
 			
 			ModelLoader.getInstance().loadToInst(filePath);
 			MapScenarioHolder h = MapScenarioHolder.getInstance();
-			SchemaResolver.getInstance().setSchemas(
+			ScenarioDictionary.getInstance().setSchemas(
 					h.getScenario().getSchemas().getSourceSchema(),
 					h.getScenario().getSchemas().getTargetSchema());
 

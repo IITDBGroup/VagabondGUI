@@ -14,7 +14,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.vagabond.explanation.generation.ExplanationSetGenerator;
 import org.vagabond.explanation.generation.QueryHolder;
 import org.vagabond.explanation.marker.MarkerParser;
-import org.vagabond.explanation.marker.SchemaResolver;
+import org.vagabond.explanation.marker.ScenarioDictionary;
 import org.vagabond.explanation.model.ExplanationCollection;
 import org.vagabond.explanation.model.IExplanationSet;
 import org.vagabond.explanation.model.basic.IBasicExplanation;
@@ -38,7 +38,7 @@ public class TestExplanationViewList {
 		ExplanationSetGenerator gen = new ExplanationSetGenerator();
 		PropertyConfigurator.configure("test/log4j.properties");
 		ModelLoader.getInstance().loadToInst("../TrampExGen/resource/test/simpleTest.xml");
-		SchemaResolver.getInstance().setSchemas();
+		ScenarioDictionary.getInstance().initFromScenario();
 		QueryHolder.getInstance().loadFromDir(new File("resource/queries"));
 		ConnectionManager.getInstance().getConnection(
 				"localhost", "tramptest", "postgres","");

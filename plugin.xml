@@ -251,10 +251,14 @@
          point="org.eclipse.core.runtime.products">
       <product
             application="VagabondRCP.application"
-            name="Vagabond">
+            name="VagabondRCP">
          <property
                name="windowImages"
                value="icons/alt_window_16.gif,icons/alt_window_32.gif">
+         </property>
+         <property
+               name="appName"
+               value="VagabondRCP">
          </property>
       </product>
    </extension>

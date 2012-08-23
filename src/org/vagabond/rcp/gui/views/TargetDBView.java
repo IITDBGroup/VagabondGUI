@@ -43,28 +43,14 @@ public class TargetDBView extends GenericTableView implements VagaSelectionListe
 	}
 
 	public TargetDBView() {
+		// Cannot use VIEW_ID because it's set to null in GenericTableView
+		// and cannot change the null to something else (it will break something else)
+		NavViewType = "Target";
 		TableViewManager.getInstance().setTargetView(this);
 	}
 	
 	public static TargetDBView getInstance() {
 		return (TargetDBView) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(ID);
-	}
-	
-	public void createPartControl(Composite parent) {
-        this.tabs = new TabFolder(parent, SWT.NONE);
-		this.tabs.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent event) {
-				fireSelectionChangedEvent();
-			}
-		});
-
-        initActions();
-
-		SQLResultSetResults[] resultSets = TableViewManager.getInstance().getResultSets(VIEW_ID);
-		for (int i = 0, length = resultSets == null ? 0 : resultSets.length; i < length; i++) {
-			this.resultSetViewers.add(new ResultSetViewer(this, resultSets[i]));
-			this.filters.add(new Filter(resultSets[i]));
-		}
 	}
 	
 	public void initActions() {

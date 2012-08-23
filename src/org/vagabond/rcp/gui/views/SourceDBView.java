@@ -14,6 +14,10 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.ui.IActionBars;
@@ -22,6 +26,7 @@ import org.vagabond.explanation.generation.prov.SourceProvParser;
 import org.vagabond.explanation.marker.TupleMarker;
 import org.vagabond.rcp.controller.DBViewActionGroup;
 import org.vagabond.rcp.controller.Filter;
+import org.vagabond.rcp.controller.TableNavHandler;
 import org.vagabond.rcp.model.TableViewManager;
 import org.vagabond.rcp.selection.GlobalSelectionController;
 import org.vagabond.rcp.selection.VagaSelectionEvent;
@@ -32,7 +37,6 @@ import org.vagabond.rcp.util.PluginLogProvider;
 import com.quantum.sql.SQLResultSetResults;
 import com.quantum.sql.SQLResultSetResults.Row;
 import com.quantum.view.tableview.ResultSetViewer;
-
 
 public class SourceDBView extends GenericTableView implements VagaSelectionListener {
 
@@ -51,30 +55,16 @@ public class SourceDBView extends GenericTableView implements VagaSelectionListe
 		interest.add(ModelType.Mapping);
 		interest.add(ModelType.Correspondence);
 	}
-	
+
 	public SourceDBView() {
+		// Cannot use VIEW_ID because it's set to null in GenericTableView
+		// and cannot change the null to something else (it will break something else)
+		NavViewType = "Source";
 		TableViewManager.getInstance().setSourceView(this);
 	}
 	
 	public static SourceDBView getInstance() {
 		return (SourceDBView) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(ID);
-	}
-	
-	public void createPartControl(Composite parent) {
-        this.tabs = new TabFolder(parent, SWT.NONE);
-		this.tabs.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent event) {
-				fireSelectionChangedEvent();
-			}
-		});
-
-        initActions();
-
-		SQLResultSetResults[] resultSets = TableViewManager.getInstance().getResultSets(VIEW_ID);
-		for (int i = 0, length = resultSets == null ? 0 : resultSets.length; i < length; i++) {
-			this.resultSetViewers.add(new ResultSetViewer(this, resultSets[i]));
-			this.filters.add(new Filter(resultSets[i]));
-		}
 	}
 	
 	public void initActions() {
@@ -212,11 +202,10 @@ public class SourceDBView extends GenericTableView implements VagaSelectionListe
 				setSelection(e.getElementIds().iterator().next());
 		}
 	}
-
-
 	
 	@Override
 	public Set<ModelType> interestedIn() {
 		return interest;
 	}
 }
+

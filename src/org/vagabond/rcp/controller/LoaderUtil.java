@@ -10,6 +10,7 @@ import org.vagabond.mapping.model.ModelLoader;
 import org.vagabond.mapping.scenarioToDB.DatabaseScenarioLoader;
 import org.vagabond.rcp.Activator;
 import org.vagabond.rcp.gui.views.CorrView;
+import org.vagabond.rcp.gui.views.GenericTableView;
 import org.vagabond.rcp.gui.views.MappingsView;
 import org.vagabond.rcp.gui.views.TransView;
 import org.vagabond.rcp.mapview.controller.GraphEditPart;
@@ -32,6 +33,10 @@ import com.quantum.sql.MultiSQLServer;
 import com.quantum.sql.SQLResultSetCollection;
 import com.quantum.sql.SQLResultSetResults;
 import com.quantum.sql.SQLResults;
+import com.quantum.view.tableview.ResultSetViewer;
+
+import org.vagabond.rcp.controller.TableNavHandler;
+import com.quantum.sql.SQLStandardResultSetResults;
 
 public class LoaderUtil {
 
@@ -50,6 +55,8 @@ public class LoaderUtil {
 	private static LoaderUtil instance = new LoaderUtil();
 	
 	private ScenarioLoadState state = ScenarioLoadState.None;
+	
+	private int entriesPerPage = 6;
 	
 	private LoaderUtil () {
 		
@@ -159,35 +166,36 @@ public class LoaderUtil {
 			// Generate queries
 			SchemaType source = h.getScenario().getSchemas().getSourceSchema();
 			SchemaType target = h.getScenario().getSchemas().getTargetSchema();
-			String query;
-			SQLResults results = null;
-
-			for (RelationType rel : source.getRelationArray()) {
-				query = "select * from source." + rel.getName();
-				bookmark.addQuery(query);
-				results = MultiSQLServer.getInstance().execute(bookmark, c, query);
-				if (results.isResultSet()) {
-					((SQLResultSetResults)results).setName(rel.getName());
-
-					SQLResultSetCollection.getInstance()
-							.addSQLResultSet(TableViewManager.getInstance().getManagerId(), 
-							"Source", (SQLResultSetResults) results);
-				}
+			
+			RelationType[] sourceRelArray = source.getRelationArray();
+			
+			for (int i = 0; i < sourceRelArray.length; i++) {
+				
+				String relationName = sourceRelArray[i].getName();
+				
+				String countSrcSQL = "select count(*) from source." + relationName;
+				SQLResultSetResults countSrcResult = (SQLResultSetResults) MultiSQLServer.getInstance().execute(bookmark, c, countSrcSQL);
+				int numberOfRows = Integer.parseInt(countSrcResult.getRows()[0].getAsStringArray()[0]);
+				int totalPages = (int) Math.ceil((double)numberOfRows / (double)entriesPerPage);
+				
+				loadTableToView(databaseString, "Source", relationName, 1);
+				TableNavHandler.getInstance().addNewRelation(TableNavHandler.SCHEMA_TYPE.SOURCE, relationName, TableViewManager.getInstance().getManagerId(), totalPages);
 			}
 
 			for (RelationType rel : target.getRelationArray()) {
-				query = "select * from target." + rel.getName();
-				bookmark.addQuery(query);
-				results = MultiSQLServer.getInstance().execute(bookmark, c, query);
-				if (results.isResultSet()) {
-					((SQLResultSetResults)results).setName(rel.getName());
-
-					SQLResultSetCollection.getInstance()
-							.addSQLResultSet(TableViewManager.getInstance().getManagerId(), 
-							"Target", (SQLResultSetResults) results);
-				}
+				
+				String relationName = rel.getName();
+				
+				String countTarSQL = "select count(*) from target." + relationName;
+				SQLResultSetResults countTarResult = (SQLResultSetResults) MultiSQLServer.getInstance().execute(bookmark, c, countTarSQL);
+				int numberOfRows = Integer.parseInt(countTarResult.getRows()[0].getAsStringArray()[0]);
+				int totalPages = (int) Math.ceil((double)numberOfRows / (double)entriesPerPage);
+				
+				loadTableToView(databaseString, "Target", relationName, 1);
+				TableNavHandler.getInstance().addNewRelation(TableNavHandler.SCHEMA_TYPE.TARGET, relationName, TableViewManager.getInstance().getManagerId(), totalPages);
 			}
 			setState(ScenarioLoadState.LoadedScenario);
+			
 		} catch (Exception e) {
 			setState(ScenarioLoadState.None);
 			throw e;
@@ -222,8 +230,10 @@ public class LoaderUtil {
 	}
 	
 	public void loadSchemaFileAndUpdate (String fileName) throws Exception {
+		
 		loadSchemaFile(fileName);
 		updateViews();
+		
 	}
 	
 	public void setState(ScenarioLoadState state) {
@@ -232,6 +242,51 @@ public class LoaderUtil {
 
 	public ScenarioLoadState getState() {
 		return state;
+	}
+	
+	
+	public boolean loadTableToView(String databaseString, String sourceOrTarget, String relationName, int fromPage) throws Exception {
+		Bookmark bookmark = BookmarkCollection.getInstance().find(databaseString);
+		Connection c = ConnectionManager.getInstance().getConnection();
+		
+		String query;
+		if (fromPage > 1)
+			query = "select * from " + sourceOrTarget.toLowerCase() + "." + relationName + " order by tid limit " + entriesPerPage + " offset " + (fromPage - 1) * entriesPerPage;
+		else
+			query = "select * from " + sourceOrTarget.toLowerCase() + "." + relationName;
+		bookmark.addQuery(query);
+		SQLResults results = MultiSQLServer.getInstance().execute(bookmark, c, query);
+		
+		if (results.isResultSet()) {
+			
+			((SQLResultSetResults)results).setName(relationName);
+
+			SQLResultSetCollection.getInstance()
+					.addSQLResultSet(TableViewManager.getInstance().getManagerId(), 
+					sourceOrTarget, (SQLResultSetResults) results);
+
+		}
+		
+		// Automatically disable and enable the navigation buttons
+		// Commented out because it cannot detect tab change
+		/**
+		TableNavHandler.SCHEMA_TYPE schemaType = sourceOrTarget.equalsIgnoreCase("Source") ? TableNavHandler.SCHEMA_TYPE.SOURCE : TableNavHandler.SCHEMA_TYPE.TARGET;
+		GenericTableView tableView = (GenericTableView) TableViewManager.getInstance().getViewForId(sourceOrTarget);
+		boolean[] buttonStatus = TableNavHandler.getNavButtonStatus(schemaType, relationName);
+		tableView.setNavButtonStatus(buttonStatus[0], buttonStatus[1], buttonStatus[2], buttonStatus[3]);
+		*/
+		return true;
+		
+	}
+	
+	public boolean updateTableFromView(String databaseString, String sourceOrTarget, String relationName, int fromPage) throws Exception {
+		
+		SQLResultSetCollection.getInstance().removeSQLResultSetByName(TableViewManager.getInstance().getManagerId(), 
+				sourceOrTarget, relationName);
+		
+		loadTableToView(databaseString, sourceOrTarget, relationName, fromPage);
+	
+		return true;
 	}
 	
 }

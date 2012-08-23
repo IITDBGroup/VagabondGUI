@@ -17,13 +17,11 @@ public class TableViewManager implements ITableViewManager {
 	
 	private SourceDBView sourceView;
 	private TargetDBView targetView;
-//	private Map<String,TableView> viewIdMap;
 	
 	private static TableViewManager instance;
 	
 	private TableViewManager() {
 		SQLResultSetCollection.getInstance().addTableManager(this);
-//		viewIdMap = new HashMap<String, TableView> ();
 	}
 	
 	public static TableViewManager getInstance () {

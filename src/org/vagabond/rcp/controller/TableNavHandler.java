@@ -3,8 +3,6 @@ import java.util.HashMap;
 
 import org.apache.log4j.Logger;
 import org.vagabond.rcp.Activator;
-import org.vagabond.rcp.gui.views.SourceDBView;
-import org.vagabond.rcp.gui.views.TargetDBView;
 import org.vagabond.rcp.gui.views.GenericTableView;
 import org.vagabond.rcp.model.TableViewManager;
 import org.vagabond.rcp.util.PluginLogProvider;

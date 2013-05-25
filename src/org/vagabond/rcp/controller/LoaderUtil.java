@@ -68,24 +68,31 @@ public class LoaderUtil {
 	
 	// Connect to the database specified by the details in the preference pane
 	public void connectToDB() throws Exception {
+		int port;
+		
 		String hostString = Activator.getDefault().getPreferenceStore().getString("HOST");
 		String databaseString = Activator.getDefault().getPreferenceStore().getString("DATABASE");
 		String usernameString = Activator.getDefault().getPreferenceStore().getString("USERNAME");
 		String passwordString = Activator.getDefault().getPreferenceStore().getString("PASSWORD");
-
+		String portString = Activator.getDefault().getPreferenceStore().getString("PORT");
+		if (portString == null || portString.equals(""))
+			port = 5432;
+		else
+			port = Integer.parseInt(portString);
+		
 		if (hostString == null || hostString.equals("") 
 				|| databaseString == null || databaseString.equals("")) {
 			throw new Exception ("Database options not set!");
 		}
 		
 		LoaderUtil.getInstance().connectToDB(hostString, databaseString, 
-				usernameString, passwordString);
+				usernameString, passwordString, port);
 	}
 
 	
 	// Connect to the database specified by the details in the preference pane
 	public void connectToDB(String hostString, String databaseString,
-			String usernameString, String passwordString) throws Exception {
+			String usernameString, String passwordString, int port) throws Exception {
 		log.debug("try to connect to <" + hostString + ":" + databaseString 
 				+ "> as user <" + usernameString + ">");
 
@@ -96,7 +103,7 @@ public class LoaderUtil {
 			}
 
 			Connection c = ConnectionManager.getInstance().getConnection(hostString, 
-					databaseString, usernameString, passwordString);
+					databaseString, usernameString, passwordString, port);
 
 			// Connect to QuantumDB's connection manager
 			// Create a bookmark

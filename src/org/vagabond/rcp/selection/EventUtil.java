@@ -8,6 +8,7 @@ import org.vagabond.mapping.model.MapScenarioHolder;
 import org.vagabond.rcp.selection.VagaSelectionEvent.ModelType;
 import org.vagabond.xmlmodel.CorrespondenceType;
 import org.vagabond.xmlmodel.MappingType;
+import org.vagabond.xmlmodel.StringRefType;
 import org.vagabond.xmlmodel.TransformationType;
 
 public class EventUtil {
@@ -28,6 +29,15 @@ public class EventUtil {
 		
 		for(int i=0; i < result.length; i++)
 			result[i] = lower[i].toUpperCase();
+		
+		return result;
+	}
+	
+	public String[] toUpper(StringRefType[] lower) {
+		String[] result = new String[lower.length];
+		
+		for(int i=0; i < result.length; i++)
+			result[i] = lower[i].getRef().toUpperCase();
 		
 		return result;
 	}
@@ -79,4 +89,6 @@ public class EventUtil {
 		
 		return result.toArray(new TransformationType[] {});
 	}
+
+
 }

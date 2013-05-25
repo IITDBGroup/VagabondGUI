@@ -41,7 +41,7 @@ public class TestExplanationViewList {
 		ScenarioDictionary.getInstance().initFromScenario();
 		QueryHolder.getInstance().loadFromDir(new File("resource/queries"));
 		ConnectionManager.getInstance().getConnection(
-				"localhost", "tramptest", "postgres","");
+				"localhost", "tramptest", "postgres","",5432);
 		DatabaseScenarioLoader.getInstance().loadScenario(
 				ConnectionManager.getInstance().getConnection());
 		

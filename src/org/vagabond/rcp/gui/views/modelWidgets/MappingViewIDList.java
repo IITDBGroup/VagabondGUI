@@ -8,6 +8,7 @@ import org.eclipse.swt.widgets.Label;
 import org.vagabond.rcp.selection.VagaSelectionEvent.ModelType;
 import org.vagabond.rcp.util.SWTResourceManager;
 import org.vagabond.xmlmodel.MappingType;
+import org.vagabond.xmlmodel.StringRefType;
 
 public class MappingViewIDList extends ModelIdList {
 	
@@ -41,6 +42,17 @@ public class MappingViewIDList extends ModelIdList {
 	@Override
 	public ModelType getType() {
 		return ModelType.Mapping;
+	}
+
+	public void adaptLabels(StringRefType[] mappingArray) {
+		String[] ids = new String[mappingArray.length];
+		
+		for(int i = 0; i < ids.length; i++) {
+			StringRefType m = mappingArray[i];
+			ids[i] = m.getRef();
+		}
+			
+		adaptLabels(ids);
 	}
 
 }

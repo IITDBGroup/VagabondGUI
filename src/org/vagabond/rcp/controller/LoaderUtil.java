@@ -149,15 +149,16 @@ public class LoaderUtil {
 			
 			ModelLoader.getInstance().loadToInst(filePath);
 			MapScenarioHolder h = MapScenarioHolder.getInstance();
-			ScenarioDictionary.getInstance().setSchemas(
-					h.getScenario().getSchemas().getSourceSchema(),
-					h.getScenario().getSchemas().getTargetSchema());
+//			ScenarioDictionary.getInstance().setSchemas(
+//					h.getScenario().getSchemas().getSourceSchema(),
+//					h.getScenario().getSchemas().getTargetSchema());
 
 			Connection c = ConnectionManager.getInstance().getConnection();
 
 			// Load scenario into db
 			DatabaseScenarioLoader.getInstance().loadScenario(c);
-
+			ScenarioDictionary.getInstance().initFromScenario();
+			
 			try {
 				QueryHolder.getInstance().loadFromURLs(ResourceManager.getInstance()
 						.getResourcesAsStreams("resource/queries", ".xml"));

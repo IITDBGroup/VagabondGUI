@@ -20,12 +20,8 @@ import org.vagabond.rcp.util.PluginLogProvider;
 import org.vagabond.rcp.DetailSelection.*;
 import org.vagabond.rcp.wizards.ExplGenPage;
 import org.vagabond.rcp.wizards.ExplGenWizard;
-//import org.vagabond.rcp.wizards.TreeItem;
 import org.vagabond.util.ConnectionManager;
 import org.vagabond.util.LoggerUtil;
-
-
-
 
 import com.quantum.Messages;
 import com.quantum.model.Bookmark;
@@ -113,12 +109,9 @@ public class TargetDBViewActionGroup extends DBViewActionGroup {
 			WizardDialog dialog =
 				new WizardDialog(
 					tableView.getSite().getShell(),
-					wizard);
-			
-			
+					wizard);	
 			dialog.open();
 
-			
 			if (dialog.getReturnCode() == 0) {
 				
 			}
@@ -204,6 +197,4 @@ public class TargetDBViewActionGroup extends DBViewActionGroup {
 		
 		return (SQLResultSetResults)results;
 	}
-	
-	
 }

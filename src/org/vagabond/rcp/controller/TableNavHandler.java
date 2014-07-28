@@ -1,33 +1,16 @@
 package org.vagabond.rcp.controller;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 
-import javax.swing.JOptionPane;
+import java.util.HashMap;
 
 import org.apache.log4j.Logger;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.viewers.StructuredSelection;
-import org.vagabond.explanation.marker.TupleMarker;
 import org.vagabond.rcp.Activator;
 import org.vagabond.rcp.gui.views.GenericTableView;
-import org.vagabond.rcp.gui.views.TargetDBView;
 import org.vagabond.rcp.model.TableViewManager;
 import org.vagabond.rcp.util.PluginLogProvider;
 import org.vagabond.rcp.controller.LoaderUtil;
 import org.vagabond.util.ConnectionManager;
 
 import com.quantum.sql.*;
-import com.quantum.sql.SQLResultSetResults.Row;
-import com.quantum.view.tableview.ResultSetViewer;
-import com.quantum.view.tableview.TableView;
-
-import org.vagabond.rcp.model.TableViewManager;
-
-
-
-
 
 /**
  * Provide navigation functionalities for the buttons on Source and Target DB views
@@ -35,7 +18,7 @@ import org.vagabond.rcp.model.TableViewManager;
  *
  */
 
-public class TableNavHandler extends GenericTableView{
+public class TableNavHandler{
 
 	public enum NAV_ACTION {FIRST_PAGE, PREVIOUS_PAGE, NEXT_PAGE, LAST_PAGE};
 	public enum SCHEMA_TYPE {SOURCE("Source"), TARGET("Target");
@@ -51,7 +34,7 @@ public class TableNavHandler extends GenericTableView{
 	};
 	
 	private String databaseString = Activator.getDefault().getPreferenceStore().getString("DATABASE");
-	private TableView tableView;
+	
 	private static final TableNavHandler instance = new TableNavHandler();
 	static Logger log = PluginLogProvider.getInstance().getLogger(
 			TableNavHandler.class);
@@ -60,9 +43,7 @@ public class TableNavHandler extends GenericTableView{
 	private HashMap<String, Integer> sourceMap = new HashMap<String, Integer>();
 	private HashMap<String, Integer> targetMap = new HashMap<String, Integer>();
 	
-	private TableNavHandler() {
-		TableViewManager.getInstance().setTargetView(TargetDBView.getInstance());
-	}
+	private TableNavHandler() {}
 	
 	public static TableNavHandler getInstance() {
 		return instance;

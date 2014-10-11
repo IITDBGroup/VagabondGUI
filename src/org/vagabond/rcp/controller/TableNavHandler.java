@@ -1,4 +1,5 @@
 package org.vagabond.rcp.controller;
+
 import java.util.HashMap;
 
 import org.apache.log4j.Logger;
@@ -18,7 +19,7 @@ import com.quantum.sql.SQLStandardResultSetResults;
  *
  */
 
-public class TableNavHandler {
+public class TableNavHandler{
 
 	public enum NAV_ACTION {FIRST_PAGE, PREVIOUS_PAGE, NEXT_PAGE, LAST_PAGE};
 	public enum SCHEMA_TYPE {SOURCE("Source"), TARGET("Target");

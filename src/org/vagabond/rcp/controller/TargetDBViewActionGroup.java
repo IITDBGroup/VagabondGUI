@@ -13,9 +13,11 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.vagabond.explanation.generation.prov.SourceProvParser;
 import org.vagabond.rcp.Activator;
+import org.vagabond.rcp.controller.TableNavHandler.SCHEMA_TYPE;
 import org.vagabond.rcp.gui.views.ProvenanceView;
 import org.vagabond.rcp.gui.views.SourceDBView;
 import org.vagabond.rcp.util.PluginLogProvider;
+import org.vagabond.rcp.DetailSelection.*;
 import org.vagabond.rcp.wizards.ExplGenPage;
 import org.vagabond.rcp.wizards.ExplGenWizard;
 import org.vagabond.util.ConnectionManager;
@@ -107,7 +109,7 @@ public class TargetDBViewActionGroup extends DBViewActionGroup {
 			WizardDialog dialog =
 				new WizardDialog(
 					tableView.getSite().getShell(),
-					wizard);
+					wizard);	
 			dialog.open();
 
 			if (dialog.getReturnCode() == 0) {
@@ -115,15 +117,40 @@ public class TargetDBViewActionGroup extends DBViewActionGroup {
 			}
 		}
 	};
+	//detailed selection
+	class DetailSelection extends Action{
+		public DetailSelection() {
+			setText(Messages.getString("User-defined selection"));
+		}
+		
+		public void run(){
+			SQLResultSetResults rs = getSelectedSQLResults();
+			String relname=rs.getName();
+			
+			TableNavHandler.getInstance();
+			SQLResultSetResults resultSet = TableNavHandler.getResultSet(SCHEMA_TYPE.TARGET,relname);
+			
+			DetailSelectionPage dsp=new DetailSelectionPage("",resultSet,relname);
+			DetailSelectionWizard wizard=new DetailSelectionWizard(dsp);
+			WizardDialog dialog =
+					new WizardDialog(
+						tableView.getSite().getShell(),
+						wizard);
+			
+				dialog.open();
+		}
+	};
 	
 	private ShowProvenanceAction showProvenanceAction;
 	private ExplGenAction explGenAction;
+	private DetailSelection detailSelection;
 
 	public TargetDBViewActionGroup(TableView tableView) {
 		super(tableView);
 		this.tableView = tableView;
 		this.showProvenanceAction = new ShowProvenanceAction();
 		this.explGenAction = new ExplGenAction();
+		this.detailSelection=new DetailSelection();
 	}
 	
 	private SQLResultSetResults getSelectedSQLResults() {
@@ -141,6 +168,7 @@ public class TargetDBViewActionGroup extends DBViewActionGroup {
 	public void fillContextMenu(IMenuManager menuManager) {
 		menuManager.add(this.showProvenanceAction);
 		menuManager.add(this.explGenAction);
+		menuManager.add(this.detailSelection);
 		menuManager.add(new Separator());
 		super.fillContextMenu(menuManager);
 	}

@@ -8,15 +8,7 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.handlers.HandlerUtil;
-import org.vagabond.mapping.model.MapScenarioHolder;
-import org.vagabond.rcp.Activator;
 import org.vagabond.rcp.controller.LoaderUtil;
-import org.vagabond.rcp.gui.views.CorrView;
-import org.vagabond.rcp.gui.views.MappingsView;
-import org.vagabond.rcp.gui.views.TransView;
-import org.vagabond.rcp.mapview.controller.GraphEditPart;
-import org.vagabond.rcp.mapview.view.MapGraphView;
-import org.vagabond.rcp.model.ContentProvider;
 import org.vagabond.rcp.util.PluginLogProvider;
 import org.vagabond.util.LoggerUtil;
 

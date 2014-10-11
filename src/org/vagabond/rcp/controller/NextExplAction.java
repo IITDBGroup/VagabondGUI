@@ -5,8 +5,6 @@ import java.beans.PropertyChangeListener;
 import java.io.IOException;
 
 import org.apache.log4j.Logger;
-import org.eclipse.ui.ISharedImages;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.SelectionListenerAction;
 import org.vagabond.explanation.model.ExplanationCollection;
 import org.vagabond.rcp.gui.views.ExplRankView;

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="test"/>
@@ -11,11 +11,12 @@
 	<classpathentry exported="true" kind="lib" path="lib/resolver.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/slf4j-api-1.5.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/slf4j-simple-1.5.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/trampJavaModel.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/xbean_xpath.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/xbean.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/xmlbeans-qname.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/xmlpublic.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/TrampExGen"/>
-	<classpathentry kind="lib" path="lib/postgresql-8.1-405.jdbc3.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/loadermac.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/postgresql-8.1-405.jdbc3.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

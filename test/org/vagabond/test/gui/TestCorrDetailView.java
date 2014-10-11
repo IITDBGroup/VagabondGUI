@@ -14,10 +14,7 @@ import org.vagabond.mapping.model.ModelLoader;
 import org.vagabond.rcp.gui.views.detailWidgets.CorrespondenceDetailView;
 import org.vagabond.rcp.gui.views.detailWidgets.DetailViewFactory;
 import org.vagabond.rcp.gui.views.detailWidgets.DetailViewList;
-import org.vagabond.rcp.gui.views.detailWidgets.MappingDetailView;
-import org.vagabond.rcp.gui.views.detailWidgets.ModelElementDetailView;
 import org.vagabond.xmlmodel.CorrespondenceType;
-import org.vagabond.xmlmodel.MappingType;
 
 public class TestCorrDetailView implements DetailViewFactory {
 	

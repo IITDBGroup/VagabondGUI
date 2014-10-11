@@ -9,12 +9,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.TabFolder;
-import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.PlatformUI;
 import org.vagabond.rcp.controller.Filter;
 import org.vagabond.rcp.controller.TargetDBViewActionGroup;

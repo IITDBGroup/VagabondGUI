@@ -1,7 +1,6 @@
 package org.vagabond.rcp;
 
 import org.apache.log4j.Logger;
-import org.eclipse.jface.action.CoolBarManager;
 import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.ICoolBarManager;
 import org.eclipse.jface.action.IStatusLineManager;

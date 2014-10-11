@@ -10,7 +10,6 @@ import org.vagabond.mapping.model.ModelLoader;
 import org.vagabond.mapping.scenarioToDB.DatabaseScenarioLoader;
 import org.vagabond.rcp.Activator;
 import org.vagabond.rcp.gui.views.CorrView;
-import org.vagabond.rcp.gui.views.GenericTableView;
 import org.vagabond.rcp.gui.views.MappingsView;
 import org.vagabond.rcp.gui.views.TransView;
 import org.vagabond.rcp.mapview.controller.GraphEditPart;
@@ -33,10 +32,6 @@ import com.quantum.sql.MultiSQLServer;
 import com.quantum.sql.SQLResultSetCollection;
 import com.quantum.sql.SQLResultSetResults;
 import com.quantum.sql.SQLResults;
-import com.quantum.view.tableview.ResultSetViewer;
-
-import org.vagabond.rcp.controller.TableNavHandler;
-import com.quantum.sql.SQLStandardResultSetResults;
 
 public class LoaderUtil {
 

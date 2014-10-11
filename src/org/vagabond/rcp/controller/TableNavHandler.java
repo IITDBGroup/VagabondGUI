@@ -6,11 +6,11 @@ import org.vagabond.rcp.Activator;
 import org.vagabond.rcp.gui.views.GenericTableView;
 import org.vagabond.rcp.model.TableViewManager;
 import org.vagabond.rcp.util.PluginLogProvider;
-
-import org.vagabond.rcp.controller.LoaderUtil;
 import org.vagabond.util.ConnectionManager;
 
-import com.quantum.sql.*;
+import com.quantum.sql.SQLResultSetCollection;
+import com.quantum.sql.SQLResultSetResults;
+import com.quantum.sql.SQLStandardResultSetResults;
 
 /**
  * Provide navigation functionalities for the buttons on Source and Target DB views

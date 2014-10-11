@@ -23,8 +23,6 @@ import org.vagabond.explanation.marker.IAttributeValueMarker;
 import org.vagabond.explanation.marker.IMarkerSet;
 import org.vagabond.explanation.marker.MarkerFactory;
 import org.vagabond.explanation.model.ExplanationCollection;
-import org.vagabond.explanation.ranking.DummyRanker;
-import org.vagabond.explanation.ranking.AStarExplanationRanker;
 import org.vagabond.rcp.gui.views.ExplRankView;
 import org.vagabond.rcp.gui.views.ExplView;
 import org.vagabond.rcp.model.ContentProvider;

@@ -69,12 +69,13 @@ public class SourceDBView extends GenericTableView implements VagaSelectionListe
 			SQLResultSetResults selection = getSelectedResultSet();
 
 			Collection<SQLResultSetResults> additions = getAddedResultSets();
+			Collection<SQLResultSetResults> deletions = getRemovedResultSets();
+			
 			for (SQLResultSetResults results : additions) {
 				this.resultSetViewers.add(new ResultSetViewer(this, results));
 				this.filters.add(new Filter(results));
 			}
-
-			Collection<SQLResultSetResults> deletions = getRemovedResultSets();
+			
 			for (SQLResultSetResults results : deletions) {
 				ResultSetViewer viewer = findViewerFor(results);
 				Filter filter = findFilterFor(results);

@@ -11,12 +11,12 @@
 	<classpathentry exported="true" kind="lib" path="lib/resolver.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/slf4j-api-1.5.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/slf4j-simple-1.5.2.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/trampJavaModel.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/xbean_xpath.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/xbean.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/xmlbeans-qname.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/xmlpublic.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/loadermac.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/postgresql-8.1-405.jdbc3.jar"/>
+	<classpathentry kind="lib" path="lib/vagabondXMLModel.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
